@@ -48,8 +48,8 @@ class AnthropicProvider(LLMProvider):
         import anthropic  # import local: si no usas este proveedor, no hace falta tenerlo
         self.client = anthropic.Anthropic()
         # Sonnet por defecto. Para abaratar clasificación masiva, cambia a
-        # "claude-haiku-4-5-20251001" con LLM_MODEL, sin tocar código.
-        self.model = model or "claude-sonnet-4-6"
+        # "claude-haiku-4-5-20251001" con LLM_MODEL, sin tocar código, claude-sonnet-4-6.
+        self.model = model or "claude-haiku-4-5-20251001"
 
     def rellenar_schema(self, system, texto, tool_name, descripcion, schema):
         tool = {"name": tool_name, "description": descripcion, "input_schema": schema}
