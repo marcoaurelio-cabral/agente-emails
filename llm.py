@@ -24,7 +24,8 @@ Proveedores disponibles:
 import json
 import os
 from abc import ABC, abstractmethod
-
+from dotenv import load_dotenv
+load_dotenv()  # carga las claves del archivo .env al entorno al arrancar
 
 class LLMProvider(ABC):
     """Contrato que debe cumplir cualquier proveedor.
