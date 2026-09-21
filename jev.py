@@ -96,6 +96,10 @@ DESTINATARIO = {
     "nombre": "Marco",
     "estudios": "3º del Grado en Ingeniería Informática, Universidad Francisco de Vitoria (Madrid)",
     "intereses": "emprendimiento, becas, hackathons, prácticas de programación",
+    # Sin esto, Jev medía la relevancia solo como "oportunidad" y un amigo
+    # preguntando por el sábado salía con p=0.44 (calibración del 19/09).
+    "siempre_relevante": "cualquier correo escrito personalmente para él por familia, "
+                         "amigos o conocidos, sea cual sea el tema",
 }
 
 # Noul con criteria {true, false}: cada resultado definido por separado, más
@@ -103,11 +107,13 @@ DESTINATARIO = {
 INSTRUCCIONES_IMPORTANTE = "¿Es este `email` relevante para el `destinatario`, según su perfil?"
 CRITERIOS_IMPORTANTE = {
     "true": (
-        "Becas y ayudas; eventos de informática o emprendimiento en España u online; "
-        "comunicaciones de su universidad dirigidas a su curso o a todos (Canvas, "
-        "secretaría, profesores, entregas, notas); correos escritos por personas reales "
-        "para él; premios y oportunidades económicas legítimas; respuestas a candidaturas "
-        "suyas, incluidos rechazos; ofertas de empleo de programación afines a su perfil."
+        "Cualquier correo escrito personalmente para él por una persona real (familia, "
+        "amigos, conocidos, profesores), SEA CUAL SEA EL TEMA, aunque sea informal o no "
+        "tenga que ver con estudios ni oportunidades; becas y ayudas; eventos de "
+        "informática o emprendimiento en España u online; comunicaciones de su "
+        "universidad dirigidas a su curso o a todos (Canvas, secretaría, entregas, notas); "
+        "premios y oportunidades económicas legítimas; respuestas a candidaturas suyas, "
+        "incluidos rechazos; ofertas de empleo de programación afines a su perfil."
     ),
     "false": (
         "Publicidad, promociones, newsletters comerciales, loterías; ofertas masivas de "

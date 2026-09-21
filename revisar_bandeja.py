@@ -98,7 +98,8 @@ def main():
     print(f"LLM ({r['modelo']}): {r['llamadas_llm']} llamadas · {r['tokens_llm']:,} tokens en esta ejecución"
           .replace(",", "."))
     if r["prefiltro_activo"] or r["errores_jev"]:
-        print(f"Jev: {r['filtrados_por_jev']} de {r['nuevos']} resueltos sin LLM · {r['uso_jev']}")
+        print(f"Jev ({r['politica_prefiltro']}): {r['filtrados_por_jev']} de {r['nuevos']} "
+              f"resueltos sin LLM · {r['uso_jev']}")
 
 
 if __name__ == "__main__":

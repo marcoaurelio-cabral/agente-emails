@@ -15,7 +15,6 @@ lo cambias UNA vez y lo heredan todas las interfaces.
 la API) para informar de avance en operaciones largas sin acoplarse a nadie.
 """
 
-import os
 from datetime import date
 from typing import Callable
 
@@ -23,6 +22,7 @@ import almacen
 import cerebro
 import gmail
 import jev
+import politica
 from cerebro import Clasificacion, clasificar
 
 # LECTURA ADAPTATIVA: clasificar con los primeros N caracteres (barato); solo
@@ -30,13 +30,9 @@ from cerebro import Clasificacion, clasificar
 # resumen, acción y plazo salgan de todo el contenido.
 LECTURA_RAPIDA = 1500
 
-# UMBRAL DEL PREFILTRO: por debajo de esta probabilidad, Jev está tan seguro
-# de que es ruido que no se llama al LLM. Es CONSERVADOR a propósito: el
-# falso negativo (esconder una beca) es el error caro de este sistema, así
-# que preferimos pagar llamadas de más. Ajústalo con calibrar_jev.py, que
-# mide recall y ahorro sobre el dataset etiquetado.
-UMBRAL_RUIDO = float(os.getenv("JEV_UMBRAL_RUIDO", "0.05"))
-USAR_PREFILTRO = os.getenv("JEV_PREFILTRO", "1") != "0"
+# La POLÍTICA del prefiltro (umbral, regla, categorías descartables) vive en
+# politica.py, compartida con calibrar_jev.py y sombra_jev.py: lo que se mide
+# es exactamente lo que se ejecuta.
 
 Progreso = Callable[[str], None] | None
 
@@ -54,13 +50,13 @@ def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
     cuerpo = e["cuerpo"]
 
     pre = None
-    if USAR_PREFILTRO:
+    if politica.USAR_PREFILTRO:
         pre = jev.evaluar(e["remitente"], e["asunto"], cuerpo)
-        if pre and pre["noul"] < UMBRAL_RUIDO:
+        if pre and politica.descartar(pre["noul"], pre["categoria"]):
             pre["decidido_por"] = "jev"
             return Clasificacion(
                 importante=False, categoria="ruido", prioridad="baja",
-                motivo=f"prefiltro Jev: {pre['categoria']} (p={pre['noul']:.3f})",
+                motivo=f"prefiltro Jev: {pre['categoria']} (p={pre['noul']:.3f}, {politica.REGLA})",
                 resumen="", requiere_accion=False, accion="", fecha_limite="",
             ), pre
 
@@ -134,7 +130,8 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
         "llamadas_llm": uso["llamadas"] - uso_antes["llamadas"],
         "tokens_llm": (uso["entrada"] + uso["salida"]) - (uso_antes["entrada"] + uso_antes["salida"]),
         "modelo": cerebro._llm.model,
-        "prefiltro_activo": USAR_PREFILTRO and jev.disponible(),
+        "prefiltro_activo": politica.USAR_PREFILTRO and jev.disponible(),
+        "politica_prefiltro": politica.describir(),
         "filtrados_por_jev": filtrados_por_jev,
         "errores_jev": jev.uso["errores"],
         "jev_cortocircuito": jev.cortocircuito_abierto(),

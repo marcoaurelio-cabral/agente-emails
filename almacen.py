@@ -237,6 +237,27 @@ def ruido_reciente(dias: int = 7, limite: int = 200) -> list[dict]:
     return [dict(f) for f in filas]
 
 
+def guardar_prefiltro(gmail_id: str, pre: dict) -> None:
+    """Guarda la opinión de Jev SIN cambiar la decisión del email (prueba en
+    sombra). Así esos datos quedan para futuras calibraciones."""
+    with _conectar() as conn:
+        conn.execute("UPDATE emails SET jev_noul = ?, jev_categoria = ?, jev_modelo = ? WHERE gmail_id = ?",
+                     (pre["noul"], pre["categoria"], pre.get("modelo"), gmail_id))
+
+
+def emails_para_sombra() -> list[dict]:
+    """Emails decididos por el LLM (los únicos con una etiqueta de referencia),
+    con la etiqueta efectiva: tu corrección si la hay, si no la del LLM."""
+    with _conectar() as conn:
+        filas = conn.execute(
+            f"""SELECT gmail_id, asunto, remitente, {_IMPORTANTE} AS importante_ref,
+                       correccion_importante
+                FROM emails WHERE decidido_por IS NULL OR decidido_por = 'llm'
+                ORDER BY fecha_epoch DESC"""
+        ).fetchall()
+    return [dict(f) for f in filas]
+
+
 # ── Lectura ─────────────────────────────────────────────────────────────────
 
 def ids_conocidos(ids: list[str]) -> set[str]:
