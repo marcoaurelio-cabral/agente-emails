@@ -1,26 +1,15 @@
 """
-revisar_bandeja.py — v3: tareas y plazos
-=========================================
+revisar_bandeja.py — CLI (interfaz de consola)
+==============================================
 
-Flujo:
-    0. Migración de datos: los importantes que se clasificaron con el esquema
-       viejo (sin tarea/plazo) se re-clasifican una sola vez. Son pocos y
-       baratos; los ruidos no se tocan.
-    1-3. Igual que antes: ids de la semana -> filtrar conocidos -> procesar
-       en streaming los nuevos.
-    4. Informe, ahora en este orden:
-         ⏰ TAREAS PENDIENTES  (por plazo; vencidas primero)
-         ⭐ IMPORTANTES informativos (sin acción)
-         🗑 RUIDO de esta ejecución
-       Los duplicados (Canvas manda dobles) aparecen agrupados.
-
-Para gestionar tareas (ver, completar, historial): python tareas.py
+Ya no contiene lógica: solo parsea argumentos, llama a servicio.revisar()
+y PINTA. Toda la inteligencia está en servicio.py, compartida con api.py.
 
 Uso:
     python revisar_bandeja.py
     python revisar_bandeja.py "is:unread"
     python revisar_bandeja.py "newer_than:7d" 300
-    python revisar_bandeja.py --reclasificar     (tras cambiar CRITERIO: repasa los importantes)
+    python revisar_bandeja.py --reclasificar     (tras cambiar CRITERIO)
 """
 
 import sys
@@ -28,12 +17,7 @@ import time
 from datetime import date, timedelta
 
 import almacen
-import gmail
-from cerebro import clasificar
-
-CONSULTA_POR_DEFECTO = "newer_than:7d"
-MAX_EMAILS = 150
-DIAS_INFORME = 7
+import servicio
 
 
 def _fecha_corta(epoch: int) -> str:
@@ -41,7 +25,6 @@ def _fecha_corta(epoch: int) -> str:
 
 
 def _etiqueta_plazo(fecha_limite: str | None, hoy: date) -> str:
-    """🔴 vencida · ⚠️ esta semana · 📅 más adelante · ▫️ sin fecha"""
     if not fecha_limite:
         return "▫️ sin fecha "
     f = date.fromisoformat(fecha_limite)
@@ -52,57 +35,28 @@ def _etiqueta_plazo(fecha_limite: str | None, hoy: date) -> str:
     return f"📅 {f.strftime('%d/%m')}      "
 
 
-def _reclasificar(ids: list[str], motivo: str):
-    """Vuelve a pasar emails ya guardados por el cerebro (no toca 'completada')."""
-    if not ids:
-        return
-    print(f"{motivo}: {len(ids)} emails. Re-clasificando...")
-    for i, e in enumerate(gmail.iterar_por_ids(ids), 1):
-        c = clasificar(e["remitente"], e["asunto"], e["cuerpo"],
-                       fecha_email=date.fromtimestamp(e["fecha_epoch"]))
-        almacen.actualizar_clasificacion(e["id"], c)
-        if i % 10 == 0 or i == len(ids):
-            print(f"  ...{i}/{len(ids)}")
-    print()
-
-
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
-    consulta = args[0] if args else CONSULTA_POR_DEFECTO
-    maximo = int(args[1]) if len(args) > 1 else MAX_EMAILS
+    consulta = args[0] if args else "newer_than:7d"
+    maximo = int(args[1]) if len(args) > 1 else 150
     hoy = date.today()
 
-    almacen.inicializar()
+    print(f"Revisando Gmail ('{consulta}', máx {maximo})...")
+    r = servicio.revisar(consulta, maximo,
+                         reclasificar_todo="--reclasificar" in flags,
+                         progreso=lambda m: print(f"  ...{m}"))
 
-    # Migración (una vez) o reclasificación completa (cuando cambias el criterio):
-    #   python revisar_bandeja.py --reclasificar
-    if "--reclasificar" in flags:
-        _reclasificar(almacen.ids_importantes(), "Reclasificación por cambio de criterio")
-    else:
-        _reclasificar(almacen.ids_importantes_sin_migrar(), "Migración de importantes antiguos")
+    if r["cambios_reclasificacion"]:
+        etiqueta = {"importante": ("ruido", "IMPORTANTE"), "tarea": ("informativo", "TAREA")}
+        print(f"\n  Cambios respecto a la clasificación anterior ({len(r['cambios_reclasificacion'])}):")
+        for c in r["cambios_reclasificacion"]:
+            e = etiqueta[c["campo"]]
+            print(f"    · {e[c['antes']]} → {e[c['ahora']]:<11} {c['asunto'][:60]}")
 
-    print(f"Consultando Gmail ('{consulta}', máx {maximo})...")
-    ids = gmail.listar_ids(consulta, maximo)
-    conocidos = almacen.ids_conocidos(ids)
-    nuevos_ids = [i for i in ids if i not in conocidos]
-    print(f"{len(ids)} emails en la consulta · {len(conocidos)} ya clasificados · "
-          f"{len(nuevos_ids)} nuevos por procesar\n")
-
-    nuevos_ruido = []
-    total = len(nuevos_ids)
-    if total:
-        for i, e in enumerate(gmail.iterar_por_ids(nuevos_ids), 1):
-            c = clasificar(e["remitente"], e["asunto"], e["cuerpo"],
-                           fecha_email=date.fromtimestamp(e["fecha_epoch"]), hoy=hoy)
-            almacen.guardar(e, c)
-            if not c.importante:
-                nuevos_ruido.append((e, c))
-            if i % 10 == 0 or i == total:
-                print(f"  ...clasificados {i}/{total}")
-        print()
-
-    set_nuevos = set(nuevos_ids)
+    print(f"\n{r['en_gmail']} emails en la consulta · {r['ya_clasificados']} ya clasificados · "
+          f"{r['nuevos']} nuevos ({len(r['nuevos_importantes'])} importantes)\n")
+    set_nuevos = {x["id"] for x in r["nuevos_importantes"]}
 
     # ── ⏰ Tareas pendientes ─────────────────────────────────────────────
     tareas = almacen.tareas_pendientes()
@@ -112,16 +66,16 @@ def main():
     for n, t in enumerate(tareas, 1):
         nuevo = "🆕" if any(i in set_nuevos for i in t["ids"]) else "  "
         dup = f" (x{t['repeticiones']})" if t["repeticiones"] > 1 else ""
-        print(f"{n:>3}. {nuevo} {_etiqueta_plazo(t['fecha_limite'], hoy)} · {t['accion'] or t['asunto']}{dup}")
+        print(f"{n:>3}. {nuevo} {_etiqueta_plazo(t['fecha_limite'], hoy)} · {t['accion']}{dup}")
         print(f"          [{t['prioridad']}/{t['categoria']}] {t['asunto'][:70]}")
         print(f"          → {t['resumen']}\n")
     if tareas:
         print("   Marca una como hecha:  python tareas.py completar N\n")
 
     # ── ⭐ Importantes sin acción ───────────────────────────────────────
-    info = almacen.importantes_sin_accion(DIAS_INFORME)
+    info = almacen.importantes_sin_accion(7)
     print("=" * 70)
-    print(f"⭐ IMPORTANTES informativos · últimos {DIAS_INFORME} días ({len(info)})")
+    print(f"⭐ IMPORTANTES informativos · últimos 7 días ({len(info)})")
     print("=" * 70)
     for f in info:
         nuevo = "🆕" if any(i in set_nuevos for i in f["ids"]) else "  "
@@ -130,16 +84,21 @@ def main():
         print(f"          → {f['resumen']}\n")
 
     # ── 🗑 Ruido nuevo ──────────────────────────────────────────────────
-    if nuevos_ruido:
+    if r["nuevos_ruido"]:
         print("=" * 70)
-        print(f"🗑  RUIDO de esta ejecución ({len(nuevos_ruido)}) — revisa por si se coló algo")
+        print(f"🗑  RUIDO de esta ejecución ({len(r['nuevos_ruido'])}) — revisa por si se coló algo")
         print("=" * 70)
-        for e, c in nuevos_ruido:
-            print(f"   · {e['asunto'][:58]:<58}  [{c.motivo[:45]}]")
+        for x in r["nuevos_ruido"]:
+            print(f"   · {x['asunto'][:58]:<58}  [{x['motivo'][:45]}]")
 
     s = almacen.estadisticas()
     print(f"\nBD: {s['total']} emails · {s['importantes']} importantes · "
-          f"{s['pendientes']} tareas pendientes · {s['completadas']} completadas")
+          f"{s['pendientes']} tareas pendientes · {s['completadas']} completadas · "
+          f"{s['corregidos']} corregidos por ti")
+    print(f"LLM ({r['modelo']}): {r['llamadas_llm']} llamadas · {r['tokens_llm']:,} tokens en esta ejecución"
+          .replace(",", "."))
+    if r["prefiltro_activo"] or r["errores_jev"]:
+        print(f"Jev: {r['filtrados_por_jev']} de {r['nuevos']} resueltos sin LLM · {r['uso_jev']}")
 
 
 if __name__ == "__main__":

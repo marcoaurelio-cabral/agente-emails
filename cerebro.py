@@ -1,9 +1,9 @@
 """
-cerebro.py — El clasificador personalizado de emails de Rodri — v3
+cerebro.py — El clasificador personalizado de emails de Marco — v3
 ==================================================================
 
 Novedades v3: el cerebro ahora extrae TAREAS.
-  - requiere_accion: ¿Rodri tiene que HACER algo?
+  - requiere_accion: ¿Marco tiene que HACER algo?
   - accion:          qué, en una frase corta ("Entregar P1 de DIS")
   - fecha_limite:    AAAA-MM-DD si el email da un plazo, o "" si no.
 
@@ -27,10 +27,10 @@ from llm import get_provider
 
 
 # ─────────────────────────────────────────────────────────────────────────
-# EL CRITERIO DE RODRI — el corazón del producto.
+# EL CRITERIO DE Marco — el corazón del producto.
 # ─────────────────────────────────────────────────────────────────────────
 
-CRITERIO = """Eres el asistente personal de correo de Rodri: estudiante de 3º del Grado en
+CRITERIO = """Eres el asistente personal de correo de Marco: estudiante de 3º del Grado en
 Ingeniería Informática en la UFV (Madrid), con mentalidad EMPRENDEDORA y muchas ganas
 de experiencias y oportunidades nuevas. Tu trabajo es separar lo que de verdad le
 importa del ruido, y detectar qué tareas y plazos tiene.
@@ -50,7 +50,7 @@ LE IMPORTA (marcar como importante):
   EXCEPCIÓN: si el correo va dirigido explícitamente a OTRO curso u OTRA titulación
   (por ejemplo "aulas de 1º y 2º de Ingeniería Física"), es RUIDO: no le afecta.
   Si es genérico o no especifica curso, márcalo importante.
-- RESPUESTAS A SUS PROPIAS CANDIDATURAS: si Rodri se apuntó a algo (hackathon,
+- RESPUESTAS A SUS PROPIAS CANDIDATURAS: si Marco se apuntó a algo (hackathon,
   beca, movilidad, proceso de selección), cualquier respuesta es IMPORTANTE,
   también los rechazos. Necesita saber en qué quedó.
 - "DINERO GRATIS" LEGÍTIMO: subvenciones, premios, concursos con premio, ayudas
@@ -70,14 +70,14 @@ ES RUIDO (marcar como no importante):
   urgencia artificial, remitentes raros. Aunque hablen de dinero, son RUIDO.
 
 PRIORIDAD (sé estricto: la mayoría NO es alta):
-- alta:  requiere una ACCIÓN de Rodri con plazo en los próximos 7 días, o es una
+- alta:  requiere una ACCIÓN de Marco con plazo en los próximos 7 días, o es una
          oportunidad con fecha límite (beca, premio, inscripción, entrega).
 - media: información relevante sin plazo inmediato (notas publicadas, avisos de
          clase, eventos a más de una semana).
 - baja:  bueno saberlo, sin acción requerida.
 
 TAREAS Y PLAZOS:
-- requiere_accion = true SOLO si Rodri tiene que HACER algo concreto y definido:
+- requiere_accion = true SOLO si Marco tiene que HACER algo concreto y definido:
   entregar una práctica, rellenar un formulario, inscribirse, responder, firmar,
   pagar, aceptar una invitación, corregir algo, asistir a algo con fecha, o una
   lectura/ejercicio que un profesor encarga expresamente para clase.
@@ -88,7 +88,7 @@ TAREAS Y PLAZOS:
 - NO es tarea asistir a CLASES regulares, ni un cambio de horario o de aula de una
   asignatura: eso es información. Solo cuenta asistir a un EVENTO puntual con
   inscripción o fecha concreta (charla, hackathon, networking, viaje).
-- NO es tarea un acuse de recibo de algo que Rodri ya hizo (confirmación de
+- NO es tarea un acuse de recibo de algo que Marco ya hizo (confirmación de
   formulario enviado, inscripción registrada, "hemos recibido tu respuesta"),
   aunque mencione "próximos pasos". La tarea, si existe, viene en otro email.
 - accion: verbo concreto en infinitivo + objeto, corto ("Entregar P1 de DIS",
@@ -101,7 +101,7 @@ TAREAS Y PLAZOS:
   Si no hay plazo, déjala vacía. NO inventes plazos. Si ya pasó, ponla igualmente.
 
 REGLA DE ORO ante la duda: si no tienes claro si algo es una oportunidad real
-para Rodri, márcalo como IMPORTANTE. Es mucho peor esconderle una oportunidad
+para Marco, márcalo como IMPORTANTE. Es mucho peor esconderle una oportunidad
 buena que mostrarle una de más. Esta regla NO aplica a estafas evidentes."""
 
 
@@ -110,12 +110,12 @@ buena que mostrarle una de más. Esta regla NO aplica a estafas evidentes."""
 # ─────────────────────────────────────────────────────────────────────────
 
 class Clasificacion(BaseModel):
-    importante: bool = Field(description="True si Rodri debería verlo; False si es ruido.")
+    importante: bool = Field(description="True si Marco debería verlo; False si es ruido.")
     categoria: str = Field(description="beca | evento | personal | dinero | empleo_afin | ruido")
     prioridad: str = Field(description="alta | media | baja")
     motivo: str = Field(description="Una frase breve explicando la decisión.")
     resumen: str = Field(description="Resumen en una frase de qué es el email.")
-    requiere_accion: bool = Field(description="True solo si Rodri tiene que hacer algo concreto.")
+    requiere_accion: bool = Field(description="True solo si Marco tiene que hacer algo concreto.")
     accion: str = Field(description="La acción en infinitivo y corta. Cadena vacía si no hay.")
     fecha_limite: str = Field(description="Plazo en formato AAAA-MM-DD, o cadena vacía si no hay.")
 
@@ -156,7 +156,7 @@ _DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domin
 
 def clasificar(remitente: str, asunto: str, cuerpo: str,
                fecha_email: date | None = None, hoy: date | None = None) -> Clasificacion:
-    """Clasifica un email según el criterio de Rodri.
+    """Clasifica un email según el criterio de Marco.
 
     `fecha_email` es cuándo se ENVIÓ el email: la referencia correcta para
     "en 7 días" o "este jueves". `hoy` es solo contexto (para que el modelo
@@ -176,7 +176,7 @@ def clasificar(remitente: str, asunto: str, cuerpo: str,
         system=CRITERIO,
         texto=contenido,
         tool_name="clasificar_email",
-        descripcion="Registra la clasificación de un email según el criterio de Rodri.",
+        descripcion="Registra la clasificación de un email según el criterio de Marco.",
         schema=Clasificacion.model_json_schema(),
     )
     return Clasificacion(**datos)

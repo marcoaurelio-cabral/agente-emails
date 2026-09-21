@@ -44,7 +44,20 @@ _COLUMNAS = {
     "fecha_limite":    "TEXT",      # 'AAAA-MM-DD' o NULL. ISO ordena bien como texto.
     "estado":          "TEXT",      # 'pendiente' | 'completada' | NULL (no es tarea)
     "completada_en":   "INTEGER",
+    # --- v3: corrección humana (etiquetas de oro) ---
+    "correccion_importante": "INTEGER",  # NULL = sin corregir; 1/0 = lo que dijo Marco
+    "corregido_en":          "INTEGER",
+    # --- v4: prefiltro Jev (guardamos la probabilidad, no solo la etiqueta,
+    #         para poder calibrar umbrales y auditar después) ---
+    "jev_noul":      "REAL",     # p(importante) según Jev
+    "jev_categoria": "TEXT",
+    "jev_modelo":    "TEXT",     # versión real que respondió
+    "decidido_por":  "TEXT",     # 'jev' (prefiltro) | 'llm'
 }
+
+# "Importante efectivo": si Marco corrigió, manda su corrección; si no, el modelo.
+# Se usa en todas las vistas para que una corrección se refleje al instante.
+_IMPORTANTE = "COALESCE(correccion_importante, importante)"
 
 
 def _conectar() -> sqlite3.Connection:
@@ -69,6 +82,13 @@ def inicializar():
                 print(f"  [BD] migración: añadida columna '{nombre}'")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_fecha ON emails (fecha_epoch)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_estado ON emails (estado, fecha_limite)")
+        # Reparación de datos: 'pendiente' solo tiene sentido si es tarea.
+        # Limpia zombis que pudieran quedar de versiones anteriores.
+        cur = conn.execute(
+            "UPDATE emails SET estado = NULL WHERE estado = 'pendiente' AND requiere_accion = 0"
+        )
+        if cur.rowcount:
+            print(f"  [BD] reparación: {cur.rowcount} tareas zombi limpiadas")
 
 
 # ── Escritura ───────────────────────────────────────────────────────────────
@@ -87,9 +107,14 @@ def _campos_clasificacion(c) -> dict:
     }
 
 
-def guardar(email: dict, c) -> None:
-    """Inserta un email nuevo con su clasificación. Idempotente (OR IGNORE)."""
+def guardar(email: dict, c, pre: dict | None = None) -> None:
+    """Inserta un email nuevo con su clasificación. Idempotente (OR IGNORE).
+    `pre` es el resultado del prefiltro Jev, si se usó."""
     campos = _campos_clasificacion(c)
+    if pre:
+        campos.update({"jev_noul": pre["noul"], "jev_categoria": pre["categoria"],
+                       "jev_modelo": pre.get("modelo")})
+    campos["decidido_por"] = (pre or {}).get("decidido_por", "llm")
     campos.update({
         "gmail_id": email["id"],
         "remitente": email["remitente"],
@@ -105,20 +130,39 @@ def guardar(email: dict, c) -> None:
                      list(campos.values()))
 
 
-def actualizar_clasificacion(gmail_id: str, c) -> None:
-    """Re-clasifica un email ya guardado (usado en la migración de datos).
-    No toca 'estado' si ya estaba completada."""
+def actualizar_clasificacion(gmail_id: str, c) -> dict:
+    """Re-clasifica un email ya guardado. Devuelve los cambios relevantes
+    ({'importante': (antes, ahora)}, {'tarea': (antes, ahora)}) para auditar
+    qué mueve un cambio de criterio.
+
+    Coherencia de estado:
+      - pasa a tarea   -> estado 'pendiente' (si no tenía)
+      - deja de serlo  -> se limpia 'pendiente' (una 'completada' se respeta:
+                          es historial de algo que Rodri hizo)
+    """
     campos = _campos_clasificacion(c)
     campos["clasificado_en"] = int(time.time())
     asignaciones = ", ".join(f"{k} = ?" for k in campos)
     with _conectar() as conn:
+        antes = conn.execute(
+            "SELECT importante, requiere_accion FROM emails WHERE gmail_id = ?", (gmail_id,)
+        ).fetchone()
         conn.execute(f"UPDATE emails SET {asignaciones} WHERE gmail_id = ?",
                      [*campos.values(), gmail_id])
-        conn.execute(
-            """UPDATE emails SET estado = 'pendiente'
-               WHERE gmail_id = ? AND requiere_accion = 1 AND estado IS NULL""",
-            (gmail_id,),
-        )
+        if c.requiere_accion:
+            conn.execute("UPDATE emails SET estado = 'pendiente' WHERE gmail_id = ? AND estado IS NULL",
+                         (gmail_id,))
+        else:
+            conn.execute("UPDATE emails SET estado = NULL WHERE gmail_id = ? AND estado = 'pendiente'",
+                         (gmail_id,))
+
+    cambios = {}
+    if antes is not None:
+        if bool(antes["importante"]) != c.importante:
+            cambios["importante"] = (bool(antes["importante"]), c.importante)
+        if antes["requiere_accion"] is not None and bool(antes["requiere_accion"]) != c.requiere_accion:
+            cambios["tarea"] = (bool(antes["requiere_accion"]), c.requiere_accion)
+    return cambios
 
 
 def marcar_completadas(ids: list[str]) -> int:
@@ -129,6 +173,68 @@ def marcar_completadas(ids: list[str]) -> int:
             [int(time.time()), *ids],
         )
         return cur.rowcount
+
+
+def reabrir(ids: list[str]) -> int:
+    """Deshace un 'completar' (el botón de la app se pulsa sin querer)."""
+    with _conectar() as conn:
+        cur = conn.execute(
+            f"""UPDATE emails SET estado = 'pendiente', completada_en = NULL
+                WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado = 'completada'""",
+            ids,
+        )
+        return cur.rowcount
+
+
+def corregir(gmail_id: str, importante: bool) -> bool:
+    """Marco corrige al modelo: "esto SÍ/NO era importante".
+
+    La corrección se guarda APARTE de la etiqueta del modelo: no se pierde
+    aunque re-clasifiques, y es una etiqueta de ORO para el dataset de evals
+    (y para entrenar un clasificador propio el día que toque).
+    Efecto inmediato en las vistas: si deja de ser importante, deja de ser
+    tarea pendiente; si pasa a serlo y tenía acción, vuelve a pendiente.
+    """
+    with _conectar() as conn:
+        cur = conn.execute(
+            "UPDATE emails SET correccion_importante = ?, corregido_en = ? WHERE gmail_id = ?",
+            (int(importante), int(time.time()), gmail_id),
+        )
+        if cur.rowcount == 0:
+            return False
+        if importante:
+            conn.execute("""UPDATE emails SET estado = 'pendiente'
+                            WHERE gmail_id = ? AND requiere_accion = 1 AND estado IS NULL""", (gmail_id,))
+        else:
+            conn.execute("""UPDATE emails SET estado = NULL
+                            WHERE gmail_id = ? AND estado = 'pendiente'""", (gmail_id,))
+        return True
+
+
+def correcciones() -> list[dict]:
+    """Etiquetas de oro: emails donde Marco corrigió al modelo (o lo confirmó)."""
+    with _conectar() as conn:
+        filas = conn.execute(
+            """SELECT gmail_id, remitente, asunto, fecha_epoch, categoria,
+                      importante AS modelo, correccion_importante AS humano, corregido_en
+               FROM emails WHERE correccion_importante IS NOT NULL
+               ORDER BY corregido_en DESC"""
+        ).fetchall()
+    return [dict(f) for f in filas]
+
+
+def ruido_reciente(dias: int = 7, limite: int = 200) -> list[dict]:
+    """Ruido de los últimos N días (para revisarlo desde la app y corregir
+    falsos negativos: la pantalla de 'papelera')."""
+    desde = int(time.time()) - dias * 24 * 3600
+    with _conectar() as conn:
+        filas = conn.execute(
+            f"""SELECT gmail_id, remitente, asunto, fecha_epoch, categoria, motivo, correccion_importante
+                FROM emails WHERE {_IMPORTANTE} = 0 AND fecha_epoch >= ?
+                ORDER BY fecha_epoch DESC LIMIT ?""",
+            (desde, limite),
+        ).fetchall()
+    return [dict(f) for f in filas]
 
 
 # ── Lectura ─────────────────────────────────────────────────────────────────
@@ -202,11 +308,13 @@ def _agrupar(filas) -> list[dict]:
 
 def tareas_pendientes() -> list[dict]:
     """Tareas pendientes agrupadas, ordenadas: con fecha primero (más cercana
-    antes), luego sin fecha; a igualdad, por prioridad."""
+    antes), luego sin fecha; a igualdad, por prioridad.
+    Exige requiere_accion = 1 además de estado = 'pendiente': defensa en
+    profundidad contra estados inconsistentes."""
     with _conectar() as conn:
         filas = conn.execute(
             f"""SELECT * FROM emails
-                WHERE estado = 'pendiente'
+                WHERE estado = 'pendiente' AND requiere_accion = 1 AND {_IMPORTANTE} = 1
                 ORDER BY (fecha_limite IS NULL), fecha_limite, {_ORDEN_PRIORIDAD}, fecha_epoch DESC"""
         ).fetchall()
     return _agrupar(filas)
@@ -229,7 +337,7 @@ def importantes_sin_accion(dias: int = 7) -> list[dict]:
     with _conectar() as conn:
         filas = conn.execute(
             f"""SELECT * FROM emails
-                WHERE importante = 1 AND fecha_epoch >= ?
+                WHERE {_IMPORTANTE} = 1 AND fecha_epoch >= ?
                   AND (requiere_accion = 0 OR requiere_accion IS NULL)
                 ORDER BY {_ORDEN_PRIORIDAD}, fecha_epoch DESC""",
             (desde,),
@@ -239,14 +347,15 @@ def importantes_sin_accion(dias: int = 7) -> list[dict]:
 
 def estadisticas() -> dict:
     with _conectar() as conn:
-        total, importantes, pendientes, completadas = conn.execute(
-            """SELECT COUNT(*), COALESCE(SUM(importante), 0),
-                      COALESCE(SUM(estado = 'pendiente'), 0),
-                      COALESCE(SUM(estado = 'completada'), 0)
-               FROM emails"""
+        total, importantes, pendientes, completadas, corregidos = conn.execute(
+            f"""SELECT COUNT(*), COALESCE(SUM({_IMPORTANTE}), 0),
+                       COALESCE(SUM(estado = 'pendiente'), 0),
+                       COALESCE(SUM(estado = 'completada'), 0),
+                       COALESCE(SUM(correccion_importante IS NOT NULL), 0)
+                FROM emails"""
         ).fetchone()
     return {"total": total, "importantes": importantes, "ruido": total - importantes,
-            "pendientes": pendientes, "completadas": completadas}
+            "pendientes": pendientes, "completadas": completadas, "corregidos": corregidos}
 
 
 if __name__ == "__main__":

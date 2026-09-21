@@ -41,7 +41,8 @@ from googleapiclient.errors import HttpError
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 CREDENCIALES = "credentials.json"
 TOKEN = "token.json"
-MAX_CARACTERES = 3000  # control de coste: para clasificar bastan los primeros
+MAX_CARACTERES = 12000  # tope de SEGURIDAD (emails patológicos). El recorte para
+                        # abaratar se decide en el orquestador (lectura adaptativa).
 
 # Pausa mínima entre llamadas a Gmail. Cortesía con la API y evita ráfagas.
 PAUSA_ENTRE_PETICIONES = 0.1

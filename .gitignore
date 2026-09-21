@@ -7,3 +7,4 @@ credentials.json
 token.json
 .env
 emails.db
+dataset_evals.json

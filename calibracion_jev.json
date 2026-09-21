@@ -1,0 +1,294 @@
+{
+  "modelo": "jev-1.13.0",
+  "medidos": [
+    {
+      "id": "real_aulas_otro_curso",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.18,
+      "categoria_jev": "universidad",
+      "confianza": 0.99,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_aulas_informatica_3",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.94,
+      "categoria_jev": "universidad",
+      "confianza": 0.98,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_sheerid_google",
+      "esperado": true,
+      "frontera": true,
+      "noul": 0.55,
+      "categoria_jev": "automatico",
+      "confianza": 0.49,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_infojobs_azafato",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.04,
+      "categoria_jev": "promocional",
+      "confianza": 0.41,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_infojobs_comercial",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.05,
+      "categoria_jev": "promocional",
+      "confianza": 0.35,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_ubereats_promo",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.03,
+      "categoria_jev": "promocional",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_linkedin_notif",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.21,
+      "categoria_jev": "automatico",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_google_play_recibo",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.09,
+      "categoria_jev": "automatico",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_alerta_seguridad",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.15,
+      "categoria_jev": "automatico",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_hackathon_rechazo",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.91,
+      "categoria_jev": "evento",
+      "confianza": 0.98,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_evento_san_francisco",
+      "esperado": true,
+      "frontera": true,
+      "noul": 0.6,
+      "categoria_jev": "evento",
+      "confianza": 0.98,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_acuse_formulario_propio",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.22,
+      "categoria_jev": "automatico",
+      "confianza": 0.97,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_certificado_familiar",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.75,
+      "categoria_jev": "personal",
+      "confianza": 0.92,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_canvas_resumen_comentarios",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.95,
+      "categoria_jev": "universidad",
+      "confianza": 0.99,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_github_invitacion",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.77,
+      "categoria_jev": "automatico",
+      "confianza": 0.98,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_cambio_horario_clase",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.9,
+      "categoria_jev": "universidad",
+      "confianza": 0.99,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_tarea_calificada",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.95,
+      "categoria_jev": "universidad",
+      "confianza": 0.95,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "real_acuse_movilidad",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.6,
+      "categoria_jev": "automatico",
+      "confianza": 0.63,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_beca_emprendimiento",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.92,
+      "categoria_jev": "beca",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_hackathon_ia",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.85,
+      "categoria_jev": "evento",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_profesor_tfg",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.95,
+      "categoria_jev": "universidad",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_practicas_python_afin",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.92,
+      "categoria_jev": "empleo_afin",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_infojobs_dev_junior",
+      "esperado": true,
+      "frontera": true,
+      "noul": 0.83,
+      "categoria_jev": "empleo_afin",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_ayuda_comunidad_madrid",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.91,
+      "categoria_jev": "beca",
+      "confianza": 0.98,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_phishing_premio",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.03,
+      "categoria_jev": "sospechoso",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_charla_emprende_ufv",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.93,
+      "categoria_jev": "evento",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_secretaria_matricula",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.93,
+      "categoria_jev": "universidad",
+      "confianza": 0.96,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_newsletter_ropa",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.02,
+      "categoria_jev": "promocional",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_newsletter_tech",
+      "esperado": false,
+      "frontera": true,
+      "noul": 0.35,
+      "categoria_jev": "promocional",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_amigo_plan",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.44,
+      "categoria_jev": "personal",
+      "confianza": 0.99,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_banco_promo",
+      "esperado": false,
+      "frontera": false,
+      "noul": 0.08,
+      "categoria_jev": "promocional",
+      "confianza": 1.0,
+      "modelo": "jev-1.13.0"
+    },
+    {
+      "id": "inv_concurso_ideas_premio",
+      "esperado": true,
+      "frontera": false,
+      "noul": 0.87,
+      "categoria_jev": "dinero",
+      "confianza": 0.85,
+      "modelo": "jev-1.13.0"
+    }
+  ],
+  "umbral_seguro": 0.4
+}

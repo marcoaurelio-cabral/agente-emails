@@ -24,8 +24,20 @@ Proveedores disponibles:
 import json
 import os
 from abc import ABC, abstractmethod
+
 from dotenv import load_dotenv
 load_dotenv()  # carga las claves del archivo .env al entorno al arrancar
+
+
+# Precios orientativos en USD por millón de tokens (entrada, salida).
+# Cámbialos si el proveedor los actualiza; sirven para estimar, no para facturar.
+PRECIOS_USD_POR_MILLON = {
+    "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-haiku-4-5-20251001": (1.00, 5.00),
+    "deepseek-flash": (0.15, 0.60),   # tarifa valle; en punta es el doble
+    "deepseek-v4-pro": (0.55, 2.19),
+}
+
 
 class LLMProvider(ABC):
     """Contrato que debe cumplir cualquier proveedor.
@@ -34,7 +46,34 @@ class LLMProvider(ABC):
     devolver un dict que cumpla ese schema. Es lo único que el cerebro
     necesita, así que es lo único que la interfaz expone. Interfaces
     pequeñas = fáciles de implementar para un proveedor nuevo.
+
+    Además lleva la CUENTA DE USO: un sistema que llama a una API de pago
+    debe saber lo que gasta sin ir a mirar la factura.
     """
+
+    model: str = "?"
+
+    def __init__(self):
+        self.uso = {"llamadas": 0, "entrada": 0, "salida": 0}
+
+    def _registrar_uso(self, entrada: int, salida: int):
+        self.uso["llamadas"] += 1
+        self.uso["entrada"] += entrada or 0
+        self.uso["salida"] += salida or 0
+
+    def coste_estimado_usd(self) -> float | None:
+        precios = PRECIOS_USD_POR_MILLON.get(self.model)
+        if precios is None:
+            return None
+        return self.uso["entrada"] / 1e6 * precios[0] + self.uso["salida"] / 1e6 * precios[1]
+
+    def resumen_uso(self) -> str:
+        u = self.uso
+        fmt = lambda n: f"{n:,}".replace(",", ".")
+        texto = (f"{u['llamadas']} llamadas · {fmt(u['entrada'] + u['salida'])} tokens "
+                 f"({fmt(u['entrada'])} entrada / {fmt(u['salida'])} salida)")
+        coste = self.coste_estimado_usd()
+        return texto + (f" · ≈ {coste:.3f} $" if coste is not None else " · (modelo sin precio tabulado)")
 
     @abstractmethod
     def rellenar_schema(self, system: str, texto: str,
@@ -46,20 +85,23 @@ class AnthropicProvider(LLMProvider):
     """Implementación con la API de Anthropic (la que usas ahora)."""
 
     def __init__(self, model: str | None = None):
+        super().__init__()
         import anthropic  # import local: si no usas este proveedor, no hace falta tenerlo
         self.client = anthropic.Anthropic()
         # Sonnet por defecto. Para abaratar clasificación masiva, cambia a
-        # "claude-haiku-4-5-20251001" con LLM_MODEL, sin tocar código, claude-sonnet-4-6.
-        self.model = model or "claude-haiku-4-5-20251001"
+        # "claude-haiku-4-5-20251001" con LLM_MODEL, sin tocar código.
+        self.model = model or "claude-sonnet-4-6"
 
     def rellenar_schema(self, system, texto, tool_name, descripcion, schema):
         tool = {"name": tool_name, "description": descripcion, "input_schema": schema}
         response = self.client.messages.create(
             model=self.model, max_tokens=600, system=system,
+            temperature=0,  # clasificación: queremos la opción más probable, no muestreo
             tools=[tool],
             tool_choice={"type": "tool", "name": tool_name},
             messages=[{"role": "user", "content": texto}],
         )
+        self._registrar_uso(response.usage.input_tokens, response.usage.output_tokens)
         tool_use = next(b for b in response.content if b.type == "tool_use")
         return tool_use.input
 
@@ -81,6 +123,7 @@ class DeepSeekProvider(LLMProvider):
     BASE_URL = "https://api.deepseek.com"
 
     def __init__(self, model: str | None = None):
+        super().__init__()
         from openai import OpenAI  # import local: solo hace falta si usas este proveedor
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
@@ -104,8 +147,11 @@ class DeepSeekProvider(LLMProvider):
             # Forzamos esta tool (equivalente al tool_choice de Anthropic).
             tool_choice={"type": "function", "function": {"name": tool_name}},
             max_tokens=600,
+            temperature=0,  # idem: minimizar variación entre ejecuciones
         )
         message = response.choices[0].message
+        if response.usage:
+            self._registrar_uso(response.usage.prompt_tokens, response.usage.completion_tokens)
 
         if message.tool_calls:
             # Los argumentos vienen como string JSON, no como dict: hay que parsear.
@@ -130,6 +176,7 @@ class OllamaProvider(LLMProvider):
     """
 
     def __init__(self, model: str | None = None):
+        super().__init__()
         self.model = model or "llama3"
 
     def rellenar_schema(self, system, texto, tool_name, descripcion, schema):
