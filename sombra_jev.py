@@ -116,7 +116,8 @@ def main():
     # ── Desacuerdos: lo que TÚ tienes que mirar ──────────────────────────
     _, rec = politica.recomendar(politica.barrer(medidos, politica.REGLA))
     u = umbral_revision or rec or politica.UMBRAL_RUIDO
-    perdidos = [m for m in importantes if politica.descartar(m["noul"], m["categoria"], u)]
+    perdidos = [m for m in importantes if politica.descartar(m["noul"], m["categoria"], u,
+                                                            remitente=m.get("remitente"))]
     print("\n" + "=" * 77)
     print(f"DESACUERDOS a umbral {u} ({politica.REGLA}): Jev descartaría, el LLM dijo IMPORTANTE")
     print("=" * 77)

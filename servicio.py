@@ -52,7 +52,7 @@ def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
     pre = None
     if politica.USAR_PREFILTRO:
         pre = jev.evaluar(e["remitente"], e["asunto"], cuerpo)
-        if pre and politica.descartar(pre["noul"], pre["categoria"]):
+        if pre and politica.descartar(pre["noul"], pre["categoria"], remitente=e["remitente"]):
             pre["decidido_por"] = "jev"
             return Clasificacion(
                 importante=False, categoria="ruido", prioridad="baja",

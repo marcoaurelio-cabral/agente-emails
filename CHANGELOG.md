@@ -72,3 +72,16 @@ Todo el trabajo hasta la fecha, sin releases intermedios etiquetados.
 - Ampliar el dataset real etiquetado y recalibrar el prefiltro con él.
 - Evaluar clasificador propio (ML) sobre remitentes recurrentes como capa
   adicional de ahorro, si el volumen real lo justifica.
+  
+## [Unreleased]
+
+### Añadido
+- Remitentes protegidos (`remitentes_protegidos.txt`): direcciones que siempre
+  pasan al LLM; tercera defensa del prefiltro, añadida tras encontrar fallos
+  reales de Jev en la prueba en sombra.
+- `corregir.py`: corrige etiquetas en la BD y en el dataset real a la vez.
+
+### Cambiado
+- Criterio: eventos en cualquier país, viajes (itinerarios, seguros, gestión
+  de reservas), confirmaciones de inscripción; excepción de tareas de DIS.
+- Criterio de Jev sincronizado con el del cerebro; nueva categoría protegida `viaje`.
