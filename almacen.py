@@ -245,6 +245,47 @@ def guardar_prefiltro(gmail_id: str, pre: dict) -> None:
                      (pre["noul"], pre["categoria"], pre.get("modelo"), gmail_id))
 
 
+def metadatos(ids: list[str]) -> dict[str, dict]:
+    """fecha_epoch y resumen del LLM de cada id (para reparar datasets)."""
+    res = {}
+    with _conectar() as conn:
+        for i in range(0, len(ids), 500):
+            bloque = ids[i:i + 500]
+            for f in conn.execute(
+                f"SELECT gmail_id, fecha_epoch, resumen FROM emails WHERE gmail_id IN ({','.join('?' * len(bloque))})",
+                bloque,
+            ):
+                res[f["gmail_id"]] = dict(f)
+    return res
+
+
+def candidatos_etiquetado() -> list[dict]:
+    """Emails para que Marco los etiquete, ORDENADOS por lo que más enseñan:
+       1. desacuerdos Jev/LLM (uno dice importante y el otro no)
+       2. los que el LLM marcó importantes
+       3. los que Jev dudaba (0.2 <= p < 0.8)
+       4. el resto (ruido evidente, rápido de etiquetar)
+    Así, si paras a mitad, lo que llevas hecho es lo más útil."""
+    with _conectar() as conn:
+        filas = conn.execute(
+            """SELECT gmail_id, asunto, remitente, fecha_epoch, importante, correccion_importante,
+                      jev_noul, jev_categoria
+               FROM emails ORDER BY fecha_epoch DESC"""
+        ).fetchall()
+
+    def prioridad(f) -> int:
+        llm, p = bool(f["importante"]), f["jev_noul"]
+        if p is not None and llm != (p >= 0.5):
+            return 0
+        if llm:
+            return 1
+        if p is not None and 0.2 <= p < 0.8:
+            return 2
+        return 3
+
+    return sorted((dict(f) for f in filas), key=prioridad)
+
+
 def emails_para_sombra() -> list[dict]:
     """Emails decididos por el LLM (los únicos con una etiqueta de referencia),
     con la etiqueta efectiva: tu corrección si la hay, si no la del LLM."""

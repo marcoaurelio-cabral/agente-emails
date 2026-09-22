@@ -1,0 +1,2724 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260921_1741",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "118/135",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08a3dd6cb71d6d",
+      "1a0a98dc616b7451",
+      "1a0a8e766975f223",
+      "1a0a42ae1fdd0615",
+      "1a0a3e4404a4f873",
+      "1a0a1ba11cb270e2",
+      "1a0a1ab1b230b521",
+      "1a0a185b14a75fc0",
+      "1a0a184e89123f08"
+    ],
+    "falsos_positivos": [
+      "1a0a5dfc4e8efd47",
+      "1a0ab5f48b3583ca",
+      "1a0a9de806ff74b3",
+      "1a0a556174f98805",
+      "1a0a55223ffa1fa2",
+      "1a0955f57d7e7417",
+      "1a08cdbba1fe4ae5"
+    ],
+    "tarea": "23/31",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 138,
+      "entrada": 653520,
+      "salida": 32817
+    },
+    "coste_usd": 0.8176049999999999
+  },
+  "resultados": [
+    {
+      "id": "1a0aa079d59e70da",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una comunicación de la UFV (Canvas) sobre normas de clase que Marco debe conocer para asistir correctamente a sus clases.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a5dfc4e8efd47",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación de la UFV sobre comentarios del profesor en entregas de prácticas. Es comunicación universitaria importante que Marco debe revisar para ver el feedback de sus trabajos."
+    },
+    {
+      "id": "1a08db79db452f0f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "empleo_afin",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "KPMG ofrece varios Tech Programs en Madrid (ciberseguridad, prácticas de consultoría, cyber) que encajan bien con el perfil de Marco. Aunque es un envío masivo, contiene oportunidades reales de prácticas y programas junior en informática/tecnología en Madrid con fechas próximas (octubre 2026).",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido al padre de Marco (David Cabral) solicitando un certificado de viaje para su hijo. No es una comunicación dirigida a Marco ni requiere acción de su parte. Es un asunto administrativo/familiar que debe gestionar su padre con la aseguradora.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a3dd6cb71d6d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a Victor José Allende (mediador de seguros MAPFRE), no a Marco. Es una cadena de correos sobre gestión de certificados de seguros para viajes del padre de Marco. Marco no es el destinatario ni tiene acción que realizar.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0877301b595538",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": true,
+      "accion": "Obtener certificado de póliza de viaje",
+      "fecha_limite": "",
+      "motivo": "Es un correo personal de su padre David Cabral dirigido directamente a Marco, sobre un asunto familiar (gestión de documentación de viaje/seguro para un desplazamiento universitario a Bélgica). Aunque el email es principalmente una cadena de comunicación entre su padre y un mediador de seguros, Marco participa activamente (\"NECESITO QUE ME HAGAS OTRO DE ESTOS!!!\"), indicando que es un asunto que le concierne directamente.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0ab5f48b3583ca",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Comunicación del profesor sobre la práctica P2 de DIS con repositorio creado. Es información relevante de la asignatura sin plazo inmediato de acción."
+    },
+    {
+      "id": "1a0ab5e26d1291c2",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Aceptar invitación GitHub P02 DIS",
+      "fecha_limite": "2026-09-23",
+      "motivo": "Es una invitación directa de un compañero (fraxito) para colaborar en un repositorio de la práctica P02 de DIS. Marco debe aceptar o rechazar antes de que expire en 7 días.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0aad0cdaeb4982",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Presentar proyecto a Premios Majadahonda",
+      "fecha_limite": "2026-09-21",
+      "motivo": "Email de la UFV con múltiples oportunidades de emprendimiento alineadas con el perfil de Marco: premios con plazo de 5 días, eventos presenciales en Madrid y oportunidad internacional. Requiere acción inmediata en el premio de Majadahonda.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0aa5fe2044e28f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un cambio de horario de una clase regular (retraso de 18h). No es un evento puntual ni requiere acción especial: Marco simplemente asistirá a la clase a la nueva hora."
+    },
+    {
+      "id": "1a0aa5c512dd7873",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en Student Led Colloquium",
+      "fecha_limite": "2026-11-01",
+      "motivo": "Evento de emprendimiento internacional (Student Led Colloquium en Polonia en noviembre) con inscripción abierta. Marco tiene mentalidad emprendedora y esto es una oportunidad clara de experiencia nueva. Aunque el evento es en el extranjero, es una movilidad organizada/promovida por la UFV a través del programa ACE²EU, no un evento presencial aislado.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a9de806ff74b3",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en Conversaciones Verdes",
+      "fecha_limite": "2026-09-23",
+      "motivo": "Evento de la UFV con inscripción abierta y fecha próxima (7 días). Ofrece créditos ECTS y es una actividad académica relevante de la universidad."
+    },
+    {
+      "id": "1a0a98729151a2f1",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Comunicación de la UFV sobre cambio de horario de una asignatura en la que Marco está matriculado. Es información relevante que afecta a su calendario académico.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a97ba20101b02",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en Destino EY Campus",
+      "fecha_limite": "2026-10-01",
+      "motivo": "Evento de networking en Madrid con empresa de relevancia (EY), dirigido a estudiantes de informática. Plazo de inscripción cercano (15 días) y plazas limitadas.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a6d0a8450d337",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una comunicación de la universidad (profesor de asignatura matriculada) explicando el sistema de evaluación. Información relevante para Marco, pero sin acción inmediata ni plazo urgente.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a5a47e7a1d4cc",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación de calificación de una práctica de la asignatura. Es información relevante de la universidad, aunque no requiere acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a572c21649a0e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación de calificación de una práctica de la asignatura DESARROLLO E INTEGRACIÓN DE SOFTWARE. Es comunicación de la UFV sobre notas, importante para Marco, pero sin acción requerida.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a55a5bcce809e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación de la UFV sobre cambio de calificación en una práctica. Es información académica relevante que Marco debe conocer, aunque no requiere acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a556174f98805",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Revisar y corregir P1 de DIS",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de la evaluación de la práctica P1 de DIS que Marco envió. El test ha fallado, así que necesita revisar y corregir su código antes del plazo de entrega."
+    },
+    {
+      "id": "1a0a55223ffa1fa2",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Comunicación del profesor sobre la práctica P1 de DIS informando que el repositorio está creado. Es información relevante de la universidad, aunque no requiere acción inmediata."
+    },
+    {
+      "id": "1a0a551fd2cab621",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "empleo_afin",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Aceptar invitación GitHub DIS-P01",
+      "fecha_limite": "2026-09-23",
+      "motivo": "Invitación a colaborar en repositorio de práctica de la asignatura DIS (Diseño de Sistemas). Es una tarea académica que requiere aceptar la invitación antes de que expire.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a545e2b82fe7b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación de calificación de una práctica de la asignatura. Es información relevante de la universidad, aunque no requiere acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a09f251c22c93a6",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Leer guía de estudio (pp. 6-23) de Ingeniería del Software II(B)",
+      "fecha_limite": "2026-09-18",
+      "motivo": "Comunicación directa del profesor Alberto para la primera clase con lectura preparatoria obligatoria antes de la sesión.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0955f57d7e7417",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Entregar P2 Git hoy y P1 Git el 18 de Sep",
+      "fecha_limite": "2026-09-18",
+      "motivo": "Comunicación de la UFV con tareas de entrega inmediata: P2 vence hoy (2026-09-16) y P1 vence en 2 días (2026-09-18). Requiere acción urgente."
+    },
+    {
+      "id": "1a091a3dc3ffd219",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en viaje a Italia",
+      "fecha_limite": "2026-10-23",
+      "motivo": "Viaje internacional de la EPS a Italia con plazas limitadas. Incluye visita a universidad de ingeniería (Catholic.tech) relevante para movilidad Erasmus, reconoce 1 ECTS, y requiere inscripción urgente. Plazo no explícito pero \"cuanto antes\" sugiere urgencia.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a08b6593a9a947a",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Comunicación de la universidad (Canvas/profesor) sobre inicio de asignatura. Es información relevante sobre una clase que Marco cursa, aunque no requiere acción inmediata más allá de asistir a la clase de esta tarde.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08b0720451c24f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "beca",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Completar formulario de aceptación y gestión de movilidad",
+      "fecha_limite": "2026-09-11",
+      "motivo": "Marco ha sido seleccionado para una beca de movilidad Erasmus+ a Austria con financiación de 1189.73€. Requiere aceptación explícita y completar formulario con plazo vencido (11 de septiembre), pero el email de corrección llega el 16 de septiembre. Aunque el plazo original ya pasó, es información crítica sobre una oportunidad que Marco ganó.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0ab5b2bc3b4c17",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de LinkedIn: newsletter editorial y aviso de que alguien vio su perfil. Es una notificación rutinaria de red social, no una oportunidad real ni comunicación personal."
+    },
+    {
+      "id": "1a0ab58c91ab230d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Publicidad masiva de una marca de ropa. No tiene relación con los intereses académicos, profesionales o emprendedores de Marco."
+    },
+    {
+      "id": "1a0ab2b79c114007",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Publicidad masiva de una marca de ropa con promoción de descuentos. No es relevante para Marco."
+    },
+    {
+      "id": "1a0ab2b51869e3d4",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad y promoción comercial de una tienda online (descuento en productos). No es relevante para Marco como estudiante de informática con mentalidad emprendedora."
+    },
+    {
+      "id": "1a0ab11dba2bd1c0",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad y promoción de loterías. Aunque menciona dinero (\"premios\"), es una campaña masiva de marketing, no una oportunidad real ni legítima para Marco. Las loterías no son \"dinero gratis\" en el sentido de becas o subvenciones."
+    },
+    {
+      "id": "1a0ab0a03b4edc0c",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una newsletter de marketing de una tienda de equipos de música (Madrid HiFi) con promoción de descuentos en amplificadores Fender. No tiene relación con los intereses académicos, profesionales o emprendedores de Marco."
+    },
+    {
+      "id": "1a0aaf1bd9675d84",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un acuse de recibo automático de un formulario que Marco ya rellenó. No requiere acción: la tarea (hacer el test) ya está completada."
+    },
+    {
+      "id": "1a0aa676ce98b65b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing/promoción masiva de un gimnasio. No es relevante para Marco."
+    },
+    {
+      "id": "1a0aa171b08f229d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Oferta masiva de empleo en azafatería, no relacionada con informática ni programación. Marco es estudiante de Ingeniería Informática con mentalidad emprendedora; esta oferta no encaja con su perfil."
+    },
+    {
+      "id": "1a0a9e7289ae953b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad y promoción de lotería/juegos de azar. Aunque menciona un premio (Pack Apple), es una campaña masiva de marketing, no una oportunidad real para Marco."
+    },
+    {
+      "id": "1a0a9df4ab0bfed9",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial, ventas, azafata y captador de socios. Ninguna es de informática, programación o desarrollo de software. No encaja con el perfil de Marco."
+    },
+    {
+      "id": "1a0a997f9fa1c209",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing/newsletter de Calendly con consejos sobre cómo compartir enlaces de calendario. Es publicidad y contenido promocional, no dirigido personalmente a Marco ni relevante para sus objetivos académicos o profesionales."
+    },
+    {
+      "id": "1a0a98dc616b7451",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de un servicio (Read AI) recordando acceso a un informe. No es comunicación personal, académica, de oportunidad o de dinero legítimo. Es una notificación rutinaria de marketing/servicio.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a97b702f8ec8d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de un servicio de juego online. Aunque menciona una acción (aceptar condiciones), es una comunicación de mantenimiento de cuenta que Marco probablemente no usa activamente. No es una oportunidad académica, laboral o de emprendimiento relevante para él."
+    },
+    {
+      "id": "1a0a9494fbfd71fa",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una campaña de marketing masiva de descuentos en cursos de idiomas. Aunque menciona un plazo (01/10/2026), es publicidad comercial, no una oportunidad específica para Marco ni una comunicación personal."
+    },
+    {
+      "id": "1a0a9154592b70ab",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción comercial masiva de LinkedIn. Aunque menciona empleo, es publicidad de un servicio de suscripción, no una oportunidad real ni una oferta de empleo genuina."
+    },
+    {
+      "id": "1a0a8e766975f223",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad de una academia de oposiciones. Aunque Marco pidió información, es un email de marketing masivo de seguimiento. Las oposiciones de TAI (Técnico Auxiliar de Informática) no encajan con su perfil: es estudiante de 3º de Ingeniería Informática con mentalidad emprendedora buscando experiencias en desarrollo y tecnología, no una plaza fija de funcionario en administración. La \"sesión gratuita\" es un gancho comercial típico de academias.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a8b23632e4492",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter masiva de eventos y promociones locales de Las Rozas/Majadahonda. Contiene publicidad, descuentos, actividades de ocio y noticias municipales sin relevancia para Marco como estudiante de Ingeniería Informática."
+    },
+    {
+      "id": "1a0a65e0d321dd4d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción comercial masiva de una empresa de combustible. Publicidad y marketing, no relevante para Marco."
+    },
+    {
+      "id": "1a0a643781b9c617",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter de marketing con promociones y descuentos. Es publicidad masiva, no relevante para Marco."
+    },
+    {
+      "id": "1a0a62821713a977",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Promoción comercial y publicidad de descuentos. No es relevante para Marco."
+    },
+    {
+      "id": "1a0a5dc51963ba3d",
+      "origen": "real",
+      "frontera": true,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad/marketing de un servicio financiero (Deblock). Aunque menciona \"acceso anticipado a beta\", es un envío masivo promocional sin relación con el perfil académico o profesional de Marco en informática."
+    },
+    {
+      "id": "1a0a502610e7945c",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Ofertas masivas de empleo en sectores no relacionados con informática (azafato/a de eventos, captador/a fundraisers). No encajan con el perfil de Marco como desarrollador/ingeniero informático."
+    },
+    {
+      "id": "1a0a4cb4bd0e4ea6",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial de ventas, que no encaja con el perfil de Marco (desarrollo de software, informática, prácticas junior en programación). Son puestos de ventas, azafatería y comercio, no de informática."
+    },
+    {
+      "id": "1a0a496c115240f3",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Promoción de restaurante, newsletter de marketing. No es relevante para Marco."
+    },
+    {
+      "id": "1a0a483d33f74856",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una campaña de marketing masiva de una plataforma de compras (Sugargoo). Aunque menciona \"recompensas\" y \"dinero\", son cupones de descuento dentro de su plataforma, no dinero real ni una oportunidad legítima. Típico de publicidad/promoción que no le afecta."
+    },
+    {
+      "id": "1a0a4718916902ea",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing automático de Calendly promoviendo su servicio de programación de citas. No es una comunicación personal, no requiere acción de Marco, y es publicidad/promoción típica."
+    },
+    {
+      "id": "1a0a4593216741d3",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una newsletter de marketing de una farmacia online con promociones y descuentos. No tiene relación con los intereses académicos, profesionales o de emprendimiento de Marco."
+    },
+    {
+      "id": "1a0a455960f4a70d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de una red social. Marco no necesita actuar sobre esto."
+    },
+    {
+      "id": "1a0a42ae1fdd0615",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de compra de seguro de cancelación de entrada. Es un acuse de recibo de una transacción que Marco ya realizó, no requiere acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a3fe8b1dec7ac",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una respuesta a la candidatura de Marco a un hackathon de programación en Madrid. Aunque no fue seleccionado, es importante que sepa el resultado y que le ofrecen prioridad en futuros eventos.",
+      "tarea_esperada": true,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a3e4404a4f873",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing masivo de FlixBus promocionando viajes en autobús. No es una oportunidad real para Marco, sino publicidad comercial dirigida a clientes existentes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a3732be0c7327",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/publicidad masiva de Uber Eats sobre un evento de tartas de queso. No es relevante para Marco: no es una beca, evento de informática/emprendimiento, comunicación personal, ni oportunidad económica legítima."
+    },
+    {
+      "id": "1a0a2285c2b086ee",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de una reserva de vuelos que Marco ya realizó. Es un acuse de recibo de una transacción propia, no una oportunidad ni una tarea pendiente."
+    },
+    {
+      "id": "1a0a1d60762ab0bb",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter de marketing de CodePen con contenido general sobre proyectos de la comunidad, actualizaciones de plataforma y noticias de desarrollo web. No es un correo personal dirigido a Marco ni requiere acción alguna."
+    },
+    {
+      "id": "1a0a1ba11cb270e2",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter masiva de eventos y ofertas de empleo en San Francisco y Nueva York. Aunque contiene hackathons y eventos de IA (temas de interés), todos son presenciales en EE.UU. (SF, NYC), fuera del alcance geográfico de Marco (Madrid, España, u online). No puede asistir a eventos presenciales en otro país sin movilidad organizada por la UFV. Las ofertas de empleo tampoco son para su perfil actual (junior/estudiante).",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a1b1386b89bfe",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de compra propia de entradas para un evento personal (museos en Venecia). Es un acuse de recibo de una transacción que Marco ya realizó."
+    },
+    {
+      "id": "1a0a1ab1b230b521",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de marketing de Booking.com sobre una reserva de vuelo que Marco ya hizo. Aunque menciona la confirmación del vuelo, es esencialmente publicidad para promover alojamientos y el programa Genius. Las confirmaciones de reservas propias son ruido según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a19b629c351d2",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de reserva de transporte que Marco ya realizó. Es un acuse de recibo de una compra propia, no requiere acción."
+    },
+    {
+      "id": "1a0a19b5de2cbd6b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de una reserva de autobús que Marco ya realizó. Es un acuse de recibo de una acción que él mismo completó, no requiere acción adicional."
+    },
+    {
+      "id": "1a0a186fa54bac14",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de seguridad de Google sobre compartición de datos con Ryanair. Marco ya realizó la acción (iniciar sesión) y el email explícitamente dice \"No tienes que hacer nada por ahora\". Es un acuse de recibo automático, no una tarea."
+    },
+    {
+      "id": "1a0a185b14a75fc0",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de una reserva de vuelo que Marco ya realizó. Es un acuse de recibo de una acción que él mismo completó, no requiere acción adicional.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184e89123f08",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de confirmación de reserva propia. Marco ya realizó la acción (reservar), este es solo un acuse de recibo.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación automática de reserva de vuelo de Ryanair. Es un acuse de recibo de una compra/reserva que Marco ya realizó, no requiere acción adicional."
+    },
+    {
+      "id": "1a0a14be28b071ae",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/descuento de marketing de Uber Eats, claramente publicidad comercial masiva. No es relevante para Marco."
+    },
+    {
+      "id": "1a0a118a69748d84",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de LinkedIn: comentarios en publicaciones, búsquedas de perfil, visualizaciones de perfil y newsletters. Son actualizaciones de red social sin acción requerida."
+    },
+    {
+      "id": "1a0a0af92a424124",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "El email va dirigido explícitamente a alumnos de Ingeniería Física (1º y 2º curso). Marco es estudiante de 3º de Ingeniería Informática, por lo que no le afecta. Es ruido según las instrucciones."
+    },
+    {
+      "id": "1a0a095bad11e907",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una campaña de marketing masiva de una app de fitness ofreciendo descuentos. No tiene relación con las oportunidades académicas, profesionales o de emprendimiento de Marco."
+    },
+    {
+      "id": "1a0a07f2df78db12",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter de marketing de una tienda de equipos de audio. Es publicidad comercial sobre productos de audio profesional, no relacionada con oportunidades académicas, becas, eventos de informática o emprendimiento."
+    },
+    {
+      "id": "1a0a050379a9bd25",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/newsletter de marketing de Uber Eats con descuentos en comida. Publicidad masiva, no relevante para Marco."
+    },
+    {
+      "id": "1a0a034e03dd18ae",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de seguridad rutinaria de Google. Marco indica que fue él quien inició sesión, por lo que no requiere acción."
+    },
+    {
+      "id": "1a0a0327b9d6be95",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de bienvenida a un servicio (Google AI Plus). Es un acuse de recibo de una acción que Marco ya realizó (suscribirse). No requiere acción."
+    },
+    {
+      "id": "1a0a0326dc25c4eb",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un acuse de recibo automático de una compra/suscripción que Marco mismo realizó en Google Play. Notificación rutinaria de confirmación de transacción propia."
+    },
+    {
+      "id": "1a0a02f17d88c6eb",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de bienvenida a un servicio de pagos que Marco mismo activó. Es un acuse de recibo de una acción que él ya realizó, no requiere respuesta ni acción."
+    },
+    {
+      "id": "1a0a02e9b7d2388e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de confirmación de verificación de identidad para un servicio que Marco ya solicitó. No requiere acción adicional: solo es un acuse de recibo de un proceso que él mismo inició."
+    },
+    {
+      "id": "1a09ff7c394d3c7b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Promoción comercial y cupón de descuento de una tienda de electrónica. Es publicidad masiva, no relevante para Marco."
+    },
+    {
+      "id": "1a09fbe35ad0b62f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad masiva de un banco sobre comisiones de compra/venta de acciones. No es una oportunidad real para Marco ni requiere acción."
+    },
+    {
+      "id": "1a09fb694ffdc73d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Ofertas masivas de empleo en sectores no relacionados con informática (azafato/a de eventos, promociones). No encajan con el perfil de Marco (desarrollo de software, informática, prácticas junior en programación)."
+    },
+    {
+      "id": "1a09f815d22b5bd3",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial de ventas, no de informática/programación. No encaja con el perfil de Marco (desarrollo de software, informática, prácticas junior en programación)."
+    },
+    {
+      "id": "1a09f4b131880e59",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de bienvenida a un servicio (Calendly). Es un acuse de recibo de un registro que Marco mismo hizo, no una oportunidad real ni comunicación personal."
+    },
+    {
+      "id": "1a09f4126ef8be1f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de seguridad de Google sobre acceso de Calendly. Es una alerta rutinaria de un servicio que Marco ya usa; no es una acción urgente ni una oportunidad."
+    },
+    {
+      "id": "1a09f40e98a1cabc",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de seguridad de Google sobre compartir datos con Calendly. Marco ya realizó la acción (iniciar sesión con Google en Calendly el 14 de septiembre). El email solo informa de lo que ya pasó y no requiere ninguna acción inmediata."
+    },
+    {
+      "id": "1a09f3c2eed621d7",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción comercial masiva de Uber Eats ofreciendo descuentos. Entra claramente en la categoría de publicidad y marketing, no es relevante para Marco."
+    },
+    {
+      "id": "1a09ecdd35149cdf",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing masivo de una empresa de cursos de idiomas en el extranjero. No es una oportunidad dirigida específicamente a Marco, sino publicidad general con promociones y catálogos."
+    },
+    {
+      "id": "1a09bbbde55136e8",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing masivo de una farmacia online con promociones y descuentos. No es relevante para Marco: no es una oportunidad académica, laboral, de emprendimiento ni una comunicación personal."
+    },
+    {
+      "id": "1a09b82a0a916820",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una estafa de phishing disfrazada de verificación legítima. Aunque menciona \"dinero\" (premios), usa tácticas de urgencia artificial, solicita confirmación de datos personales a través de enlaces sospechosos, y el remitente (JuegosONCE) no es una entidad que Marco haya contactado. Típico de phishing: crear miedo (\"no podrás transferir premios\") para que haga clic en enlaces maliciosos."
+    },
+    {
+      "id": "1a09aeb62325b7a6",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de LinkedIn sobre búsquedas de perfil. Es una notificación de red social sin acción requerida."
+    },
+    {
+      "id": "1a09aac2a744858e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de un servicio financiero. Es un acuse de recibo de información que Marco ya tiene acceso (su propia cuenta bancaria)."
+    },
+    {
+      "id": "1a09a7d84478c9dc",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de red social (TikTok). Es una alerta rutinaria de que alguien le ha enviado un mensaje privado, no una comunicación personal directa ni una oportunidad relevante."
+    },
+    {
+      "id": "1a09a3f433e84b2d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing masivo de Ryanair promocionando vuelos baratos. No es una oportunidad específica para Marco, sino publicidad comercial estándar."
+    },
+    {
+      "id": "1a09a02cba80d21d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Ofertas masivas de empleo en comercial y dependiente, no relacionadas con informática ni programación. Marco es estudiante de Ingeniería Informática con mentalidad emprendedora; estas posiciones no encajan con su perfil técnico."
+    },
+    {
+      "id": "1a09992dc9251b59",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing/publicidad de una tienda de gafas de sol. Promoción de productos y membresía, sin relevancia para Marco."
+    },
+    {
+      "id": "1a09677a1b5fe1ac",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de marketing de Revolut promocionando una tarjeta de crédito. Entra en la categoría de publicidad y promociones comerciales, no es relevante para Marco."
+    },
+    {
+      "id": "1a0955115fdecd9e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Oferta masiva de empleo en azafato/a de eventos, no relacionada con informática ni programación. Marco es estudiante de Ingeniería Informática con mentalidad emprendedora; esta oferta no encaja con su perfil técnico."
+    },
+    {
+      "id": "1a095496022e84be",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing masivo de eBay promocionando ofertas. Entra claramente en la categoría de publicidad y newsletters de marketing, que son ruido para Marco."
+    },
+    {
+      "id": "1a0951e15ad26b5a",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial de ventas, teleoperador y puestos de venta. No encajan con el perfil de Marco (Ingeniería Informática, mentalidad emprendedora). Ninguna es de desarrollo de software, programación o informática."
+    },
+    {
+      "id": "1a094df77bbbac62",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad de lotería (JuegosONCE), no dinero gratis legítimo. Aunque menciona premios, es una promoción comercial para que compre cupones, no una oportunidad real de ingresos."
+    },
+    {
+      "id": "1a094a9b21f91729",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de marketing de Canva promocionando nuevas funcionalidades y diseños. No requiere acción de Marco ni es una oportunidad relevante para él."
+    },
+    {
+      "id": "1a094a834f589053",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de OpenAI sobre nuevas funcionalidades de ChatGPT. Es publicidad/actualización de un servicio que Marco usa, no una oportunidad, beca, evento, o comunicación personal relevante."
+    },
+    {
+      "id": "1a0921e84461ccfe",
+      "origen": "real",
+      "frontera": true,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de cambios en condiciones de una plataforma de criptomonedas. No es relevante para Marco: no es una oportunidad académica, laboral, de beca o evento. Es comunicación comercial de un servicio que Marco aparentemente usa, pero no requiere acción inmediata (dice \"no es necesario que hagas nada\")."
+    },
+    {
+      "id": "1a090f8f351679f0",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de actualización de términos de servicio de una red social. No requiere acción inmediata de Marco y es una comunicación masiva rutinaria."
+    },
+    {
+      "id": "1a090ea1cd5d5213",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción comercial masiva de una gasolinera (Moeve) con un concurso de premios de LALIGA. Publicidad y marketing, no relevante para Marco."
+    },
+    {
+      "id": "1a09037fc20828cf",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial de ventas, seguros y HORECA. No encajan con el perfil de Marco (Ingeniería Informática, mentalidad emprendedora). Ninguna es de desarrollo de software, programación o informática."
+    },
+    {
+      "id": "1a0901ac114d342d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de red social (TikTok). Es una alerta rutinaria de que alguien le envió un mensaje privado, no una comunicación personal directa ni una oportunidad relevante."
+    },
+    {
+      "id": "1a08fed5ce849c60",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad y promoción comercial masiva de Coca-Cola, no dirigida personalmente a Marco. Aunque menciona \"puntos\" y \"premios\", es un envío de marketing típico, no una oportunidad real ni dinero legítimo."
+    },
+    {
+      "id": "1a08fd35620b233f",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/newsletter de marketing de Uber Eats sobre descuentos en comercios. Publicidad masiva sin relevancia para Marco."
+    },
+    {
+      "id": "1a08fbe2e16b674c",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad de lotería, no una oportunidad legítima. Aunque menciona dinero (\"40.000.000 €\"), es una promoción comercial masiva de juego de azar, no una beca, premio o ayuda real identificable."
+    },
+    {
+      "id": "1a08e050e81ca152",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una newsletter de marketing de Ollama sobre actualizaciones de software. Marco se suscribió voluntariamente, pero es una notificación automática rutinaria de un servicio, no una oportunidad relevante para su perfil académico o profesional."
+    },
+    {
+      "id": "1a08d97284ee993c",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de Google sobre configuración de privacidad que Marco ya tiene activa. No requiere acción inmediata ni es una oportunidad relevante."
+    },
+    {
+      "id": "1a08d491d304be82",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad masiva de una tienda de ropa/accesorios (Cactus Jack x Nike). No tiene relación con informática, emprendimiento, becas, eventos académicos ni oportunidades relevantes para Marco."
+    },
+    {
+      "id": "1a08cdbba1fe4ae5",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Acuse de recibo de la candidatura a movilidad Erasmus+ que Marco ya envió. Confirma que la UFV ha recibido su solicitud para ir a Austria (CUAS) del 5 al 9 de octubre. No requiere acción inmediata, pero es importante para su expediente de movilidad."
+    },
+    {
+      "id": "1a08c8a11c64992a",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de cambio de tipo de interés en cuenta bancaria propia. Es información sobre un servicio que Marco ya usa, no requiere acción ni es una oportunidad relevante para sus objetivos académicos o emprendedores."
+    },
+    {
+      "id": "1a08c7501a5983a6",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de LinkedIn sobre actividad en la red social (comentarios, búsquedas, visualizaciones de perfil). No requiere acción de Marco."
+    },
+    {
+      "id": "1a08bf5a1f54ddbe",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Recoger certificado de seguro en MAPFRE",
+      "fecha_limite": "2026-09-17",
+      "motivo": "Es un correo personal de su padre David Cabral dirigido a él (Marco Aurelio Cabral de Pablo) sobre un certificado de seguro urgente necesario para mantener su beca universitaria. Requiere acción inmediata con plazo de mañana.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a08b4a84802e338",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Ofertas masivas de empleo en sectores no relacionados con informática (azafato de eventos/estancos). No encajan con el perfil de Marco como desarrollador/ingeniero informático."
+    },
+    {
+      "id": "1a08b2ad1630290d",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email de marketing masivo de Ryanair promocionando destinos de viaje. Es publicidad comercial, no una oportunidad real para Marco ni información relevante para sus estudios o carrera."
+    },
+    {
+      "id": "1a08b12bda952451",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Alerta masiva de InfoJobs con ofertas de comercial, ventas, azafata y otros puestos que no encajan con el perfil de Marco (Ingeniería Informática). No son posiciones de desarrollo de software, programación o informática."
+    },
+    {
+      "id": "1a08b0a6c5159e71",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática rutinaria de LinkedIn sobre búsquedas de perfil. Es una notificación de red social sin acción requerida."
+    },
+    {
+      "id": "1a08ad0ffd61e9d0",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/publicidad de un restaurante sobre un evento social. No es una oportunidad académica, profesional o de emprendimiento relevante para Marco."
+    },
+    {
+      "id": "1a08ac832639636e",
+      "origen": "real",
+      "frontera": true,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email masivo de marketing de Santander X promocionando un programa de formación en IA. Aunque menciona una fecha límite (23 de septiembre), es una oferta genérica dirigida a empresarios/emprendedores, no a estudiantes de informática. No es una beca, no es un evento específico de la UFV, y no es una oportunidad dirigida personalmente a Marco. Es publicidad/newsletter."
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "real",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Obtener certificado de viaje para Austria",
+      "fecha_limite": "2026-09-17",
+      "motivo": "Es un correo personal de su padre David Cabral dirigido a él (Marco Aurelio Cabral de Pablo) sobre un certificado urgente necesario para mantener su beca universitaria. Tiene plazo de mañana (2026-09-17) y afecta directamente a su expediente académico.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a08aac083dac5fe",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad y promoción comercial de loterías. Aunque menciona dinero (\"40.000.000 €\"), no es una oportunidad legítima para Marco, sino un envío masivo de marketing de un servicio de juegos de azar."
+    },
+    {
+      "id": "1a08aaa96c0df5c8",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una newsletter de marketing/publicidad de una tienda de audio. No es relevante para Marco: no es una oportunidad académica, laboral, de emprendimiento ni una comunicación personal."
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de una herramienta de terceros (Read AI) sobre un reporte de reunión. No es comunicación de la universidad, ni de un profesor, ni una oportunidad real. Es un acuse de recibo/recordatorio de una plataforma externa."
+    },
+    {
+      "id": "1a08a96855485cf0",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Newsletter de marketing de una farmacia con promociones y descuentos. Es publicidad masiva, no dirigida personalmente a Marco ni relacionada con sus intereses académicos o profesionales."
+    },
+    {
+      "id": "1a08a8f7af68a48b",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing/publicidad de Revolut sobre sus servicios de transferencias internacionales. No es una comunicación personal, ni una oportunidad relevante para Marco."
+    },
+    {
+      "id": "1a08a87ab1cb6682",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Notificación automática de un trámite personal (autorización sanitaria de seguro). Es un acuse de recibo de algo que Marco ya solicitó, no una oportunidad académica, laboral o de emprendimiento."
+    },
+    {
+      "id": "1a08a23f25044cd6",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un email de marketing/publicidad de Sunglass Hut sobre un lanzamiento de producto (Ray-Ban Meta). No tiene relevancia para Marco como estudiante de informática con mentalidad emprendedora."
+    },
+    {
+      "id": "1a089fe692d6ab07",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/publicidad masiva de Uber Eats. Marco no necesita ver ofertas de descuentos en comida."
+    },
+    {
+      "id": "1a0876ab0dbac6bc",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una promoción/publicidad masiva de Uber Eats sobre un evento de comida. No es una oportunidad académica, profesional o de emprendimiento relevante para Marco."
+    },
+    {
+      "id": "1a0875e6d600defb",
+      "origen": "real",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es publicidad/promoción de un producto financiero de Revolut. No es una oportunidad real para Marco, sino un email de marketing masivo ofreciendo una tarjeta de crédito."
+    }
+  ]
+}

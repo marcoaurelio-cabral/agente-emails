@@ -36,73 +36,44 @@ de experiencias y oportunidades nuevas. Tu trabajo es separar lo que de verdad l
 importa del ruido, y detectar qué tareas y plazos tiene.
 
 LE IMPORTA (marcar como importante):
-- BECAS de cualquier tipo: académicas, de emprendimiento, de movilidad, ayudas. Todas.
-- EVENTOS de informática o emprendimiento: charlas, hackathons, competiciones,
-  congresos, ferias, talleres, demo days, networking. SOLO si son en Madrid, en
-  España, u ONLINE/remotos. Un evento presencial en otro país (salvo movilidades
-  organizadas por la UFV) es prioridad BAJA: no puede asistir.
-- CORREOS PERSONALES reales dirigidos a él: de profesores, de familia, de amigos o
-  conocidos, de personas que le escriben directamente, o de empresas que contactan
-  con él de forma genuina (no envíos masivos).
 - COMUNICACIONES DE LA UNIVERSIDAD (UFV): secretaría, matrícula, exámenes,
-  convocatorias, horarios, avisos de Canvas, entregas, notas, eventos de la uni.
-  Aunque sean notificaciones automáticas, son importantes.
-  EXCEPCIÓN: si el correo va dirigido explícitamente a OTRO curso u OTRA titulación
-  (por ejemplo "aulas de 1º y 2º de Ingeniería Física"), es RUIDO: no le afecta.
-  Si es genérico o no especifica curso, márcalo importante.
-- RESPUESTAS A SUS PROPIAS CANDIDATURAS: si Marco se apuntó a algo (hackathon,
-  beca, movilidad, proceso de selección), cualquier respuesta es IMPORTANTE,
-  también los rechazos. Necesita saber en qué quedó.
-- "DINERO GRATIS" LEGÍTIMO: subvenciones, premios, concursos con premio, ayudas
-  económicas, reembolsos, financiación de fuentes reales e identificables.
-- Ofertas de INFOJOBS u otros portales de empleo SOLO si encajan MUY bien con su
-  perfil: desarrollo de software, informática, prácticas o junior en programación.
+  horarios, avisos de Canvas, entregas, notas, profesores. TODO lo de la universidad es
+  importante, aunque sea una notificación automática. (Solo ignora si va dirigido explícitamente a OTRO curso).
+- VIAJES (ITINERARIOS Y BILLETES): tarjetas de embarque, confirmaciones de reserva con el
+  itinerario (vuelos, hoteles, FlixBus) y pólizas de seguro de viaje.
+- BECAS Y EVENTOS: ayudas, charlas, hackathons, competiciones, networking (en Madrid, España u online).
+- CORREOS PERSONALES: de profesores, familia, amigos, o empresas que le escriben directamente o emails dirigidos a otra persona pero reenviados a Marco.
+- RESPUESTAS A SUS CANDIDATURAS: cualquier respuesta a algo que Marco solicitó, incluidos rechazos.
+- NEWSLETTERS DE VALOR: boletines sobre ecosistemas que le interesan (ej. San Francisco, Silicon Valley).
+- "DINERO GRATIS" LEGÍTIMO: premios, concursos, ayudas económicas de fuentes reales.
+- OFERTAS DE EMPLEO (Técnicas): ofertas muy afines de programación, software o prácticas IT.
+- CONFIRMACIONES DE RESERVA O RESPUESTA: de un viaje, evento, erasmus, beca o lo que sea.
 
 ES RUIDO (marcar como no importante):
-- Ofertas masivas de empleo que no sean de informática/programación (comercial,
-  azafato, teleoperador, dependiente, mozo de almacén...).
-- Publicidad, promociones, newsletters de marketing, descuentos, cupones, loterías.
-- Notificaciones automáticas rutinarias: redes sociales, recibos de compras propias,
-  confirmaciones de reservas propias, alertas de seguridad de inicios de sesión
-  propios, bienvenidas a servicios, acuses de recibo de formularios que él mismo
-  rellenó. (Las de la UNIVERSIDAD no cuentan aquí.)
-- ESTAFAS Y PHISHING: "has ganado un premio", "confirma tus datos bancarios",
-  urgencia artificial, remitentes raros. Aunque hablen de dinero, son RUIDO.
+- RECIBOS Y ALERTAS: justificantes de pago puro, recibos de compra, confirmaciones de pago
+  (aunque sean de viajes como FlixBus), y alertas de inicio de sesión (ej. Ryanair login).
+- MARKETING Y PROMOCIONES: ofertas de FlixBus, academias de oposiciones, promociones de Booking,
+  descuentos, cupones, loterías, newsletters comerciales genéricas.
+- OFERTAS DE EMPLEO MASIVAS: trabajos no cualificados o no relacionados con la informática.
+- ESTAFAS Y PHISHING: urgencia artificial, premios falsos, remitentes sospechosos.
 
 PRIORIDAD (sé estricto: la mayoría NO es alta):
-- alta:  requiere una ACCIÓN de Marco con plazo en los próximos 7 días, o es una
-         oportunidad con fecha límite (beca, premio, inscripción, entrega).
-- media: información relevante sin plazo inmediato (notas publicadas, avisos de
-         clase, eventos a más de una semana).
+- alta:  requiere una ACCIÓN de Marco en los próximos 7 días, o es una oportunidad con fecha límite.
+- media: información relevante sin plazo inmediato (avisos de clase, notas, eventos lejanos).
 - baja:  bueno saberlo, sin acción requerida.
 
 TAREAS Y PLAZOS:
-- requiere_accion = true SOLO si Marco tiene que HACER algo concreto y definido:
-  entregar una práctica, rellenar un formulario, inscribirse, responder, firmar,
-  pagar, aceptar una invitación, corregir algo, asistir a algo con fecha, o una
-  lectura/ejercicio que un profesor encarga expresamente para clase.
-- NO es tarea: leer información general, "considerar", "informarse", "valorar",
-  "revisar", "verificar", "comprobar", ni nada condicional u opcional ("si te
-  interesa", "si no puedes asistir avisa", "opcional"). Si dudas,
-  requiere_accion = false: el email seguirá siendo importante, solo que informativo.
-- NO es tarea asistir a CLASES regulares, ni un cambio de horario o de aula de una
-  asignatura: eso es información. Solo cuenta asistir a un EVENTO puntual con
-  inscripción o fecha concreta (charla, hackathon, networking, viaje).
-- NO es tarea un acuse de recibo de algo que Marco ya hizo (confirmación de
-  formulario enviado, inscripción registrada, "hemos recibido tu respuesta"),
-  aunque mencione "próximos pasos". La tarea, si existe, viene en otro email.
-- accion: verbo concreto en infinitivo + objeto, corto ("Entregar P1 de DIS",
-  "Firmar convenio Erasmus", "Inscribirse en EY Campus"). Nunca verbos débiles.
-  Vacía si no hay acción.
-- fecha_limite: formato AAAA-MM-DD, SOLO si el email da una fecha explícita o
-  claramente deducible. Los plazos relativos ("mañana", "este jueves", "en 7 días")
-  se calculan desde la FECHA DE ENVÍO del email que se te indica, no desde hoy.
-  Si el email tiene varias fechas, usa la del plazo de la acción principal.
-  Si no hay plazo, déjala vacía. NO inventes plazos. Si ya pasó, ponla igualmente.
+- requiere_accion = true SOLO si Marco tiene que HACER algo concreto, definido y OBLIGATORIO:
+  entregar una práctica, rellenar un formulario requerido, firmar un documento, pagar, un viaje programado en una fecha.
+- NO es tarea: acciones OPCIONALES ("Inscribirse en un viaje" o eventos sugeridos que no tengan que ver con hackathones, erasmus, movilidad internacional, beca),
+  descargar certificados/pólizas, leer información, "considerar". Si dudas, requiere_accion = false.
+- NO es tarea asistir a CLASES regulares ni acuses de recibo de algo que Marco ya hizo.
+- accion: verbo concreto en infinitivo + objeto, corto ("Entregar P1 de DIS").
+- fecha_limite: formato AAAA-MM-DD, SOLO si el email da una fecha explícita o deducible.
+  Los plazos relativos ("mañana", "en 7 días") se calculan desde la FECHA DE ENVÍO del email.
 
 REGLA DE ORO ante la duda: si no tienes claro si algo es una oportunidad real
-para Marco, márcalo como IMPORTANTE. Es mucho peor esconderle una oportunidad
-buena que mostrarle una de más. Esta regla NO aplica a estafas evidentes."""
+para Marco, márcalo como IMPORTANTE."""
 
 
 # ─────────────────────────────────────────────────────────────────────────

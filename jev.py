@@ -107,13 +107,14 @@ DESTINATARIO = {
 INSTRUCCIONES_IMPORTANTE = "¿Es este `email` relevante para el `destinatario`, según su perfil?"
 CRITERIOS_IMPORTANTE = {
     "true": (
-        "Cualquier correo escrito personalmente para él por una persona real (familia, "
+        "Cualquier correo escrito personalmente para él O otra persona reenviado a él por una persona real (familia, "
         "amigos, conocidos, profesores), SEA CUAL SEA EL TEMA, aunque sea informal o no "
         "tenga que ver con estudios ni oportunidades; becas y ayudas; eventos de "
         "informática o emprendimiento en España u online; comunicaciones de su "
         "universidad dirigidas a su curso o a todos (Canvas, secretaría, entregas, notas); "
         "premios y oportunidades económicas legítimas; respuestas a candidaturas suyas, "
         "incluidos rechazos; ofertas de empleo de programación afines a su perfil."
+        "Confirmación de eventos como vuelos, bus o tren todos con fecha"
     ),
     "false": (
         "Publicidad, promociones, newsletters comerciales, loterías; ofertas masivas de "

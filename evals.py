@@ -28,9 +28,9 @@ Uso:
     $env:LLM_PROVIDER="deepseek"; python evals.py
 """
 
+import argparse
 import json
 import statistics
-import sys
 from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
@@ -48,11 +48,11 @@ def etiqueta_proveedor() -> str:
     return f"{type(prov).__name__.replace('Provider', '')}:{prov.model}"
 
 
-def evaluar_caso(caso: dict, repeticiones: int) -> dict:
-    fecha_email = date.fromisoformat(caso.get("fecha_email", HOY_FIJO.isoformat()))
+def evaluar_caso(caso: dict, repeticiones: int, hoy: date = HOY_FIJO) -> dict:
+    fecha_email = date.fromisoformat(caso.get("fecha_email", hoy.isoformat()))
     salidas = [
         clasificar(caso["remitente"], caso["asunto"], caso["cuerpo"],
-                   fecha_email=fecha_email, hoy=HOY_FIJO)
+                   fecha_email=fecha_email, hoy=hoy)
         for _ in range(repeticiones)
     ]
     votos = [s.importante for s in salidas]
@@ -61,7 +61,7 @@ def evaluar_caso(caso: dict, repeticiones: int) -> dict:
 
     r = {
         "id": caso["id"],
-        "origen": caso["origen"],
+        "origen": caso.get("origen", "?"),
         "frontera": caso.get("frontera", False),
         "esperado": caso["importante"],
         "obtenido": moda,
@@ -103,15 +103,35 @@ def _linea(r: dict) -> str:
 
 
 def main():
-    repeticiones = int(sys.argv[1]) if len(sys.argv) > 1 else 2
-    casos = json.loads(DATASET.read_text(encoding="utf-8"))
+    parser = argparse.ArgumentParser(description="Evals del cerebro")
+    parser.add_argument("repeticiones", nargs="?", type=int, default=2,
+                        help="ejecuciones por caso (1 = más barato, sin medir consistencia)")
+    parser.add_argument("--dataset", default=str(DATASET), help="ruta al dataset JSON")
+    args = parser.parse_args()
+    repeticiones = args.repeticiones
+    dataset = Path(args.dataset)
+    if not dataset.exists():
+        print(f"No existe {dataset}.")
+        return
+    casos = json.loads(dataset.read_text(encoding="utf-8"))
+    # Un dataset sin fecha_email mediría mal los plazos relativos (se calcularían
+    # desde "hoy" y no desde el envío). Mejor avisar ANTES de gastar nada.
+    sin_fecha = [c["id"] for c in casos if not c.get("fecha_email")]
+    if sin_fecha:
+        print(f"❌ {len(sin_fecha)} caso(s) sin fecha_email (p.ej. {sin_fecha[0]}).")
+        print("   Los plazos se medirían mal. Si es dataset_real.json: python reparar_dataset.py")
+        return
+    # "Hoy" congelado en la fecha del email más reciente del dataset: los plazos
+    # relativos significan siempre lo mismo, corras el eval cuando lo corras.
+    fechas = [c["fecha_email"] for c in casos if c.get("fecha_email")]
+    hoy = date.fromisoformat(max(fechas)) if fechas else HOY_FIJO
     proveedor = etiqueta_proveedor()
-    print(f"Evals del cerebro | {proveedor} | {len(casos)} casos × {repeticiones} rep. | hoy={HOY_FIJO}\n")
+    print(f"Evals del cerebro | {dataset.name} | {proveedor} | {len(casos)} casos × {repeticiones} rep. | hoy={hoy}\n")
 
     resultados = []
     for caso in casos:
         try:
-            r = evaluar_caso(caso, repeticiones)
+            r = evaluar_caso(caso, repeticiones, hoy)
         except Exception as e:
             print(f"💥 {caso['id']}: ERROR {e}")
             continue
@@ -133,6 +153,9 @@ def main():
     print("\n" + "#" * 66)
     print(f"INFORME — {proveedor}")
     print("#" * 66)
+    if not claros:
+        print("  No hay casos claros evaluados (¿todos dieron error?). Nada que medir.")
+        return
     print(f"  Importante (casos claros):  {aciertos}/{len(claros)}  ({aciertos/len(claros):.0%})")
     print(f"    falsos negativos (CAROS): {len(falsos_neg)}")
     for r in falsos_neg:
@@ -168,7 +191,7 @@ def main():
     # ── Guardar para comparar entre proveedores / versiones del criterio ──
     CARPETA_RESULTADOS.mkdir(exist_ok=True)
     marca = datetime.now().strftime("%Y%m%d_%H%M")
-    nombre = f"{marca}_{proveedor.replace(':', '_').replace('/', '_')}.json"
+    nombre = f"{marca}_{dataset.stem}_{proveedor.replace(':', '_').replace('/', '_')}.json"
     salida = {
         "proveedor": proveedor,
         "fecha": marca,
