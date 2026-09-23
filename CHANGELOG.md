@@ -86,3 +86,12 @@ Todo el trabajo hasta la fecha, sin releases intermedios etiquetados.
   de reservas), confirmaciones de inscripción; excepción de tareas de DIS.
 - Criterio de Jev sincronizado con el del cerebro; nueva categoría protegida `viaje`.
 - Criterio ajustado a las etiquetas reales (eventos de tu tema, acuses, DIS, seguros de cancelación, verbos vagos, viajes organizados y movilidades como tarea); eval con lectura adaptativa y --solo-fallos. Importancia del 88% al 96%.
+
+### Añadido
+- Agrupación determinista (agrupar.py): el modelo extrae claves (tipo, entidad, fecha, referencia) en la misma llamada y el código agrupa los emails sobre lo mismo; una línea por grupo y cierre automático de tareas confirmadas.
+- Contactos importantes (contactos_importantes.txt): sus emails son siempre importantes.
+- Cabeceras Para/CC: el modelo sabe cuándo Marco va en copia.
+
+### Cambiado
+- El criterio vive en criterio.md, separado del código.
+- Se elimina la memoria en el prompt (más barato y sin depender del orden de llegada).
