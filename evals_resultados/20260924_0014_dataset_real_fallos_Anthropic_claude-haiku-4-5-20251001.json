@@ -1,0 +1,108 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260924_0014",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "2/4",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08ac6846dbdc0e"
+    ],
+    "falsos_positivos": [],
+    "tarea": "4/4",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 6,
+      "entrada": 32573,
+      "salida": 1849
+    },
+    "coste_usd": 0.041817999999999994
+  },
+  "resultados": [
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a otra persona (David Cabral de Solventia) sobre un certificado para su hijo Marco Aurelio. No es una comunicación dirigida a Marco ni requiere acción de él. Es un email que llegó por error o fue reenviado sin contexto claro de que Marco deba actuar.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email de Ryanair con itinerario de viaje confirmado. Contiene el número de reserva (G8LLTK), destino (Madrid) y es un documento de viaje esencial que Marco necesita para su desplazamiento.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco no es el destinatario del email. Es un reenvío de David Cabral (Solventia) de una comunicación entre profesionales sobre un certificado de seguros. No hay acción requerida de Marco ni información relevante para él.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Informe de reunión de un evento en el que Marco participó (Bienvenida Explorer Online). Los informes de reuniones en las que Marco participó son importantes según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

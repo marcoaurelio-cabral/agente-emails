@@ -55,8 +55,10 @@ def evaluar_caso(caso: dict, repeticiones: int, hoy: date = HOY_FIJO) -> dict:
     # Mismo camino que producción (lectura adaptativa): se mide lo que se ejecuta,
     # y cuesta bastante menos que mandar siempre el email entero.
     e = {"remitente": caso["remitente"], "asunto": caso["asunto"], "cuerpo": caso["cuerpo"],
-         "fecha_epoch": int(time.mktime(fecha_email.timetuple()))}
-    salidas = [servicio.clasificar_llm(e, hoy) for _ in range(repeticiones)]
+         "fecha_epoch": caso.get("fecha_epoch") or int(time.mktime(fecha_email.timetuple()))}
+    e.update(para=caso.get("para", ""), cc=caso.get("cc", ""))
+    salidas = [servicio.clasificar_llm(e, hoy, caso.get("rol", ""))
+               for _ in range(repeticiones)]
     votos = [s.importante for s in salidas]
     moda, n_moda = Counter(votos).most_common(1)[0]
     s0 = salidas[0]

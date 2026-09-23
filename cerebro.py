@@ -1,143 +1,63 @@
 """
-cerebro.py — El clasificador personalizado de emails de Marco — v3
-==================================================================
+cerebro.py — El clasificador (código). El CRITERIO vive en criterio.md.
+======================================================================
 
-Novedades v3: el cerebro ahora extrae TAREAS.
-  - requiere_accion: ¿Marco tiene que HACER algo?
-  - accion:          qué, en una frase corta ("Entregar P1 de DIS")
-  - fecha_limite:    AAAA-MM-DD si el email da un plazo, o "" si no.
+Separación deliberada:
+    criterio.md  -> QUÉ le importa a Marco. Lo editas tú, en texto plano.
+    cerebro.py   -> CÓMO se le pregunta al modelo. Código.
+Así una actualización del código nunca pisa tu criterio, y un cambio de
+criterio nunca obliga a tocar código.
 
-Dos detalles de ingeniería importantes:
-
-  1. El modelo NO SABE QUÉ DÍA ES HOY. Para que "este jueves" o "mañana"
-     se conviertan en una fecha real, le decimos la fecha actual en cada
-     llamada (ver clasificar()). Sin esto, los plazos relativos salen mal.
-
-  2. Pydantic VALIDA el formato de fecha. Si el modelo devuelve "sin fecha",
-     "N/A" o "el jueves", el validador lo convierte en "" en vez de meter
-     basura en la BD. Guardrail de datos, como en el Proyecto 2.
-
-Sigue sin saber nada de Gmail, de la BD ni del modelo que hay debajo.
+Claves de agrupación (las extrae el modelo en la MISMA llamada, casi sin coste):
+  tipo_entidad, entidad, fecha_entidad, referencia -> agrupar.py (código, sin IA)
+  decide qué emails hablan de lo mismo (el mismo viaje, la misma reunión).
+  confirma_hecho -> si el email demuestra que algo ya está hecho; agrupar.py
+  cierra la tarea pendiente de su mismo grupo.
+  rol: solo se le dice al modelo cuando Marco va en copia.
 """
 
 from datetime import date, datetime
+from pathlib import Path
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from llm import get_provider
 
+ARCHIVO_CRITERIO = Path(__file__).parent / "criterio.md"
+if not ARCHIVO_CRITERIO.exists():
+    raise FileNotFoundError(
+        "Falta criterio.md. Si vienes de la versión con el CRITERIO dentro de "
+        "cerebro.py, extráelo primero (mira COMANDOS.txt o la conversación)."
+    )
+CRITERIO = ARCHIVO_CRITERIO.read_text(encoding="utf-8").strip()
 
-# ─────────────────────────────────────────────────────────────────────────
-# EL CRITERIO DE Marco — el corazón del producto.
-# ─────────────────────────────────────────────────────────────────────────
-
-CRITERIO = """Eres el asistente personal de correo de Marco: estudiante de 3º del Grado en
-Ingeniería Informática en la UFV (Madrid), con mentalidad EMPRENDEDORA y muchas ganas
-de experiencias y oportunidades nuevas. Tu trabajo es separar lo que de verdad le
-importa del ruido, y detectar qué tareas y plazos tiene.
-
-LE IMPORTA (marcar como importante):
-- COMUNICACIONES DE LA UNIVERSIDAD (UFV): secretaría, matrícula, exámenes, horarios,
-  avisos de Canvas, entregas, notas, profesores. TODO lo de la universidad que afecte a
-  3º de Ingeniería Informática es importante, aunque sea una notificación automática,
-  SALVO las notificaciones automáticas de DIS (ver ES RUIDO). Ignora lo dirigido
-  explícitamente a OTRO curso u otra titulación.
-- BECAS, AYUDAS Y MOVILIDADES: en cualquier país (Erasmus, movilidades internacionales,
-  becas en el extranjero incluidas).
-- EVENTOS de informática, tecnología o emprendimiento: charlas, hackathons, competiciones,
-  networking y congresos, en CUALQUIER país: a Marco le encanta viajar. Los que incluyen
-  gastos pagados (viaje, alojamiento o beca de viaje) son de los más valiosos para él.
-  Los eventos de otros temas (sostenibilidad, cultura, deporte...) NO le importan.
-- VIAJES (ITINERARIOS Y BILLETES): tarjetas de embarque, confirmaciones de reserva con el
-  itinerario (vuelos, hoteles, FlixBus) y pólizas de seguro de viaje y seguros de cancelación (de viajes o de entradas a eventos). Si el email trae el
-  itinerario o el billete (fechas, horas, origen-destino, localizador), es IMPORTANTE
-  aunque también confirme un pago. Incluye los avisos posteriores a la compra que le
-  piden gestionar la reserva (añadirla a su cuenta de la aerolínea), aunque vengan
-  mezclados con publicidad: por ejemplo, "¡Vuelo reservado! Ahora toca ahorrar en la
-  estancia" de Booking es IMPORTANTE.
-- CORREOS PERSONALES: de profesores, familia, amigos, o empresas que le escriben
-  directamente.
-- - REENVÍOS Y COPIAS: si alguien le reenvía un email (Fwd:), le pone en copia o le
-  incluye en un hilo, es IMPORTANTE aunque el mensaje vaya dirigido a otra persona
-  (por ejemplo, un hilo de su familia sobre un certificado que necesita para un viaje).
-  Salvo que lo reenviado sea publicidad.
-- RESPUESTAS A SUS CANDIDATURAS: cualquier respuesta a algo que Marco solicitó. Los
-  RECHAZOS también: "lamentablemente no has sido seleccionado para el hackathon" es
-  IMPORTANTE, porque Marco necesita saber en qué quedó.
-- CONFIRMACIONES CON NOVEDADES: plaza confirmada, selección, fechas definitivas de un
-  viaje, evento, Erasmus o beca.
-- INFORMES DE REUNIONES en las que Marco participó (por ejemplo, resúmenes de Read AI).
-- NEWSLETTERS DE VALOR: boletines sobre ecosistemas que le interesan (ej. San Francisco,
-  Silicon Valley).
-- "DINERO GRATIS" LEGÍTIMO: premios, concursos, ayudas económicas de fuentes reales.
-- OFERTAS DE EMPLEO (técnicas): ofertas muy afines de programación, software o prácticas IT.
-
-ES RUIDO (marcar como no importante):
-- RECIBOS Y ALERTAS: justificantes de pago o recibos de compra SIN itinerario ni billete
-  (aunque sean de viajes como FlixBus), y alertas de inicio de sesión (ej. Ryanair login).
-- ACUSES DE RECIBO de algo que Marco ya envió ("hemos recibido tu respuesta", "gracias
-  por rellenar el formulario"), aunque sean de una movilidad o una beca.
-- NOTIFICACIONES AUTOMÁTICAS de redes sociales y apps: LinkedIn, TikTok, Instagram
-  ("ha comentado", "te ha enviado un mensaje", cumpleaños, apariciones en búsquedas),
-  bienvenidas y altas de cuenta en servicios, sorteos en los que se ha inscrito.
-- NOTIFICACIONES AUTOMÁTICAS DE DIS ("Desarrollo e Integración de Software"):
-  invitaciones de GitHub a repositorios UFV-INGINF/dis-*, avisos de esos repositorios
-  ("Run failed", evaluaciones automáticas), calificaciones o cambios de nota automáticos
-  de DIS en Canvas, y los avisos de gestión de repositorios del profesor ("repositorio
-  creado", "repositorio disponible"). Marco las sigue por su cuenta. Los demás mensajes
-  escritos por el profesor de DIS y los cambios de fechas o aulas SÍ importan.
-- MARKETING Y PROMOCIONES: ofertas de FlixBus, academias de oposiciones, promociones de
-  Booking, descuentos, cupones, loterías, newsletters comerciales genéricas.
-- OFERTAS DE EMPLEO MASIVAS: trabajos no cualificados o no relacionados con la informática.
-- ESTAFAS Y PHISHING: urgencia artificial, premios falsos, remitentes sospechosos.
-
-PRIORIDAD (sé estricto: la mayoría NO es alta):
-- alta:  requiere una ACCIÓN de Marco en los próximos 7 días, o es una oportunidad con
-         fecha límite.
-- media: información relevante sin plazo inmediato (avisos de clase, notas, eventos lejanos).
-- baja:  bueno saberlo, sin acción requerida.
-
-TAREAS Y PLAZOS:
-- requiere_accion = true SOLO si Marco tiene que HACER algo concreto, definido y
-  OBLIGATORIO: entregar una práctica, rellenar un formulario requerido, firmar un
-  documento, pagar, o un viaje programado en una fecha.
--- SÍ son tarea aunque sean voluntarias: inscribirse o presentar solicitud en hackathons,
-  Erasmus, movilidades internacionales (también oportunidades de movilidad como
-  programas o eventos en otro país de la alianza ACE²EU), becas y viajes organizados
-  por la universidad.
-- NO es tarea: charlas o eventos sugeridos, leer información o newsletters (aunque
-  anuncien eventos), descargar certificados o pólizas, hacer el check-in, y cualquier
-  acción con un verbo vago: gestionar, seguir, revisar, considerar, valorar, estar atento.
-  Si dudas, requiere_accion = false.
-- NO es tarea asistir a CLASES regulares ni los acuses de recibo de algo que Marco ya hizo.
-- accion: verbo concreto en infinitivo + objeto, corto ("Entregar P1 de DIS").
-- fecha_limite: formato AAAA-MM-DD, SOLO si el email da una fecha explícita o deducible.
-  Los plazos relativos ("mañana", "en 7 días") se calculan desde la FECHA DE ENVÍO del email.
-- EXCEPCIÓN DIS: los emails de DIS que sí importan (mensajes del profesor, cambios de
-  fechas o aulas) NUNCA son tarea (requiere_accion = false): Marco gestiona las entregas
-  de DIS por su cuenta.
-
-REGLA DE ORO ante la duda: si no tienes claro si algo es una oportunidad real
-para Marco, márcalo como IMPORTANTE. Esta regla NO se aplica a estafas evidentes."""
-
-
-# ─────────────────────────────────────────────────────────────────────────
-# SALIDA ESTRUCTURADA
-# ─────────────────────────────────────────────────────────────────────────
 
 class Clasificacion(BaseModel):
-    importante: bool = Field(description="True si Marco debería verlo; False si es ruido.")
-    categoria: str = Field(description="beca | evento | personal | dinero | empleo_afin | ruido")
+    importante: bool = Field(description="True si es relevante para Marco (aunque repita algo ya visto: agrupar es cosa del sistema); False si es ruido.")
+    categoria: str = Field(description="beca | evento | viaje | personal | dinero | empleo_afin | ruido")
     prioridad: str = Field(description="alta | media | baja")
     motivo: str = Field(description="Una frase breve explicando la decisión.")
     resumen: str = Field(description="Resumen en una frase de qué es el email.")
     requiere_accion: bool = Field(description="True solo si Marco tiene que hacer algo concreto.")
     accion: str = Field(description="La acción en infinitivo y corta. Cadena vacía si no hay.")
     fecha_limite: str = Field(description="Plazo en formato AAAA-MM-DD, o cadena vacía si no hay.")
+    tipo_entidad: str = Field(default="otro", description=(
+        "De qué trata, para agrupar emails sobre lo mismo: viaje | reunion | evento | "
+        "entrega | tramite | otro"))
+    entidad: str = Field(default="", description=(
+        "Nombre corto de ESO concreto, siempre igual para lo mismo: el destino de un viaje "
+        "('Venecia'), el nombre de una reunión o evento ('Bienvenida Explorer'), la entrega "
+        "o trámite ('Formulario beca ACE2EU'). Vacío si es 'otro'."))
+    fecha_entidad: str = Field(default="", description=(
+        "Fecha de ESO (salida del viaje, día del evento, plazo del trámite), AAAA-MM-DD, o vacía."))
+    referencia: str = Field(default="", description=(
+        "Código de reserva, localizador o número de pedido si aparece (ej. 'G8LLTK'); si no, vacío."))
+    confirma_hecho: bool = Field(default=False, description=(
+        "True si el email demuestra que algo que Marco tenía que hacer YA está hecho: acuse de "
+        "un formulario que envió, nota publicada de una entrega, inscripción confirmada."))
 
     @field_validator("fecha_limite")
     @classmethod
     def _fecha_valida(cls, v: str) -> str:
-        """Guardrail: solo aceptamos AAAA-MM-DD real. Cualquier otra cosa -> ''."""
         v = (v or "").strip()
         try:
             datetime.strptime(v, "%Y-%m-%d")
@@ -150,12 +70,25 @@ class Clasificacion(BaseModel):
     def _accion_limpia(cls, v: str) -> str:
         return (v or "").strip()
 
+    @field_validator("fecha_entidad")
+    @classmethod
+    def _fecha_entidad_valida(cls, v: str) -> str:
+        return cls._fecha_valida(v)
+
+    @field_validator("referencia")
+    @classmethod
+    def _referencia_limpia(cls, v: str) -> str:
+        return "".join((v or "").split()).upper()
+
+    @field_validator("entidad")
+    @classmethod
+    def _entidad_limpia(cls, v: str) -> str:
+        return (v or "").strip()
+
     @model_validator(mode="after")
-    def _coherencia_tarea(self):
-        """Guardrail de coherencia entre campos (esto el prompt no lo garantiza):
-        - una tarea sin acción NO es una tarea -> requiere_accion = False
-        - un email informativo no lleva acción ni plazo -> se limpian
-        Así la BD nunca tiene "tareas fantasma" ni plazos huérfanos."""
+    def _coherencia(self):
+        """El prompt propone; el código impone.
+        - una tarea sin acción no es tarea; un informativo no lleva acción ni plazo"""
         if self.requiere_accion and not self.accion:
             self.requiere_accion = False
         if not self.requiere_accion:
@@ -167,46 +100,38 @@ class Clasificacion(BaseModel):
 _llm = get_provider()
 
 _DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+# Solo se informa de la señal que AYUDA: ir en copia. "No figuras" no se dice
+# nunca: puede llegarte a otra dirección tuya o en copia oculta (lo normal en
+# envíos a todos los seleccionados de una beca), y el modelo lo usaba para descartar.
+_ROL = {
+    "copia": "Marco figura EN COPIA (CC) en este email.",
+}
 
 
 def clasificar(remitente: str, asunto: str, cuerpo: str,
-               fecha_email: date | None = None, hoy: date | None = None) -> Clasificacion:
+               fecha_email: date | None = None, hoy: date | None = None,
+               rol: str = "") -> Clasificacion:
     """Clasifica un email según el criterio de Marco.
 
-    `fecha_email` es cuándo se ENVIÓ el email: la referencia correcta para
-    "en 7 días" o "este jueves". `hoy` es solo contexto (para que el modelo
-    sepa qué plazos ya han pasado). Si no se pasa fecha_email, se asume hoy.
-    Ambas se pueden fijar a mano para tests reproducibles.
+    fecha_email: referencia para los plazos relativos. hoy: contexto.
+    rol: 'para' | 'copia' | 'no figura' | '' (desconocido).
     """
     hoy = hoy or date.today()
     fecha_email = fecha_email or hoy
-    contexto = (
+    partes = [
         f"Este email se envió el {_DIAS[fecha_email.weekday()]} {fecha_email.isoformat()}. "
         f"Hoy es {_DIAS[hoy.weekday()]} {hoy.isoformat()}. "
         f"Los plazos relativos se calculan desde la fecha de envío."
-    )
-    contenido = f"{contexto}\n\nDe: {remitente}\nAsunto: {asunto}\n\n{cuerpo}"
+    ]
+    if rol in _ROL:
+        partes.append(_ROL[rol])
+    partes.append(f"EMAIL A CLASIFICAR:\nDe: {remitente}\nAsunto: {asunto}\n\n{cuerpo}")
 
     datos = _llm.rellenar_schema(
         system=CRITERIO,
-        texto=contenido,
+        texto="\n\n".join(partes),
         tool_name="clasificar_email",
         descripcion="Registra la clasificación de un email según el criterio de Marco.",
         schema=Clasificacion.model_json_schema(),
     )
     return Clasificacion(**datos)
-
-
-if __name__ == "__main__":
-    EJEMPLOS = [
-        ("becas@fundacion.org", "Convocatoria beca emprendimiento 2026",
-         "Abrimos la convocatoria. Dotación de 3000€. Plazo de solicitud: hasta el próximo viernes."),
-        ("DIS(B) <notifications@instructure.com>", "Tarea disponible: P3 - Docker",
-         "La práctica P3 ya está publicada en Canvas. Fecha de entrega: 25 de septiembre a las 23:59."),
-        ("ofertas@tienda.com", "-50% solo hoy", "Rebajas de temporada, envío gratis."),
-    ]
-    for remitente, asunto, cuerpo in EJEMPLOS:
-        c = clasificar(remitente, asunto, cuerpo)
-        marca = "⭐" if c.importante else "  "
-        tarea = f" · TAREA: {c.accion} (límite {c.fecha_limite or 'sin fecha'})" if c.requiere_accion else ""
-        print(f"{marca} [{c.categoria}/{c.prioridad}] {asunto}{tarea}")

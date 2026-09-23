@@ -1,0 +1,132 @@
+{
+  "proveedor": "Anthropic:claude-sonnet-4-6",
+  "fecha": "20260923_2357",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "1/5",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08ac6846dbdc0e"
+    ],
+    "falsos_positivos": [
+      "1a08aa7753233f54",
+      "1a0a184ed839d783"
+    ],
+    "tarea": "5/5",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 9,
+      "entrada": 45754,
+      "salida": 2802
+    },
+    "coste_usd": 0.179292
+  },
+  "resultados": [
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a un tercero (gestoría/mediador) solicitando un certificado para los trámites de viaje del hijo del remitente. Marco no es el destinatario ni el responsable de gestionarlo; llegó por lista de distribución o BCC sin que le corresponda actuar.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un informe de reunión (Read AI) de la sesión \"Bienvenida Explorer Online\" del 9 de septiembre, compartido por Manuel Ruiz Cerezo, en la que Marco participó. Los informes de reuniones en las que Marco participó son importantes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "El padre de Marco reenvía un hilo sobre la solicitud urgente de un certificado de seguro de viaje a MAPFRE para el viaje de Marco a Austria (5-9 oct 2026), necesario para su expediente/beca universitaria. Es un reenvío de un hilo familiar que afecta directamente a Marco.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08b0720451c24f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "beca",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Completar formulario de aceptación de beca ACE²EU",
+      "fecha_limite": "2026-09-11",
+      "motivo": "Corrección del importe de la beca de movilidad ACE²EU a Austria (de 1398,59 € a 1189,73 €): novedad relevante sobre una oportunidad de movilidad internacional con financiación.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Itinerario de vuelo de Ryanair con localizador G8LLTK y destino Madrid: billete con datos de viaje concretos.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

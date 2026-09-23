@@ -1,0 +1,63 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260924_0019",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "2/2",
+    "falsos_negativos": [],
+    "falsos_positivos": [],
+    "tarea": "2/2",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 2,
+      "entrada": 8767,
+      "salida": 596
+    },
+    "coste_usd": 0.011747
+  },
+  "resultados": [
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "contacto importante (david.cabral@solventia.eu); el modelo dijo: Email dirigido al padre de Marco (David Cabral) solicitando un certificado para su hijo. No es una comunicación dirigida a Marco ni requiere acción de su parte. Es un email de terceros que fue reenviado o incluido por error en la bandeja de Marco.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "contacto importante (david.cabral@solventia.eu); el modelo dijo: Marco figura en copia de un hilo de trabajo entre David Cabral (Solventia) y Marta Cantalejo (Mapfre) sobre un certificado urgente. Sin embargo, el email está dirigido a David Cabral y Marco solo aparece como destinatario del reenvío. No hay acción requerida de Marco, no es un correo personal dirigido a él, y el contenido (solicitud de certificado de seguros entre empresas) no es relevante para sus actividades académicas, becas, viajes, eventos o empleo. Es un reenvío de un hilo corporativo que no le concierne directamente.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

@@ -27,7 +27,11 @@ Prueba rápida (sin gastar LLM):  python gmail.py
 """
 
 import base64
+import os
 import os.path
+
+from dotenv import load_dotenv
+load_dotenv()
 import random
 import re
 import time
@@ -217,8 +221,40 @@ def iterar_por_ids(ids: list[str]):
             "asunto": cabeceras.get("subject", "(sin asunto)"),
             "fecha": cabeceras.get("date", ""),
             "fecha_epoch": int(msg.get("internalDate", 0)) // 1000,  # ms -> s
+            "para": cabeceras.get("to", ""),
+            "cc": cabeceras.get("cc", ""),
             "cuerpo": cuerpo,
         }
+
+
+_mi_direccion = None
+
+
+def mi_direccion() -> str:
+    """Tu dirección de Gmail (se pregunta una vez a la API)."""
+    global _mi_direccion
+    if _mi_direccion is None:
+        perfil = _ejecutar_con_reintentos(_obtener_servicio().users().getProfile(userId="me"))
+        _mi_direccion = perfil["emailAddress"].lower()
+    return _mi_direccion
+
+
+def mis_direcciones() -> set[str]:
+    """Tu Gmail + las direcciones extra de MIS_DIRECCIONES en el .env
+    (separadas por comas; p. ej. tu correo de la universidad si se reenvía a Gmail)."""
+    extra = {d.strip().lower() for d in os.getenv("MIS_DIRECCIONES", "").split(",") if d.strip()}
+    return {mi_direccion()} | extra
+
+
+def rol_de(e: dict) -> str:
+    """'para' | 'copia' | 'no figura': dónde apareces en este email."""
+    yo = mis_direcciones()
+    cc, para = (e.get("cc") or "").lower(), (e.get("para") or "").lower()
+    if any(d in cc for d in yo):
+        return "copia"
+    if any(d in para for d in yo):
+        return "para"
+    return "no figura"
 
 
 def obtener_por_ids(ids: list[str]) -> list[dict]:

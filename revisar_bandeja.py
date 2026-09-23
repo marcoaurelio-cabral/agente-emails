@@ -58,6 +58,16 @@ def main():
           f"{r['nuevos']} nuevos ({len(r['nuevos_importantes'])} importantes)\n")
     set_nuevos = {x["id"] for x in r["nuevos_importantes"]}
 
+    if r.get("tareas_cerradas_auto"):
+        print("=" * 70)
+        print(f"🤖 TAREAS CERRADAS AUTOMÁTICAMENTE ({len(r['tareas_cerradas_auto'])})")
+        print("   Si alguna no estaba hecha, reábrela desde /docs: POST /tareas/reabrir")
+        print("=" * 70)
+        for x in almacen.tareas_cerradas_auto(1):
+            print(f"   ✓ {x['accion'] or x['asunto']}")
+            print(f"        cerrada por: {(x['cerrada_por_asunto'] or '')[:60]}")
+        print()
+
     # ── ⏰ Tareas pendientes ─────────────────────────────────────────────
     tareas = almacen.tareas_pendientes()
     print("=" * 70)

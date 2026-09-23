@@ -53,6 +53,15 @@ _COLUMNAS = {
     "jev_categoria": "TEXT",
     "jev_modelo":    "TEXT",     # versión real que respondió
     "decidido_por":  "TEXT",     # 'jev' (prefiltro) | 'llm'
+    # --- v5: memoria entre emails ---
+    "cerrada_por":   "TEXT",     # gmail_id del email que cerró la tarea automáticamente
+    # --- v6: agrupación (claves que extrae el modelo; el grupo lo decide agrupar.py) ---
+    "tipo_entidad":   "TEXT",
+    "entidad":        "TEXT",
+    "fecha_entidad":  "TEXT",
+    "referencia":     "TEXT",
+    "confirma_hecho": "INTEGER",
+    "grupo":          "TEXT",    # gmail_id del email más antiguo de su grupo
 }
 
 # "Importante efectivo": si Marco corrigió, manda su corrección; si no, el modelo.
@@ -104,6 +113,11 @@ def _campos_clasificacion(c) -> dict:
         "requiere_accion": int(c.requiere_accion),
         "accion": c.accion or None,
         "fecha_limite": c.fecha_limite or None,
+        "tipo_entidad": getattr(c, "tipo_entidad", None),
+        "entidad": getattr(c, "entidad", None) or None,
+        "fecha_entidad": getattr(c, "fecha_entidad", None) or None,
+        "referencia": getattr(c, "referencia", None) or None,
+        "confirma_hecho": int(bool(getattr(c, "confirma_hecho", False))),
     }
 
 
@@ -176,14 +190,60 @@ def marcar_completadas(ids: list[str]) -> int:
 
 
 def reabrir(ids: list[str]) -> int:
-    """Deshace un 'completar' (el botón de la app se pulsa sin querer)."""
+    """Deshace un 'completar', manual o automático."""
     with _conectar() as conn:
         cur = conn.execute(
-            f"""UPDATE emails SET estado = 'pendiente', completada_en = NULL
+            f"""UPDATE emails SET estado = 'pendiente', completada_en = NULL, cerrada_por = NULL
                 WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado = 'completada'""",
             ids,
         )
         return cur.rowcount
+
+
+def cerrar_auto(ids: list[str], por: str) -> int:
+    """Cierra tareas porque un email posterior demuestra que están hechas.
+    Queda registrado QUIÉN la cerró (cerrada_por) y se puede reabrir."""
+    if not ids:
+        return 0
+    with _conectar() as conn:
+        cur = conn.execute(
+            f"""UPDATE emails SET estado = 'completada', completada_en = ?, cerrada_por = ?
+                WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado = 'pendiente'""",
+            [int(time.time()), por, *ids],
+        )
+        return cur.rowcount
+
+
+def filas_para_agrupar(dias: int = 60) -> list[dict]:
+    """Emails recientes con claves de agrupación (importantes o con tarea)."""
+    desde = int(time.time()) - dias * 86400
+    with _conectar() as conn:
+        filas = conn.execute(
+            f"""SELECT gmail_id, asunto, fecha_epoch, tipo_entidad, entidad, fecha_entidad,
+                       referencia, confirma_hecho, estado
+                FROM emails
+                WHERE fecha_epoch >= ? AND tipo_entidad IS NOT NULL
+                  AND ({_IMPORTANTE} = 1 OR confirma_hecho = 1)""",
+            (desde,),
+        ).fetchall()
+    return [dict(f) for f in filas]
+
+
+def guardar_grupos(grupos: dict[str, str]) -> None:
+    with _conectar() as conn:
+        conn.executemany("UPDATE emails SET grupo = ? WHERE gmail_id = ?",
+                         [(g, gid) for gid, g in grupos.items()])
+
+
+def tareas_cerradas_auto(dias: int = 7) -> list[dict]:
+    desde = int(time.time()) - dias * 86400
+    with _conectar() as conn:
+        filas = conn.execute(
+            """SELECT t.gmail_id, t.accion, t.asunto, c.asunto AS cerrada_por_asunto
+               FROM emails t LEFT JOIN emails c ON c.gmail_id = t.cerrada_por
+               WHERE t.cerrada_por IS NOT NULL AND t.completada_en >= ?
+               ORDER BY t.completada_en DESC""", (desde,)).fetchall()
+    return [dict(f) for f in filas]
 
 
 def corregir(gmail_id: str, importante: bool) -> bool:
@@ -359,6 +419,21 @@ def _agrupar(filas) -> list[dict]:
     grupos: list[dict] = []
     indice: dict[tuple, list[dict]] = {}
     for f in filas:
+        if "grupo" in f.keys() and f["grupo"]:
+            # Agrupados por agrupar.py: un solo representante, el más reciente.
+            previo = indice.get(("g", f["grupo"]))
+            if previo is None:
+                nuevo = {**dict(f), "ids": [f["gmail_id"]], "repeticiones": 1}
+                grupos.append(nuevo)
+                indice[("g", f["grupo"])] = [nuevo]
+            else:
+                g = previo[0]
+                g["ids"].append(f["gmail_id"])
+                g["repeticiones"] += 1
+                if (f["fecha_epoch"] or 0) > (g["fecha_epoch"] or 0):
+                    ids, rep = g["ids"], g["repeticiones"]
+                    g.clear(); g.update({**dict(f), "ids": ids, "repeticiones": rep})
+            continue
         clave = _clave_grupo(f["asunto"], f["remitente"])
         candidatos = indice.setdefault(clave, [])
         destino = next(

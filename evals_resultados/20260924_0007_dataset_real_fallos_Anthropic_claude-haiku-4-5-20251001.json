@@ -1,0 +1,111 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260924_0007",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "0/4",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08ac6846dbdc0e"
+    ],
+    "falsos_positivos": [
+      "1a08aa7753233f54",
+      "1a0a184ed839d783"
+    ],
+    "tarea": "4/4",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 6,
+      "entrada": 32247,
+      "salida": 1612
+    },
+    "coste_usd": 0.040306999999999996
+  },
+  "resultados": [
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a David Cabral de Solventia solicitando un certificado para su hijo Marco Aurelio. No es un email dirigido a Marco (estudiante de la UFV), sino a una empresa de seguros. Marco no es el remitente ni el destinatario real; aparece solo como nombre del hijo de David. Es un email misdirected o confusión de identidades.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un informe de reunión en la que Marco participó (Bienvenida Explorer Online del 9 de septiembre), compartido por Manuel Ruiz Cerezo. Los informes de reuniones en las que participa son importantes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Reenvío de un hilo de trabajo entre terceros (David Cabral de Solventia y Marta Cantalejo de Mapfre) sobre un certificado urgente. Marco no es destinatario directo ni está en copia del hilo original; aparece solo porque David le reenvía una conversación que no le concierne. No hay acción requerida de Marco ni información que le afecte directamente.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Itinerario de vuelo Ryanair con número de reserva (G8LLTK) y destino Madrid. Es un documento de viaje con información de billete que Marco necesita para gestionar su reserva.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260924_0033",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "3/4",
+    "falsos_negativos": [
+      "1a0a19b5de2cbd6b"
+    ],
+    "falsos_positivos": [],
+    "tarea": "4/4",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 7,
+      "entrada": 34693,
+      "salida": 2370
+    },
+    "coste_usd": 0.046543
+  },
+  "resultados": [
+    {
+      "id": "1a0a1b1386b89bfe",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de compra de entradas a museos en Venecia con fechas y códigos de acceso. Aunque es un recibo, incluye los detalles de las entradas (fechas, horas, localizadores) que Marco necesita para su viaje a Venecia el 10 de octubre.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a1ab1b230b521",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Gestionar reserva de vuelo",
+      "fecha_limite": "",
+      "motivo": "Email de confirmación de vuelo reservado de Booking. Aunque incluye publicidad de alojamientos, el asunto y el inicio confirman que Marco tiene un vuelo reservado. Según las instrucciones, los avisos posteriores a la compra que piden gestionar la reserva (como añadirla a la cuenta de la aerolínea) son IMPORTANTES aunque vengan mezclados con publicidad. Marco debe gestionar esta reserva.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a19b5de2cbd6b",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un recibo/confirmación de pago de FlixBus sin itinerario ni billete visible en el email. Aunque sea de un viaje, los recibos de compra sin detalles del itinerario (fechas, horas, origen-destino, localizador) son ruido según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184e89123f08",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Añadir reserva a myRyanair",
+      "fecha_limite": "2026-09-21",
+      "motivo": "Email de Ryanair pidiendo que añada la reserva a su cuenta de myRyanair. Aunque es un aviso posterior a la compra, es una acción requerida para gestionar la reserva de vuelo (itinerario, cambios, check-in). Marco necesita hacerlo para tener acceso completo a su reserva.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    }
+  ]
+}

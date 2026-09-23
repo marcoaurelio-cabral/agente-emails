@@ -26,11 +26,15 @@ Seguro: hace copia en dataset_real.backup.json antes de tocar nada, y es
 idempotente (ejecutarlo dos veces no cambia nada la segunda).
 
 Uso:  python reparar_dataset.py
+      python reparar_dataset.py --cabeceras   (añade Para/CC, tu rol y la hora
+                                               exacta de cada email, desde Gmail;
+                                               los necesita la memoria entre emails)
 """
 
 import json
 import re
 import shutil
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -120,6 +124,26 @@ def main():
         for e in gmail.iterar_por_ids(a_redescargar):
             por_id[e["id"]]["cuerpo"] = e["cuerpo"][:MAX_CUERPO]
             cambios["contaminados"].append(e["id"])
+
+    # Cabeceras para la memoria entre emails (solo si se pide, y solo lo que falte)
+    if "--cabeceras" in sys.argv:
+        faltan = [c["gmail_id"] for c in casos if "rol" not in c or "fecha_epoch" not in c]
+        if faltan:
+            print(f"Trayendo Para/CC y hora exacta de {len(faltan)} email(s) desde Gmail...")
+            por_id = {c["gmail_id"]: c for c in casos}
+            for e in gmail.iterar_por_ids(faltan):
+                c = por_id[e["id"]]
+                c.update(para=e["para"], cc=e["cc"], fecha_epoch=e["fecha_epoch"], rol=gmail.rol_de(e))
+        # Recalcular el rol de TODOS (sin llamar a Gmail): cambia si añades
+        # direcciones a MIS_DIRECCIONES.
+        for c in casos:
+            if "para" in c:
+                c["rol"] = gmail.rol_de(c)
+        if True:
+            roles = {}
+            for c in casos:
+                roles[c.get("rol", "?")] = roles.get(c.get("rol", "?"), 0) + 1
+            print(f"  roles: {roles}")
 
     DATASET.write_text(json.dumps(casos, ensure_ascii=False, indent=2), encoding="utf-8")
 

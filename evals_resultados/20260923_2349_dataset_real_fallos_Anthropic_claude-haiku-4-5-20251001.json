@@ -1,0 +1,196 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260923_2349",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "3/8",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08ac6846dbdc0e",
+      "1a08b0720451c24f"
+    ],
+    "falsos_positivos": [
+      "1a08aa7753233f54",
+      "1a0a184ed839d783"
+    ],
+    "tarea": "7/8",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 12,
+      "entrada": 60462,
+      "salida": 3431
+    },
+    "coste_usd": 0.077617
+  },
+  "resultados": [
+    {
+      "id": "1a08a3dd6cb71d6d",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco figura en CC de un hilo sobre un certificado de póliza de viaje urgente (Austria 05-09 octubre 2026) que es requisito para su expediente/beca. Aunque el email está dirigido a Victor (gestor de seguros), Marco está incluido en la cadena y el viaje es suyo.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco no aparece en Para ni CC. El email está dirigido a otra persona (David Cabral de Solventia) solicitando un certificado para su hijo Marco Aurelio Cabral. Aunque menciona un viaje a Austria, no es una comunicación dirigida a Marco ni requiere acción de su parte.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Informe de reunión en la que Marco participó (Bienvenida Explorer Online). Aunque es un recordatorio de acceso, contiene información de una reunión real que Marco necesita consultar.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un reenvío (Fwd:) de una comunicación entre terceros (David Cabral de Solventia y Marta Cantalejo de Mapfre) sobre un certificado urgente. Marco no figura como destinatario directo en el hilo original, solo recibe el reenvío. No hay evidencia de que Marco sea parte de esta gestión ni que deba tomar acción. Es un acuse de recibo de una solicitud que ya estaba en proceso.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08b0720451c24f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco no aparece en Para ni en CC. El email es una lista de distribución masiva dirigida a \"Estimados/as estudiantes\" en general, no a Marco específicamente. Aunque contiene información sobre una movilidad ACE2EU, sin confirmación explícita de que Marco sea uno de los seleccionados, no es un email personal dirigido a él.",
+      "tarea_esperada": true,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viaje",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Itinerario de vuelo Ryanair con número de reserva (G8LLTK) y destino Madrid. Contiene información de billete/itinerario que Marco necesita para gestionar su viaje.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a19b5de2cbd6b",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un recibo/confirmación de compra de FlixBus sin itinerario ni billete visible en el email. Marco ya tiene registrada la reserva de viaje (Roma y Asís 23-25 octubre). Este es un acuse de recibo automático de pago, que es ruido según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a2285c2b086ee",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un recibo/confirmación de pago de Booking sin itinerario ni billete nuevo. Marco ya tiene registrados los vuelos Madrid-Venice (confirmación de Ryanair del 2026-09-14 con itinerario). Este email es solo un justificante de pago posterior.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

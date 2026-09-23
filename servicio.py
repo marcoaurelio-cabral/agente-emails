@@ -18,6 +18,9 @@ la API) para informar de avance en operaciones largas sin acoplarse a nadie.
 from datetime import date
 from typing import Callable
 
+from pathlib import Path
+
+import agrupar
 import almacen
 import cerebro
 import gmail
@@ -37,7 +40,29 @@ LECTURA_RAPIDA = 1500
 Progreso = Callable[[str], None] | None
 
 
-def clasificar_llm(e: dict, hoy: date | None = None) -> Clasificacion:
+ARCHIVO_CONTACTOS = Path(__file__).parent / "contactos_importantes.txt"
+
+
+def _cargar_contactos() -> frozenset[str]:
+    if not ARCHIVO_CONTACTOS.exists():
+        return frozenset()
+    lineas = ARCHIVO_CONTACTOS.read_text(encoding="utf-8").splitlines()
+    return frozenset(l.strip().lower() for l in lineas if l.strip() and not l.strip().startswith("#"))
+
+
+CONTACTOS_IMPORTANTES = _cargar_contactos()
+
+
+def contacto_importante(e: dict) -> str | None:
+    """¿Aparece un contacto importante en remitente, Para o CC? Devuelve cuál."""
+    texto = " ".join((e.get(k) or "") for k in ("remitente", "para", "cc")).lower()
+    for c in CONTACTOS_IMPORTANTES:
+        if c in texto:
+            return c
+    return None
+
+
+def clasificar_llm(e: dict, hoy: date | None = None, rol: str = "") -> Clasificacion:
     """Etapa LLM con LECTURA ADAPTATIVA: primero los primeros LECTURA_RAPIDA
     caracteres; si resulta importante y el email era más largo, se relee entero.
     Es la MISMA función que usan producción y evals.py: lo que se mide es lo
@@ -45,14 +70,21 @@ def clasificar_llm(e: dict, hoy: date | None = None) -> Clasificacion:
     hoy = hoy or date.today()
     fecha_email = date.fromtimestamp(e["fecha_epoch"])
     cuerpo = e["cuerpo"]
-    c = clasificar(e["remitente"], e["asunto"], cuerpo[:LECTURA_RAPIDA],
-                   fecha_email=fecha_email, hoy=hoy)
+    kw = dict(fecha_email=fecha_email, hoy=hoy, rol=rol)
+    c = clasificar(e["remitente"], e["asunto"], cuerpo[:LECTURA_RAPIDA], **kw)
     if c.importante and len(cuerpo) > LECTURA_RAPIDA:
-        c = clasificar(e["remitente"], e["asunto"], cuerpo, fecha_email=fecha_email, hoy=hoy)
+        c = clasificar(e["remitente"], e["asunto"], cuerpo, **kw)
+    # Regla determinista: un contacto importante manda sobre el modelo.
+    quien = contacto_importante(e)
+    if quien and not c.importante:
+        c.importante = True
+        if c.categoria == "ruido":
+            c.categoria = "personal"
+        c.motivo = f"contacto importante ({quien}); el modelo dijo: {c.motivo}"
     return c
 
 
-def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
+def clasificar_email(e: dict, hoy: date | None = None, rol: str = "") -> tuple:
     """Clasifica un email en CASCADA. Devuelve (clasificacion, prefiltro).
 
     Etapa 1 (Jev): decide si merece el modelo caro. Si p(importante) está
@@ -75,7 +107,7 @@ def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
                 resumen="", requiere_accion=False, accion="", fecha_limite="",
             ), pre
 
-    c = clasificar_llm(e, hoy)
+    c = clasificar_llm(e, hoy, rol)
     if pre:
         pre["decidido_por"] = "llm"
     return c, pre
@@ -86,13 +118,28 @@ def reclasificar(ids: list[str], progreso: Progreso = None) -> list[dict]:
     (importante<->ruido, tarea<->informativo) para auditar el efecto."""
     flips = []
     total = len(ids)
+    fechas = {k: v["fecha_epoch"] for k, v in almacen.metadatos(ids).items()}
+    ids = sorted(ids, key=lambda i: fechas.get(i, 0))
     for i, e in enumerate(gmail.iterar_por_ids(ids), 1):
-        c, _ = clasificar_email(e)
+        c, _ = clasificar_email(e, rol=gmail.rol_de(e))
         for campo, (antes, ahora) in almacen.actualizar_clasificacion(e["id"], c).items():
             flips.append({"campo": campo, "antes": antes, "ahora": ahora, "asunto": e["asunto"]})
         if progreso and (i % 10 == 0 or i == total):
             progreso(f"re-clasificados {i}/{total}")
     return flips
+
+
+def reagrupar_y_cerrar() -> list[dict]:
+    """Recalcula los grupos de los emails recientes y cierra las tareas cuyo
+    grupo ha recibido después un email que confirma que están hechas."""
+    filas = almacen.filas_para_agrupar()
+    grupos = agrupar.agrupar(filas)
+    almacen.guardar_grupos(grupos)
+    cerradas = []
+    for tarea, por in agrupar.tareas_a_cerrar(filas, grupos):
+        if almacen.cerrar_auto([tarea], por):
+            cerradas.append({"tarea": tarea, "cerrada_por": por})
+    return cerradas
 
 
 def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
@@ -115,11 +162,15 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
     conocidos = almacen.ids_conocidos(ids)
     nuevos_ids = [i for i in ids if i not in conocidos]
 
-    nuevos_importantes, nuevos_ruido = [], []
+    # Del MÁS ANTIGUO al más reciente (Gmail los da al revés): un email solo
+    # puede ser "repetido" de algo anterior, y una tarea solo la cierra un
+    # email que llega después de ella.
+    nuevos_ids = list(reversed(nuevos_ids))
+    nuevos_importantes, nuevos_ruido, cerradas = [], [], []
     filtrados_por_jev = 0
     total = len(nuevos_ids)
     for i, e in enumerate(gmail.iterar_por_ids(nuevos_ids), 1):
-        c, pre = clasificar_email(e, hoy)
+        c, pre = clasificar_email(e, hoy, gmail.rol_de(e))
         if pre and pre.get("decidido_por") == "jev":
             filtrados_por_jev += 1
         almacen.guardar(e, c, pre)
@@ -129,6 +180,9 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
                         "requiere_accion": c.requiere_accion, "motivo": c.motivo})
         if progreso and (i % 10 == 0 or i == total):
             progreso(f"clasificados {i}/{total}")
+
+    # Agrupación y cierre de tareas: código, sin IA, sobre las claves guardadas.
+    cerradas = reagrupar_y_cerrar()
 
     uso = cerebro._llm.uso
     return {
@@ -142,6 +196,7 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
         "llamadas_llm": uso["llamadas"] - uso_antes["llamadas"],
         "tokens_llm": (uso["entrada"] + uso["salida"]) - (uso_antes["entrada"] + uso_antes["salida"]),
         "modelo": cerebro._llm.model,
+        "tareas_cerradas_auto": cerradas,
         "prefiltro_activo": politica.USAR_PREFILTRO and jev.disponible(),
         "politica_prefiltro": politica.describir(),
         "filtrados_por_jev": filtrados_por_jev,
