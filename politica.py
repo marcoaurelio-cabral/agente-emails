@@ -13,7 +13,7 @@ de lo que ejecutas. Una sola definición = lo que mides es lo que corre.
 Las dos reglas:
     solo_noul    descartar si p < umbral
     dos_senales  descartar si p < umbral Y la categoría es descartable
-                 (promocional, automatico, sospechoso). Un email 'personal',
+                 (promocional, automatico, sospechoso, empleo_masivo). Un email 'personal',
                  'universidad', 'beca'... va SIEMPRE al LLM, dé Jev la p que dé.
                  Para perder un email importante tienen que equivocarse las
                  dos señales a la vez y en el mismo sentido.
@@ -42,7 +42,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REGLAS = ("solo_noul", "dos_senales")
-CATEGORIAS_DESCARTABLES = frozenset({"promocional", "automatico", "sospechoso"})
+CATEGORIAS_DESCARTABLES = frozenset({"promocional", "automatico", "sospechoso", "empleo_masivo"})
 
 USAR_PREFILTRO = os.getenv("JEV_PREFILTRO", "1") != "0"
 REGLA = os.getenv("JEV_REGLA", "dos_senales")

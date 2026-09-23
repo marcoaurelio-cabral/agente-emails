@@ -1,0 +1,303 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260923_2204",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "6/13",
+    "falsos_negativos": [
+      "1a08a41684ab30fc",
+      "1a08a3dd6cb71d6d",
+      "1a08ac6846dbdc0e"
+    ],
+    "falsos_positivos": [
+      "1a0a2285c2b086ee",
+      "1a0a19b5de2cbd6b",
+      "1a0a184ed839d783",
+      "1a08aa7753233f54"
+    ],
+    "tarea": "12/13",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 20,
+      "entrada": 89849,
+      "salida": 5169
+    },
+    "coste_usd": 0.11569399999999999
+  },
+  "resultados": [
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a otra persona (David Cabral de Solventia) solicitando un certificado para su hijo Marco Aurelio. No es una comunicación dirigida a Marco ni requiere su acción directa. Es un email que llegó por error o fue reenviado sin contexto claro.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a3dd6cb71d6d",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a Victor Jose Allende Blasco (mediador de seguros MAPFRE), no a Marco. Marco aparece solo como DNI/nombre en los datos del viaje solicitado por su padre. No es una comunicación dirigida a Marco ni requiere su acción directa.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0aa5c512dd7873",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en eventos ACE²EU en Polonia",
+      "fecha_limite": "2026-10-16",
+      "motivo": "Oportunidades de movilidad internacional en Polonia (ACE²EU) con eventos en noviembre 2026. Marco tiene mentalidad emprendedora y le encanta viajar; estos son eventos de la alianza ACE²EU que ofrecen experiencias internacionales valiosas.",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a091a3dc3ffd219",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en el viaje a Italia",
+      "fecha_limite": "2026-10-23",
+      "motivo": "Viaje internacional organizado por la EPS con plazas limitadas, incluye visita a universidad de ingeniería en Italia (oportunidad de Erasmus/intercambio), viaje pagado (avión, alojamiento, seguro), y plazo de inscripción urgente (pocas plazas disponibles).",
+      "tarea_esperada": true,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08b0720451c24f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "beca",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco ha sido seleccionado para una movilidad internacional financiada (Flavour school en Austria) con beca de 1189.73€. Aunque el plazo de confirmación ya pasó (11 de septiembre), el email contiene información crítica sobre obligaciones, documentación requerida y fechas del evento (5-9 de octubre). La corrección de la cantidad de financiación es relevante para la gestión de la movilidad.",
+      "tarea_esperada": true,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a42ae1fdd0615",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "dinero",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Póliza de seguro de cancelación de entrada a evento. Marco compró una entrada con cobertura de cancelación, y necesita guardar el número de póliza (32020392) por si tiene que reclamar.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a3fe8b1dec7ac",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una respuesta a la candidatura de Marco a un hackathon de tecnología (Claude Code Hackathon). Aunque no fue seleccionado esta vez, es importante que sepa el resultado de su solicitud y que le prometen contactarle para futuros eventos.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a2285c2b086ee",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de reserva de vuelos con itinerario completo (fechas, horas, origen-destino, localizadores). Es información de viaje que Marco necesita tener a mano, aunque no requiera acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a1ba11cb270e2",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Marco tiene mentalidad emprendedora y le encanta eventos de tecnología e IA. El newsletter incluye múltiples hackathons en SF (Agent Arena, Code Metal Forge, Build an AI Startup) con premios en efectivo y oportunidades de networking. Aunque no hay plazo inmediato de acción, varios eventos están próximos (septiembre-octubre) y son altamente relevantes para su perfil.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a19b5de2cbd6b",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "dinero",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de reserva de viajes con itinerarios y fechas definidas (Venecia-Villach 4 oct, Villach-Venecia 10 oct). Contiene billetes y localizadores necesarios para los viajes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Contiene itinerario de vuelo con destino Madrid, número de reserva (G8LLTK) y detalles del viaje. Es información de viaje confirmada que Marco necesita tener a mano, aunque no requiere acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un reenvío (Fwd:) de una comunicación entre terceros (David Cabral y Marta Cantalejo de MAPFRE) sobre un certificado de seguros. Marco no es el destinatario original ni participa en la gestión del certificado; simplemente ha sido incluido en copia en un hilo que no le concierne directamente.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08aa7753233f54",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un informe de reunión en la que Marco participó (Bienvenida Explorer Online), compartido por Manuel Ruiz Cerezo. Los informes de reuniones en las que participa son importantes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

@@ -35,8 +35,10 @@ from collections import Counter
 from datetime import date, datetime
 from pathlib import Path
 
+import time
+
 import cerebro
-from cerebro import clasificar
+import servicio
 
 DATASET = Path(__file__).parent / "dataset_evals.json"
 CARPETA_RESULTADOS = Path(__file__).parent / "evals_resultados"
@@ -50,11 +52,11 @@ def etiqueta_proveedor() -> str:
 
 def evaluar_caso(caso: dict, repeticiones: int, hoy: date = HOY_FIJO) -> dict:
     fecha_email = date.fromisoformat(caso.get("fecha_email", hoy.isoformat()))
-    salidas = [
-        clasificar(caso["remitente"], caso["asunto"], caso["cuerpo"],
-                   fecha_email=fecha_email, hoy=hoy)
-        for _ in range(repeticiones)
-    ]
+    # Mismo camino que producción (lectura adaptativa): se mide lo que se ejecuta,
+    # y cuesta bastante menos que mandar siempre el email entero.
+    e = {"remitente": caso["remitente"], "asunto": caso["asunto"], "cuerpo": caso["cuerpo"],
+         "fecha_epoch": int(time.mktime(fecha_email.timetuple()))}
+    salidas = [servicio.clasificar_llm(e, hoy) for _ in range(repeticiones)]
     votos = [s.importante for s in salidas]
     moda, n_moda = Counter(votos).most_common(1)[0]
     s0 = salidas[0]
@@ -107,6 +109,8 @@ def main():
     parser.add_argument("repeticiones", nargs="?", type=int, default=2,
                         help="ejecuciones por caso (1 = más barato, sin medir consistencia)")
     parser.add_argument("--dataset", default=str(DATASET), help="ruta al dataset JSON")
+    parser.add_argument("--solo-fallos", action="store_true",
+                        help="repetir solo los casos que fallaron en la última ejecución (barato)")
     args = parser.parse_args()
     repeticiones = args.repeticiones
     dataset = Path(args.dataset)
@@ -114,6 +118,21 @@ def main():
         print(f"No existe {dataset}.")
         return
     casos = json.loads(dataset.read_text(encoding="utf-8"))
+    if args.solo_fallos:
+        previos = sorted(CARPETA_RESULTADOS.glob(f"*_{dataset.stem}*.json"))
+        if not previos:
+            print(f"No hay ejecuciones previas de {dataset.name}: lanza primero el eval completo.")
+            return
+        ultimo = json.loads(previos[-1].read_text(encoding="utf-8"))
+        fallidos = {r["id"] for r in ultimo["resultados"]
+                    if (not r["frontera"] and not r["acierto"])
+                    or r.get("tarea_ok") is False or r.get("fecha_ok") is False}
+        casos = [c for c in casos if c["id"] in fallidos]
+        print(f"Solo los {len(casos)} casos que fallaron en {previos[-1].name}.")
+        print("Cuando dejen de fallar, lanza el eval COMPLETO para comprobar que no has roto otros.\n")
+        if not casos:
+            print("No quedan fallos. 🎉")
+            return
     # Un dataset sin fecha_email mediría mal los plazos relativos (se calcularían
     # desde "hoy" y no desde el envío). Mejor avisar ANTES de gastar nada.
     sin_fecha = [c["id"] for c in casos if not c.get("fecha_email")]
@@ -191,7 +210,8 @@ def main():
     # ── Guardar para comparar entre proveedores / versiones del criterio ──
     CARPETA_RESULTADOS.mkdir(exist_ok=True)
     marca = datetime.now().strftime("%Y%m%d_%H%M")
-    nombre = f"{marca}_{dataset.stem}_{proveedor.replace(':', '_').replace('/', '_')}.json"
+    sufijo = "_fallos" if args.solo_fallos else ""
+    nombre = f"{marca}_{dataset.stem}{sufijo}_{proveedor.replace(':', '_').replace('/', '_')}.json"
     salida = {
         "proveedor": proveedor,
         "fecha": marca,

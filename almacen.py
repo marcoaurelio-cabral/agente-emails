@@ -287,13 +287,20 @@ def candidatos_etiquetado() -> list[dict]:
 
 
 def emails_para_sombra() -> list[dict]:
-    """Emails decididos por el LLM (los únicos con una etiqueta de referencia),
-    con la etiqueta efectiva: tu corrección si la hay, si no la del LLM."""
+    """Emails con una etiqueta de referencia fiable, y la opinión guardada de Jev.
+
+    Referencia: tu corrección si la hay; si no, la del LLM. Se excluyen los que
+    Jev descartó en producción SIN corrección tuya (su "etiqueta" sería la del
+    propio Jev: medirlo contra sí mismo es circular). Pero si corregiste uno de
+    esos, SÍ entra: es exactamente un fallo del prefiltro que hay que contar.
+    """
     with _conectar() as conn:
         filas = conn.execute(
             f"""SELECT gmail_id, asunto, remitente, {_IMPORTANTE} AS importante_ref,
-                       correccion_importante
-                FROM emails WHERE decidido_por IS NULL OR decidido_por = 'llm'
+                       correccion_importante, jev_noul, jev_categoria, decidido_por
+                FROM emails
+                WHERE decidido_por IS NULL OR decidido_por = 'llm'
+                   OR correccion_importante IS NOT NULL
                 ORDER BY fecha_epoch DESC"""
         ).fetchall()
     return [dict(f) for f in filas]

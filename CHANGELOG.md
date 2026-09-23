@@ -85,3 +85,4 @@ Todo el trabajo hasta la fecha, sin releases intermedios etiquetados.
 - Criterio: eventos en cualquier país, viajes (itinerarios, seguros, gestión
   de reservas), confirmaciones de inscripción; excepción de tareas de DIS.
 - Criterio de Jev sincronizado con el del cerebro; nueva categoría protegida `viaje`.
+- Criterio ajustado a las etiquetas reales (eventos de tu tema, acuses, DIS, seguros de cancelación, verbos vagos, viajes organizados y movilidades como tarea); eval con lectura adaptativa y --solo-fallos. Importancia del 88% al 96%.

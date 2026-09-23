@@ -3,161 +3,161 @@
   "medidos": [
     {
       "id": "1a0ca424bbb01201",
-      "noul": 0.92,
+      "noul": 0.95,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c9f7c48a41cdd",
-      "noul": 0.91,
+      "noul": 0.92,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c9bea869d1d4b",
-      "noul": 0.94,
+      "noul": 0.27,
       "categoria": "universidad",
-      "esperado": true,
-      "corregido": false
+      "esperado": false,
+      "corregido": true
     },
     {
       "id": "1a0c993faa57ba8f",
-      "noul": 0.9,
+      "noul": 0.91,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c98148065bafa",
-      "noul": 0.18,
+      "noul": 0.53,
       "categoria": "evento",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0c96d8d58c7ed9",
-      "noul": 0.54,
+      "noul": 0.06,
       "categoria": "automatico",
-      "esperado": true,
-      "corregido": false
+      "esperado": false,
+      "corregido": true
     },
     {
       "id": "1a0c96380ac4505b",
-      "noul": 0.62,
+      "noul": 0.12,
       "categoria": "automatico",
-      "esperado": true,
-      "corregido": false
+      "esperado": false,
+      "corregido": true
     },
     {
       "id": "1a0c954d0465da35",
-      "noul": 0.97,
+      "noul": 0.96,
       "categoria": "beca",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c94814aa023c9",
-      "noul": 0.79,
+      "noul": 0.86,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c865275235dbe",
-      "noul": 0.78,
-      "categoria": "universidad",
+      "noul": 0.81,
+      "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c59c09e580636",
-      "noul": 0.18,
+      "noul": 0.52,
       "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c4fa028a742fe",
-      "noul": 0.28,
+      "noul": 0.24,
       "categoria": "automatico",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0c4f75c12033d0",
-      "noul": 0.81,
+      "noul": 0.88,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c4e391cf99347",
-      "noul": 0.34,
+      "noul": 0.62,
       "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c4ae07ad50369",
-      "noul": 0.67,
+      "noul": 0.75,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c49a453aed84f",
-      "noul": 0.76,
+      "noul": 0.83,
       "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0c2f053186ec3e",
-      "noul": 0.61,
+      "noul": 0.56,
       "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0be0ca03e22895",
-      "noul": 0.06,
-      "categoria": "automatico",
+      "noul": 0.07,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0bacbc0871a1c7",
-      "noul": 0.5,
+      "noul": 0.51,
       "categoria": "automatico",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0bab8e5effd989",
-      "noul": 0.54,
-      "categoria": "automatico",
+      "noul": 0.29,
+      "categoria": "evento",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0b97104c22e9b2",
-      "noul": 0.9,
+      "noul": 0.96,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0b92abfbce03a3",
-      "noul": 0.21,
+      "noul": 0.08,
       "categoria": "automatico",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0b4e4b1bf47750",
-      "noul": 0.54,
+      "noul": 0.22,
       "categoria": "promocional",
       "esperado": false,
       "corregido": false
@@ -171,7 +171,7 @@
     },
     {
       "id": "1a0b4aa8a22e645a",
-      "noul": 0.92,
+      "noul": 0.95,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
@@ -185,63 +185,63 @@
     },
     {
       "id": "1a0b1cd4aea5d89d",
-      "noul": 0.35,
+      "noul": 0.42,
       "categoria": "empleo_afin",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a0b0dab2e0aba93",
-      "noul": 0.89,
+      "noul": 0.92,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0b02c74b63f1d3",
-      "noul": 0.9,
+      "noul": 0.89,
       "categoria": "universidad",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0ae65c5f70e686",
-      "noul": 0.76,
+      "noul": 0.85,
       "categoria": "evento",
       "esperado": true,
       "corregido": false
     },
     {
       "id": "1a0abb1a885eaefa",
-      "noul": 0.95,
-      "categoria": "universidad",
-      "esperado": true,
-      "corregido": false
-    },
-    {
-      "id": "1a0ab5f48b3583ca",
-      "noul": 0.91,
+      "noul": 0.26,
       "categoria": "universidad",
       "esperado": false,
       "corregido": true
     },
     {
-      "id": "1a0ab5e26d1291c2",
-      "noul": 0.61,
+      "id": "1a0ab5f48b3583ca",
+      "noul": 0.51,
       "categoria": "automatico",
-      "esperado": true,
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0ab5e26d1291c2",
+      "noul": 0.11,
+      "categoria": "automatico",
+      "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0ab5b2bc3b4c17",
-      "noul": 0.07,
+      "noul": 0.09,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0ab58c91ab230d",
-      "noul": 0.02,
+      "noul": 0.03,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
@@ -276,14 +276,14 @@
     },
     {
       "id": "1a0aaf1bd9675d84",
-      "noul": 0.12,
+      "noul": 0.13,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0aad0cdaeb4982",
-      "noul": 0.7,
+      "noul": 0.87,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
@@ -297,28 +297,28 @@
     },
     {
       "id": "1a0aa5fe2044e28f",
-      "noul": 0.92,
+      "noul": 0.94,
       "categoria": "universidad",
-      "esperado": false,
+      "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0aa5c512dd7873",
-      "noul": 0.87,
+      "noul": 0.91,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0aa171b08f229d",
-      "noul": 0.04,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0aa079d59e70da",
-      "noul": 0.94,
+      "noul": 0.95,
       "categoria": "universidad",
       "esperado": true,
       "corregido": true
@@ -332,49 +332,49 @@
     },
     {
       "id": "1a0a9df4ab0bfed9",
-      "noul": 0.06,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a9de806ff74b3",
-      "noul": 0.64,
+      "noul": 0.63,
       "categoria": "evento",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a997f9fa1c209",
-      "noul": 0.06,
+      "noul": 0.07,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a98dc616b7451",
-      "noul": 0.1,
-      "categoria": "evento",
+      "noul": 0.09,
+      "categoria": "sospechoso",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a98729151a2f1",
-      "noul": 0.94,
+      "noul": 0.95,
       "categoria": "universidad",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a97ba20101b02",
-      "noul": 0.6,
+      "noul": 0.63,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a97b702f8ec8d",
-      "noul": 0.08,
+      "noul": 0.07,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
@@ -395,9 +395,9 @@
     },
     {
       "id": "1a0a8e766975f223",
-      "noul": 0.12,
+      "noul": 0.15,
       "categoria": "promocional",
-      "esperado": true,
+      "esperado": false,
       "corregido": true
     },
     {
@@ -409,21 +409,21 @@
     },
     {
       "id": "1a0a6d0a8450d337",
-      "noul": 0.92,
+      "noul": 0.94,
       "categoria": "universidad",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a65e0d321dd4d",
-      "noul": 0.04,
+      "noul": 0.03,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a643781b9c617",
-      "noul": 0.03,
+      "noul": 0.04,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
@@ -437,78 +437,78 @@
     },
     {
       "id": "1a0a5dfc4e8efd47",
-      "noul": 0.91,
-      "categoria": "universidad",
-      "esperado": false,
-      "corregido": true
-    },
-    {
-      "id": "1a0a5dc51963ba3d",
-      "noul": 0.06,
-      "categoria": "promocional",
-      "esperado": false,
-      "corregido": false
-    },
-    {
-      "id": "1a0a5a47e7a1d4cc",
-      "noul": 0.95,
-      "categoria": "universidad",
-      "esperado": true,
-      "corregido": true
-    },
-    {
-      "id": "1a0a572c21649a0e",
-      "noul": 0.95,
-      "categoria": "universidad",
-      "esperado": true,
-      "corregido": true
-    },
-    {
-      "id": "1a0a55a5bcce809e",
-      "noul": 0.95,
-      "categoria": "universidad",
-      "esperado": true,
-      "corregido": true
-    },
-    {
-      "id": "1a0a556174f98805",
-      "noul": 0.57,
-      "categoria": "automatico",
-      "esperado": false,
-      "corregido": true
-    },
-    {
-      "id": "1a0a55223ffa1fa2",
       "noul": 0.87,
       "categoria": "universidad",
       "esperado": false,
       "corregido": true
     },
     {
-      "id": "1a0a551fd2cab621",
-      "noul": 0.59,
+      "id": "1a0a5dc51963ba3d",
+      "noul": 0.05,
+      "categoria": "promocional",
+      "esperado": false,
+      "corregido": false
+    },
+    {
+      "id": "1a0a5a47e7a1d4cc",
+      "noul": 0.24,
+      "categoria": "universidad",
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0a572c21649a0e",
+      "noul": 0.25,
+      "categoria": "universidad",
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0a55a5bcce809e",
+      "noul": 0.25,
+      "categoria": "universidad",
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0a556174f98805",
+      "noul": 0.06,
       "categoria": "automatico",
-      "esperado": true,
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0a55223ffa1fa2",
+      "noul": 0.43,
+      "categoria": "automatico",
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a0a551fd2cab621",
+      "noul": 0.14,
+      "categoria": "automatico",
+      "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a545e2b82fe7b",
-      "noul": 0.95,
+      "noul": 0.24,
       "categoria": "universidad",
-      "esperado": true,
+      "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a502610e7945c",
-      "noul": 0.04,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a4cb4bd0e4ea6",
       "noul": 0.05,
-      "categoria": "automatico",
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
@@ -549,23 +549,23 @@
     },
     {
       "id": "1a0a42ae1fdd0615",
-      "noul": 0.17,
-      "categoria": "automatico",
+      "noul": 0.72,
+      "categoria": "viaje",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a3fe8b1dec7ac",
-      "noul": 0.41,
+      "noul": 0.64,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a3e4404a4f873",
-      "noul": 0.04,
+      "noul": 0.05,
       "categoria": "promocional",
-      "esperado": true,
+      "esperado": false,
       "corregido": true
     },
     {
@@ -577,78 +577,78 @@
     },
     {
       "id": "1a0a2285c2b086ee",
-      "noul": 0.26,
-      "categoria": "automatico",
+      "noul": 0.72,
+      "categoria": "viaje",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a1d60762ab0bb",
-      "noul": 0.13,
+      "noul": 0.25,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a1ba11cb270e2",
-      "noul": 0.19,
+      "noul": 0.55,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a1b1386b89bfe",
-      "noul": 0.18,
-      "categoria": "automatico",
+      "noul": 0.58,
+      "categoria": "viaje",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a1ab1b230b521",
-      "noul": 0.05,
-      "categoria": "promocional",
+      "noul": 0.07,
+      "categoria": "viaje",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a19b629c351d2",
-      "noul": 0.22,
+      "noul": 0.14,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a19b5de2cbd6b",
-      "noul": 0.21,
-      "categoria": "automatico",
+      "noul": 0.52,
+      "categoria": "viaje",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a186fa54bac14",
-      "noul": 0.16,
+      "noul": 0.19,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a185b14a75fc0",
-      "noul": 0.21,
-      "categoria": "automatico",
+      "noul": 0.6,
+      "categoria": "viaje",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a184e89123f08",
-      "noul": 0.13,
-      "categoria": "automatico",
+      "noul": 0.69,
+      "categoria": "viaje",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0a184ed839d783",
-      "noul": 0.23,
-      "categoria": "automatico",
+      "noul": 0.8,
+      "categoria": "viaje",
       "esperado": false,
       "corregido": true
     },
@@ -661,14 +661,14 @@
     },
     {
       "id": "1a0a118a69748d84",
-      "noul": 0.08,
+      "noul": 0.05,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a0af92a424124",
-      "noul": 0.18,
+      "noul": 0.3,
       "categoria": "universidad",
       "esperado": false,
       "corregido": true
@@ -696,7 +696,7 @@
     },
     {
       "id": "1a0a034e03dd18ae",
-      "noul": 0.08,
+      "noul": 0.1,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -704,7 +704,7 @@
     {
       "id": "1a0a0327b9d6be95",
       "noul": 0.1,
-      "categoria": "promocional",
+      "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
@@ -717,14 +717,14 @@
     },
     {
       "id": "1a0a02f17d88c6eb",
-      "noul": 0.08,
+      "noul": 0.07,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0a02e9b7d2388e",
-      "noul": 0.41,
+      "noul": 0.35,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -738,22 +738,22 @@
     },
     {
       "id": "1a09fbe35ad0b62f",
-      "noul": 0.04,
+      "noul": 0.05,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a09fb694ffdc73d",
-      "noul": 0.04,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a09f815d22b5bd3",
-      "noul": 0.05,
-      "categoria": "automatico",
+      "noul": 0.06,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
@@ -766,14 +766,14 @@
     },
     {
       "id": "1a09f4126ef8be1f",
-      "noul": 0.18,
+      "noul": 0.21,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a09f40e98a1cabc",
-      "noul": 0.12,
+      "noul": 0.1,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -794,7 +794,7 @@
     },
     {
       "id": "1a09ecdd35149cdf",
-      "noul": 0.05,
+      "noul": 0.06,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
@@ -815,28 +815,28 @@
     },
     {
       "id": "1a09aeb62325b7a6",
-      "noul": 0.09,
+      "noul": 0.07,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a09aac2a744858e",
-      "noul": 0.09,
-      "categoria": "automatico",
-      "esperado": false,
-      "corregido": true
-    },
-    {
-      "id": "1a09a7d84478c9dc",
       "noul": 0.11,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
+      "id": "1a09a7d84478c9dc",
+      "noul": 0.06,
+      "categoria": "automatico",
+      "esperado": false,
+      "corregido": true
+    },
+    {
       "id": "1a09a3f433e84b2d",
-      "noul": 0.03,
+      "noul": 0.04,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
@@ -844,7 +844,7 @@
     {
       "id": "1a09a02cba80d21d",
       "noul": 0.06,
-      "categoria": "automatico",
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
@@ -857,22 +857,22 @@
     },
     {
       "id": "1a09677a1b5fe1ac",
-      "noul": 0.05,
+      "noul": 0.06,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0955f57d7e7417",
-      "noul": 0.91,
+      "noul": 0.92,
       "categoria": "universidad",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0955115fdecd9e",
-      "noul": 0.04,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
@@ -886,7 +886,7 @@
     {
       "id": "1a0951e15ad26b5a",
       "noul": 0.05,
-      "categoria": "automatico",
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
@@ -906,21 +906,21 @@
     },
     {
       "id": "1a094a834f589053",
-      "noul": 0.08,
+      "noul": 0.06,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a0921e84461ccfe",
-      "noul": 0.06,
+      "noul": 0.05,
       "categoria": "promocional",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a090f8f351679f0",
-      "noul": 0.05,
+      "noul": 0.06,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -934,21 +934,21 @@
     },
     {
       "id": "1a09037fc20828cf",
-      "noul": 0.06,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a091a3dc3ffd219",
-      "noul": 0.83,
+      "noul": 0.89,
       "categoria": "evento",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a0901ac114d342d",
-      "noul": 0.17,
+      "noul": 0.08,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -976,21 +976,21 @@
     },
     {
       "id": "1a08e050e81ca152",
-      "noul": 0.07,
+      "noul": 0.15,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08db79db452f0f",
-      "noul": 0.45,
+      "noul": 0.54,
       "categoria": "empleo_afin",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a08d97284ee993c",
-      "noul": 0.11,
+      "noul": 0.09,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -1004,7 +1004,7 @@
     },
     {
       "id": "1a08cdbba1fe4ae5",
-      "noul": 0.37,
+      "noul": 0.19,
       "categoria": "beca",
       "esperado": false,
       "corregido": true
@@ -1018,77 +1018,77 @@
     },
     {
       "id": "1a08c7501a5983a6",
-      "noul": 0.09,
+      "noul": 0.05,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08bf5a1f54ddbe",
-      "noul": 0.27,
+      "noul": 0.25,
       "categoria": "otro",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a08b6593a9a947a",
-      "noul": 0.95,
+      "noul": 0.96,
       "categoria": "universidad",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a08b4a84802e338",
-      "noul": 0.04,
-      "categoria": "automatico",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08b2ad1630290d",
-      "noul": 0.04,
+      "noul": 0.05,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08b12bda952451",
+      "noul": 0.05,
+      "categoria": "empleo_masivo",
+      "esperado": false,
+      "corregido": true
+    },
+    {
+      "id": "1a08b0a6c5159e71",
       "noul": 0.06,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
-      "id": "1a08b0a6c5159e71",
-      "noul": 0.09,
-      "categoria": "automatico",
-      "esperado": false,
-      "corregido": true
-    },
-    {
       "id": "1a08b0720451c24f",
-      "noul": 0.82,
+      "noul": 0.92,
       "categoria": "beca",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a08ad0ffd61e9d0",
-      "noul": 0.04,
+      "noul": 0.03,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08ac832639636e",
-      "noul": 0.07,
+      "noul": 0.11,
       "categoria": "promocional",
       "esperado": false,
       "corregido": false
     },
     {
       "id": "1a08ac6846dbdc0e",
-      "noul": 0.28,
+      "noul": 0.24,
       "categoria": "otro",
       "esperado": true,
       "corregido": true
@@ -1109,7 +1109,7 @@
     },
     {
       "id": "1a08aa7753233f54",
-      "noul": 0.25,
+      "noul": 0.2,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
@@ -1123,28 +1123,28 @@
     },
     {
       "id": "1a08a8f7af68a48b",
-      "noul": 0.06,
+      "noul": 0.07,
       "categoria": "promocional",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08a87ab1cb6682",
-      "noul": 0.23,
+      "noul": 0.4,
       "categoria": "automatico",
       "esperado": false,
       "corregido": true
     },
     {
       "id": "1a08a41684ab30fc",
-      "noul": 0.81,
+      "noul": 0.77,
       "categoria": "personal",
       "esperado": true,
       "corregido": true
     },
     {
       "id": "1a08a3dd6cb71d6d",
-      "noul": 0.73,
+      "noul": 0.71,
       "categoria": "personal",
       "esperado": true,
       "corregido": true
@@ -1165,8 +1165,8 @@
     },
     {
       "id": "1a0877301b595538",
-      "noul": 0.85,
-      "categoria": "personal",
+      "noul": 0.86,
+      "categoria": "viaje",
       "esperado": true,
       "corregido": true
     },
