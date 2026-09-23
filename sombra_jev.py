@@ -20,6 +20,13 @@ Uso:
     python sombra_jev.py                  (todos los emails decididos por el LLM)
     python sombra_jev.py --limite 40      (prueba rápida)
     python sombra_jev.py --umbral 0.3     (listar desacuerdos a ese umbral)
+    python sombra_jev.py --desde-bd --umbral 0.6
+                                          (GRATIS: sin Gmail ni Jev, con la opinión
+                                           de Jev ya guardada en la BD)
+
+--desde-bd sirve para probar POLÍTICA (umbral, regla, remitentes protegidos)
+sin gastar nada. Si cambias las PREGUNTAS de jev.py, ejecuta una vez sin
+--desde-bd para que Jev vuelva a opinar con las preguntas nuevas.
 
 Coste: una llamada a Jev por email (~0,00004 $ cada una) + lecturas de Gmail.
 Guarda sombra_jev.json SIN asuntos ni remitentes: solo ids y números.
@@ -49,7 +56,8 @@ def main():
     limite = _arg("--limite", int, None)
     umbral_revision = _arg("--umbral", float, None)
 
-    if not jev.disponible():
+    desde_bd = "--desde-bd" in sys.argv
+    if not desde_bd and not jev.disponible():
         print("Jev no disponible: falta TYPESAFE_API_KEY o el paquete typesafe-sdk.")
         return
 
@@ -60,34 +68,43 @@ def main():
     if not ref:
         print("No hay emails clasificados por el LLM en la BD. Ejecuta antes revisar_bandeja.py.")
         return
-    por_id = {r["gmail_id"]: r for r in ref}
 
-    print(f"Prueba en sombra: {len(ref)} emails reales · Jev {jev.MODELO} · "
-          f"NO se cambia ninguna decisión\n")
+    def _medido(r, noul, categoria):
+        return {"id": r["gmail_id"], "asunto": r["asunto"], "remitente": r["remitente"],
+                "noul": noul, "categoria": categoria,
+                "esperado": bool(r["importante_ref"]),
+                "corregido": r["correccion_importante"] is not None}
 
-    medidos, fallidos = [], []
-    for i, e in enumerate(gmail.iterar_por_ids(list(por_id)), 1):
-        pre = jev.evaluar(e["remitente"], e["asunto"], e["cuerpo"])
-        if pre is None:
-            fallidos.append(e["id"])
-            if jev.cortocircuito_abierto():
-                break
-            continue
-        almacen.guardar_prefiltro(e["id"], pre)
-        r = por_id[e["id"]]
-        medidos.append({
-            "id": e["id"], "asunto": e["asunto"], "remitente": e["remitente"],
-            "noul": pre["noul"], "categoria": pre["categoria"],
-            "esperado": bool(r["importante_ref"]),
-            "corregido": r["correccion_importante"] is not None,
-        })
-        if i % 20 == 0 or i == len(ref):
-            print(f"  ...{i}/{len(ref)}")
-
-    if fallidos:
-        print(f"\n❌ Jev falló en {len(fallidos)} email(s). Último error: {jev.uso['ultimo_error']}")
-        print("   Prueba ABORTADA: con huecos, las cifras no serían fiables.")
-        return
+    if desde_bd:
+        medidos = [_medido(r, r["jev_noul"], r["jev_categoria"])
+                   for r in ref if r["jev_noul"] is not None and r["jev_categoria"]]
+        print(f"Recalculando la política con la opinión de Jev guardada en la BD: "
+              f"{len(medidos)} emails · 0 llamadas · 0 €")
+        if len(medidos) < len(ref):
+            print(f"  ({len(ref) - len(medidos)} emails sin opinión de Jev guardada: no entran)")
+        if not medidos:
+            print("  No hay opiniones guardadas: ejecuta una vez sin --desde-bd.")
+            return
+    else:
+        por_id = {r["gmail_id"]: r for r in ref}
+        print(f"Prueba en sombra: {len(ref)} emails reales · Jev {jev.MODELO} · "
+              f"NO se cambia ninguna decisión\n")
+        medidos, fallidos = [], []
+        for i, e in enumerate(gmail.iterar_por_ids(list(por_id)), 1):
+            pre = jev.evaluar(e["remitente"], e["asunto"], e["cuerpo"])
+            if pre is None:
+                fallidos.append(e["id"])
+                if jev.cortocircuito_abierto():
+                    break
+                continue
+            almacen.guardar_prefiltro(e["id"], pre)
+            medidos.append(_medido(por_id[e["id"]], pre["noul"], pre["categoria"]))
+            if i % 20 == 0 or i == len(ref):
+                print(f"  ...{i}/{len(ref)}")
+        if fallidos:
+            print(f"\n❌ Jev falló en {len(fallidos)} email(s). Último error: {jev.uso['ultimo_error']}")
+            print("   Prueba ABORTADA: con huecos, las cifras no serían fiables.")
+            return
 
     importantes = [m for m in medidos if m["esperado"]]
     ruido = [m for m in medidos if not m["esperado"]]
@@ -116,7 +133,8 @@ def main():
     # ── Desacuerdos: lo que TÚ tienes que mirar ──────────────────────────
     _, rec = politica.recomendar(politica.barrer(medidos, politica.REGLA))
     u = umbral_revision or rec or politica.UMBRAL_RUIDO
-    perdidos = [m for m in importantes if politica.descartar(m["noul"], m["categoria"], u)]
+    perdidos = [m for m in importantes if politica.descartar(m["noul"], m["categoria"], u,
+                                                            remitente=m.get("remitente"))]
     print("\n" + "=" * 77)
     print(f"DESACUERDOS a umbral {u} ({politica.REGLA}): Jev descartaría, el LLM dijo IMPORTANTE")
     print("=" * 77)
@@ -140,8 +158,27 @@ def main():
         for m in sorted(dudosos, key=lambda m: m["noul"])[:8]:
             print(f"    p={m['noul']:.3f} [{m['categoria']:<11}] {m['asunto'][:55]}")
 
+    if politica.REGLA == "dos_senales":
+        expuestos = sorted((m for m in importantes
+                            if m["categoria"] in politica.CATEGORIAS_DESCARTABLES
+                            and not politica.protegido(m.get("remitente"))),
+                           key=lambda m: m["noul"])
+        print("\n" + "=" * 77)
+        print("IMPORTANTES EXPUESTOS (categoría descartable + remitente sin proteger)")
+        print("  El primero marca el techo del umbral: por encima de su p, se pierde.")
+        print("=" * 77)
+        if not expuestos:
+            print("  Ninguno: con tus datos, ningún umbral pierde importantes.")
+            print("  (Emails NUEVOS de remitentes no vistos sí pueden perderse: revisa el ruido.)")
+        for m in expuestos:
+            print(f"  p={m['noul']:.3f} [{m['categoria']:<13}] {m['asunto'][:44]}")
+            print(f"        proteger:  {politica.direccion(m['remitente'])}")
+        if expuestos:
+            print(f"\n  Techo actual: umbral < {expuestos[0]['noul']:.3f}. Para subirlo, añade la dirección")
+            print("  del primero a remitentes_protegidos.txt y vuelve a ejecutar con --desde-bd (gratis).")
+
     print(f"\n  Política activa ahora: {politica.describir()}")
-    print(f"  Coste de la prueba: {jev.resumen_uso()}")
+    print(f"  Coste de la prueba: {'0 € (desde la BD)' if desde_bd else jev.resumen_uso()}")
 
     # Sin asuntos ni remitentes: el archivo se puede commitear sin exponer tu correo.
     SALIDA.write_text(json.dumps({

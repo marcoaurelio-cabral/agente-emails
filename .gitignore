@@ -9,3 +9,5 @@ token.json
 emails.db
 dataset_evals.json
 dataset_real*.json
+COMANDOS.TXT
+remitentes_protegidos.txt

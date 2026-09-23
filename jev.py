@@ -107,21 +107,33 @@ DESTINATARIO = {
 INSTRUCCIONES_IMPORTANTE = "¿Es este `email` relevante para el `destinatario`, según su perfil?"
 CRITERIOS_IMPORTANTE = {
     "true": (
-        "Cualquier correo escrito personalmente para él O otra persona reenviado a él por una persona real (familia, "
-        "amigos, conocidos, profesores), SEA CUAL SEA EL TEMA, aunque sea informal o no "
-        "tenga que ver con estudios ni oportunidades; becas y ayudas; eventos de "
-        "informática o emprendimiento en España u online; comunicaciones de su "
+        "Cualquier correo escrito personalmente para él por una persona real (familia, "
+        "amigos, conocidos, profesores), SEA CUAL SEA EL TEMA, aunque sea informal, y los "
+        "reenviados a él; becas, ayudas y movilidades en cualquier país; eventos de "
+        "informática o emprendimiento en cualquier país, sobre todo con gastos pagados; "
+        "itinerarios, billetes y tarjetas de embarque de sus viajes; pólizas de seguro de "
+        "viaje o de cancelación; avisos posteriores a la compra de un viaje que le piden "
+        "gestionar la reserva (añadirla a la aerolínea, hacer el check-in), aunque vengan "
+        "mezclados con publicidad; confirmaciones de "
+        "reserva o inscripción CON NOVEDADES (plaza confirmada, selección, fechas definitivas) "
+        "en viajes, eventos, Erasmus o becas; comunicaciones de su "
         "universidad dirigidas a su curso o a todos (Canvas, secretaría, entregas, notas); "
-        "premios y oportunidades económicas legítimas; respuestas a candidaturas suyas, "
-        "incluidos rechazos; ofertas de empleo de programación afines a su perfil."
-        "Confirmación de eventos como vuelos, bus o tren todos con fecha"
+        "boletines sobre ecosistemas tech que le interesan (San Francisco, Silicon Valley); "
+        "premios y oportunidades económicas legítimas; respuestas a candidaturas o "
+        "solicitudes suyas, incluidos rechazos; ofertas de empleo de programación afines "
+        "a su perfil."
     ),
     "false": (
-        "Publicidad, promociones, newsletters comerciales, loterías; ofertas masivas de "
-        "empleo no informático; notificaciones automáticas rutinarias (redes sociales, "
-        "recibos de compras propias, alertas de inicio de sesión propio); acuses de recibo "
-        "de formularios que él mismo envió; comunicaciones dirigidas a OTRO curso u otra "
-        "titulación; estafas y phishing."
+        "Publicidad, promociones, newsletters comerciales genéricas, loterías; ofertas "
+        "masivas de empleo no informático; notificaciones automáticas de redes sociales y "
+        "apps (comentarios, mensajes, cumpleaños, visitas al perfil), altas de cuenta y "
+        "sorteos; acuses de recibo de algo que él mismo envió ('hemos recibido tu "
+        "respuesta'); recibos o justificantes de pago SIN itinerario ni billete; alertas de "
+        "inicio de sesión propio; comunicaciones dirigidas a OTRO curso u otra titulación; "
+        "notificaciones automáticas de la asignatura DIS (Desarrollo e Integración de "
+        "Software): invitaciones y avisos de los repositorios de GitHub UFV-INGINF/dis-* "
+        "(como 'Run failed') y calificaciones automáticas de DIS en Canvas; "
+        "estafas y phishing."
     ),
 }
 
@@ -132,9 +144,11 @@ CRITERIOS_CATEGORIA = {
     "universidad": "Comunicaciones de la UFV: Canvas, secretaría, profesores, entregas, notas, horarios",
     "personal": "Correos escritos por una persona real dirigidos a él (familia, amigos, contactos)",
     "dinero": "Premios, concursos con premio, subvenciones, reembolsos de fuentes legítimas",
-    "empleo_afin": "Ofertas o procesos de empleo/prácticas de informática y programación",
+    "empleo_afin": "Ofertas o procesos de selección de informática y programación que encajan con su perfil (desarrollo, IT, prácticas tech), incluidas empresas que le escriben directamente",
+    "empleo_masivo": "Alertas y ofertas masivas de portales de empleo de otros sectores o que no encajan con su perfil (comercial, azafato, teleoperador, dependiente, etc.)",
     "promocional": "Publicidad, descuentos, newsletters comerciales, loterías, marketing",
-    "automatico": "Notificaciones automáticas rutinarias: redes sociales, recibos, alertas, acuses",
+    "viaje": "Itinerarios, billetes, tarjetas de embarque, reservas de viajes propios, seguros de viaje o de cancelación, y avisos posteriores a la compra (añadir la reserva a la aerolínea, check-in)",
+    "automatico": "Notificaciones automáticas rutinarias: redes sociales, recibos de pago sin itinerario, alertas de inicio de sesión, altas de cuenta, notificaciones automáticas de la asignatura DIS (repos de GitHub UFV-INGINF/dis-*, calificaciones automáticas de DIS)",
     "sospechoso": "Phishing, estafas, premios falsos, peticiones de datos bancarios con urgencia",
     "otro": "No encaja claramente en ninguna de las anteriores",
 }

@@ -13,10 +13,15 @@ de lo que ejecutas. Una sola definición = lo que mides es lo que corre.
 Las dos reglas:
     solo_noul    descartar si p < umbral
     dos_senales  descartar si p < umbral Y la categoría es descartable
-                 (promocional, automatico, sospechoso). Un email 'personal',
+                 (promocional, automatico, sospechoso, empleo_masivo). Un email 'personal',
                  'universidad', 'beca'... va SIEMPRE al LLM, dé Jev la p que dé.
                  Para perder un email importante tienen que equivocarse las
                  dos señales a la vez y en el mismo sentido.
+
+Remitentes protegidos (remitentes_protegidos.txt): direcciones que SIEMPRE van
+al LLM, sea cual sea la regla o el umbral. Es la tercera defensa, y la única
+determinista: cuando la sombra encuentra un fallo real de Jev, se protege ese
+remitente y ese fallo no puede repetirse.
 
 Nota de la guía de TypeSafe: cambiar la política (umbral, regla) NO requiere
 volver a llamar al modelo si el estado y las preguntas no han cambiado. Por
@@ -29,13 +34,15 @@ Configuración (.env):
 """
 
 import os
+import re
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 REGLAS = ("solo_noul", "dos_senales")
-CATEGORIAS_DESCARTABLES = frozenset({"promocional", "automatico", "sospechoso"})
+CATEGORIAS_DESCARTABLES = frozenset({"promocional", "automatico", "sospechoso", "empleo_masivo"})
 
 USAR_PREFILTRO = os.getenv("JEV_PREFILTRO", "1") != "0"
 REGLA = os.getenv("JEV_REGLA", "dos_senales")
@@ -47,10 +54,41 @@ MARGEN_SEGURIDAD = 0.6  # recomendamos el 60% del último umbral sin pérdidas
 if REGLA not in REGLAS:
     raise ValueError(f"JEV_REGLA='{REGLA}' no válida. Opciones: {REGLAS}")
 
+ARCHIVO_PROTEGIDOS = Path(__file__).parent / "remitentes_protegidos.txt"
+
+
+def _cargar_protegidos() -> frozenset[str]:
+    if not ARCHIVO_PROTEGIDOS.exists():
+        return frozenset()
+    lineas = ARCHIVO_PROTEGIDOS.read_text(encoding="utf-8").splitlines()
+    return frozenset(l.strip().lower() for l in lineas if l.strip() and not l.strip().startswith("#"))
+
+
+REMITENTES_PROTEGIDOS = _cargar_protegidos()
+
+
+def direccion(remitente: str | None) -> str:
+    """'Booking.com <noreply@booking.com>'  ->  'noreply@booking.com'"""
+    if not remitente:
+        return ""
+    m = re.search(r"<([^>]+)>", remitente)
+    return (m.group(1) if m else remitente).strip().lower()
+
+
+def protegido(remitente: str | None) -> bool:
+    """¿Este remitente tiene que pasar siempre por el LLM?"""
+    d = direccion(remitente)
+    if not d:
+        return False
+    dominio = "@" + d.split("@")[-1]
+    return d in REMITENTES_PROTEGIDOS or dominio in REMITENTES_PROTEGIDOS
+
 
 def descartar(noul: float, categoria: str, umbral: float | None = None,
-              regla: str | None = None) -> bool:
+              regla: str | None = None, remitente: str | None = None) -> bool:
     """¿Se descarta este email sin llamar al LLM?"""
+    if protegido(remitente):
+        return False
     umbral = UMBRAL_RUIDO if umbral is None else umbral
     regla = regla or REGLA
     if noul >= umbral:
@@ -63,7 +101,7 @@ def descartar(noul: float, categoria: str, umbral: float | None = None,
 
 
 def describir() -> str:
-    return f"{REGLA} · umbral {UMBRAL_RUIDO}"
+    return f"{REGLA} · umbral {UMBRAL_RUIDO} · {len(REMITENTES_PROTEGIDOS)} remitentes protegidos"
 
 
 # ── Evaluación de la política (compartida por calibración y sombra) ─────────
@@ -73,7 +111,7 @@ def barrer(items: list[dict], regla: str, umbrales=UMBRALES_BARRIDO) -> list[dic
     Para cada umbral: cuántos se descartarían y cuáles de ellos eran importantes."""
     filas = []
     for u in umbrales:
-        desc = [i for i in items if descartar(i["noul"], i["categoria"], u, regla)]
+        desc = [i for i in items if descartar(i["noul"], i["categoria"], u, regla, i.get("remitente"))]
         filas.append({
             "umbral": u,
             "descartados": len(desc),

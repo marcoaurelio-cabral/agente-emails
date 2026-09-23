@@ -37,6 +37,21 @@ LECTURA_RAPIDA = 1500
 Progreso = Callable[[str], None] | None
 
 
+def clasificar_llm(e: dict, hoy: date | None = None) -> Clasificacion:
+    """Etapa LLM con LECTURA ADAPTATIVA: primero los primeros LECTURA_RAPIDA
+    caracteres; si resulta importante y el email era más largo, se relee entero.
+    Es la MISMA función que usan producción y evals.py: lo que se mide es lo
+    que se ejecuta."""
+    hoy = hoy or date.today()
+    fecha_email = date.fromtimestamp(e["fecha_epoch"])
+    cuerpo = e["cuerpo"]
+    c = clasificar(e["remitente"], e["asunto"], cuerpo[:LECTURA_RAPIDA],
+                   fecha_email=fecha_email, hoy=hoy)
+    if c.importante and len(cuerpo) > LECTURA_RAPIDA:
+        c = clasificar(e["remitente"], e["asunto"], cuerpo, fecha_email=fecha_email, hoy=hoy)
+    return c
+
+
 def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
     """Clasifica un email en CASCADA. Devuelve (clasificacion, prefiltro).
 
@@ -52,7 +67,7 @@ def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
     pre = None
     if politica.USAR_PREFILTRO:
         pre = jev.evaluar(e["remitente"], e["asunto"], cuerpo)
-        if pre and politica.descartar(pre["noul"], pre["categoria"]):
+        if pre and politica.descartar(pre["noul"], pre["categoria"], remitente=e["remitente"]):
             pre["decidido_por"] = "jev"
             return Clasificacion(
                 importante=False, categoria="ruido", prioridad="baja",
@@ -60,10 +75,7 @@ def clasificar_email(e: dict, hoy: date | None = None) -> tuple:
                 resumen="", requiere_accion=False, accion="", fecha_limite="",
             ), pre
 
-    c = clasificar(e["remitente"], e["asunto"], cuerpo[:LECTURA_RAPIDA],
-                   fecha_email=fecha_email, hoy=hoy)
-    if c.importante and len(cuerpo) > LECTURA_RAPIDA:
-        c = clasificar(e["remitente"], e["asunto"], cuerpo, fecha_email=fecha_email, hoy=hoy)
+    c = clasificar_llm(e, hoy)
     if pre:
         pre["decidido_por"] = "llm"
     return c, pre

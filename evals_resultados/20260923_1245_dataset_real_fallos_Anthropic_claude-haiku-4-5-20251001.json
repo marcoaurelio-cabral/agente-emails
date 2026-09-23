@@ -1,0 +1,468 @@
+{
+  "proveedor": "Anthropic:claude-haiku-4-5-20251001",
+  "fecha": "20260923_1245",
+  "repeticiones": 1,
+  "resumen": {
+    "importante": "17/21",
+    "falsos_negativos": [
+      "1a08a41684ab30fc"
+    ],
+    "falsos_positivos": [
+      "1a0a2285c2b086ee",
+      "1a0a19b5de2cbd6b",
+      "1a0a184ed839d783"
+    ],
+    "tarea": "16/21",
+    "plazo": null,
+    "consistencia": 1.0,
+    "uso": {
+      "llamadas": 31,
+      "entrada": 129505,
+      "salida": 7867
+    },
+    "coste_usd": 0.16884000000000002
+  },
+  "resultados": [
+    {
+      "id": "1a0a5dfc4e8efd47",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Son notificaciones automáticas de DIS (Desarrollo e Integración de Software) sobre comentarios del profesor en entregas. Marco gestiona DIS por su cuenta y estas notificaciones automáticas no requieren acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08db79db452f0f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "empleo_afin",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Ofertas de prácticas y programas técnicos en KPMG (ciberseguridad, consultoría tech) muy afines a Ingeniería Informática. Marco se registró en la plataforma, así que son oportunidades reales. Sin embargo, no hay plazo explícito de candidatura ni urgencia inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a41684ab30fc",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Email dirigido a otra persona (David Cabral de Solventia) sobre un certificado para su hijo Marco Aurelio. No es una comunicación dirigida a Marco ni requiere su acción. Es un email reenviado/copiado por error o confusión de identidades.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08a3dd6cb71d6d",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "dinero",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Gestionar certificado de póliza de viaje",
+      "fecha_limite": "2026-09-11",
+      "motivo": "Email de un tercero (padre de Marco) solicitando urgentemente un certificado de póliza de viaje para Marco a Austria (5-9 octubre 2026). Aunque el email está dirigido a Victor (mediador de seguros), contiene información crítica sobre un viaje de Marco y una amenaza de pérdida de beca si no se obtiene el certificado \"para mañana\" (desde la perspectiva del 2 de septiembre). Marco necesita estar informado de esta situación urgente que afecta a su beca.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0ab5f48b3583ca",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de DIS sobre la creación del repositorio de P2. Según las instrucciones, los avisos de gestión de repositorios del profesor (\"repositorio creado\", \"repositorio disponible\") son ruido: Marco los sigue por su cuenta.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0aa5fe2044e28f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Comunicación directa de la profesora Susana sobre un cambio de horario en la clase de hoy. Marco necesita saber que la clase empieza a las 18h en lugar de la hora habitual.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0aa5c512dd7873",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en eventos ACE²EU en Polonia",
+      "fecha_limite": "2026-10-31",
+      "motivo": "Evento de emprendimiento internacional en Polonia con oportunidad de viaje y networking. Marco tiene mentalidad emprendedora y le encanta viajar. Incluye dos eventos (Student Led Colloquium y ARC Industry Engagement Event) con inscripción abierta.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a9de806ff74b3",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un evento de sostenibilidad, no de informática, tecnología o emprendimiento. Marco no tiene interés en temas de sostenibilidad según su perfil.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a55223ffa1fa2",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una notificación automática de DIS sobre la creación del repositorio de P1. Marco gestiona las entregas de DIS por su cuenta y ya tiene acceso al repositorio.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0955f57d7e7417",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un reporte automático de Canvas sobre notificaciones de DIS. Aunque menciona tareas de DIS, Marco gestiona estas entregas por su cuenta y las notificaciones automáticas de DIS no son importantes según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a091a3dc3ffd219",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Inscribirse en el viaje a Italia",
+      "fecha_limite": "2026-10-23",
+      "motivo": "Viaje internacional de la EPS a Italia con visita a universidad de ingeniería (Catholic.tech), plazas limitadas y plazo de inscripción urgente. Incluye vuelos, alojamiento y seguro. Oportunidad de networking y conocer campus potencial para Erasmus.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a08b0720451c24f",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "beca",
+      "prioridad": "alta",
+      "requiere_accion": true,
+      "accion": "Completar formulario de aceptación de beca ACE2EU",
+      "fecha_limite": "2026-09-11",
+      "motivo": "Marco ha sido seleccionado para una beca de movilidad internacional a Austria con financiación (1189.73€) y debe completar un formulario administrativo obligatorio. Aunque el plazo original era el 11 de septiembre (ya pasado), el email del 16 de septiembre confirma la selección y la cantidad corregida, lo que indica que la gestión sigue activa.",
+      "tarea_esperada": false,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a98dc616b7451",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un informe de reunión (Read AI) en la que Marco participó. Aunque es un recordatorio para acceder al informe, los informes de reuniones en las que participa son importantes según los criterios.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a3fe8b1dec7ac",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "evento",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es una respuesta a la candidatura de Marco a un hackathon de tecnología (Claude Code Hackathon). Aunque no fue seleccionado esta vez, es importante que sepa el resultado de su solicitud y que le prometen contactarle para futuros eventos.",
+      "tarea_esperada": true,
+      "tarea_ok": false
+    },
+    {
+      "id": "1a0a2285c2b086ee",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de reserva de vuelos con itinerario completo (fechas, horas, origen-destino, localizadores). Es información de viaje que Marco necesita tener a mano, aunque no requiera acción inmediata.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a1b1386b89bfe",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "ruido",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un recibo de compra de entradas de museo sin itinerario de viaje ni billete de transporte. Aunque incluye fechas y horas de los eventos, es un acuse de recibo de una compra ya realizada, no un documento de viaje.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a1ab1b230b521",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "viajes",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de vuelo reservado con itinerario implícito. Aunque el email mezcla la confirmación con promociones de alojamiento, contiene la información crítica de que el vuelo está reservado y Marco puede necesitar gestionar detalles de la reserva (añadirla a su cuenta de la aerolínea, etc.).",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a19b5de2cbd6b",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Confirmación de reserva de viaje con itinerario completo (fechas, horas, origen-destino, localizador). Marco viaja a Venecia-Villach-Venecia del 4 al 10 de octubre con acompañantes.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a0a184ed839d783",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": false,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "media",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un itinerario de viaje de Ryanair con número de reserva (G8LLTK) y destino (Madrid). Contiene información del billete y la reserva que Marco necesita tener a mano, aunque el viaje ya está confirmado.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08cdbba1fe4ae5",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": false,
+      "obtenido": false,
+      "votos": [
+        false
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "baja",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un acuse de recibo automático confirmando que la UFV recibió la solicitud de movilidad que Marco ya envió. No requiere acción adicional de su parte.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    },
+    {
+      "id": "1a08ac6846dbdc0e",
+      "origen": "etiquetado_por_marco",
+      "frontera": false,
+      "esperado": true,
+      "obtenido": true,
+      "votos": [
+        true
+      ],
+      "acierto": true,
+      "consistencia": 1.0,
+      "categoria_esperada": null,
+      "categoria_obtenida": "personal",
+      "prioridad": "alta",
+      "requiere_accion": false,
+      "accion": "",
+      "fecha_limite": "",
+      "motivo": "Es un reenvío de su padre sobre un certificado urgente necesario para mantener una beca universitaria, con viaje a Austria programado. Marco necesita estar informado de esta situación crítica que afecta a su expediente académico.",
+      "tarea_esperada": false,
+      "tarea_ok": true
+    }
+  ]
+}

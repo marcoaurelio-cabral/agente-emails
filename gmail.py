@@ -32,6 +32,7 @@ import random
 import re
 import time
 
+from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -77,10 +78,55 @@ def _ejecutar_con_reintentos(peticion, intentos: int = 6):
             time.sleep(espera)
 
 
+def _autorizar(motivo: str) -> Credentials:
+    """Abre el navegador para que autorices el acceso a Gmail (solo lectura)."""
+    print(f"\n  [Gmail] {motivo}")
+    print("          Se abrirá el navegador: elige tu cuenta -> Avanzado ->")
+    print("          Ir a agente-emails (no seguro) -> Permitir.\n")
+    flow = InstalledAppFlow.from_client_secrets_file(CREDENCIALES, SCOPES)
+    return flow.run_local_server(port=0)
+
+
+def _credenciales() -> Credentials:
+    """Devuelve credenciales válidas, pidiendo autorización SOLO si hace falta.
+
+    Si el permiso ha caducado (7 días con la app en modo prueba) o se ha
+    revocado (cambio de contraseña, quitar el acceso desde tu cuenta de
+    Google, 6 meses sin uso), se detecta y se vuelve a autorizar solo: ya no
+    hay que borrar token.json a mano.
+
+    Refresco PREVENTIVO al arrancar: se renueva aunque el token aún parezca
+    válido. Así, si el permiso ha caducado, te enteras AQUÍ, antes de empezar,
+    y no a mitad de 150 emails. Y el token recién renovado dura una hora,
+    más que cualquier ejecución.
+    """
+    creds = None
+    if os.path.exists(TOKEN):
+        try:
+            creds = Credentials.from_authorized_user_file(TOKEN, SCOPES)
+        except ValueError:
+            creds = None  # token.json corrupto o incompleto: se autoriza de nuevo
+
+    if creds is None or not creds.refresh_token:
+        creds = _autorizar("Primera autorización de acceso a tu Gmail.")
+    else:
+        try:
+            creds.refresh(Request())
+        except RefreshError:
+            os.remove(TOKEN)
+            creds = _autorizar("El permiso de acceso a Gmail ha caducado o se ha revocado. "
+                               "Hay que autorizar de nuevo.")
+
+    with open(TOKEN, "w") as f:
+        f.write(creds.to_json())
+    return creds
+
+
 def _obtener_servicio():
     global _servicio
-    if _servicio is not None:
-        return _servicio
+    if _servicio is None:
+        _servicio = build("gmail", "v1", credentials=_credenciales())
+    return _servicio
 
     creds = None
     if os.path.exists(TOKEN):
