@@ -62,6 +62,8 @@ _COLUMNAS = {
     "referencia":     "TEXT",
     "confirma_hecho": "INTEGER",
     "grupo":          "TEXT",    # gmail_id del email más antiguo de su grupo
+    # --- v7: "me he enterado" (estado, NO etiqueta: no afecta a los evals) ---
+    "visto_en":       "INTEGER",
 }
 
 # "Importante efectivo": si Marco corrigió, manda su corrección; si no, el modelo.
@@ -475,18 +477,31 @@ def tareas_completadas(dias: int = 30) -> list[dict]:
     return _agrupar(filas)
 
 
-def importantes_sin_accion(dias: int = 7) -> list[dict]:
-    """Importantes informativos (sin tarea) de los últimos N días, agrupados."""
+def importantes_sin_accion(dias: int = 7, incluir_vistos: bool = False) -> list[dict]:
+    """Importantes informativos (sin tarea) de los últimos N días, agrupados.
+    Por defecto sin los que Marco ya marcó como "me he enterado". Si llega un
+    email NUEVO de un grupo ya visto, el grupo vuelve a aparecer con él."""
     desde = int(time.time()) - dias * 24 * 3600
+    filtro_visto = "" if incluir_vistos else "AND visto_en IS NULL"
     with _conectar() as conn:
         filas = conn.execute(
             f"""SELECT * FROM emails
                 WHERE {_IMPORTANTE} = 1 AND fecha_epoch >= ?
-                  AND (requiere_accion = 0 OR requiere_accion IS NULL)
+                  AND (requiere_accion = 0 OR requiere_accion IS NULL) {filtro_visto}
                 ORDER BY {_ORDEN_PRIORIDAD}, fecha_epoch DESC""",
             (desde,),
         ).fetchall()
     return _agrupar(filas)
+
+
+def marcar_vistos(ids: list[str], visto: bool = True) -> int:
+    """"Me he enterado" (o deshacerlo). Solo cambia el estado, nunca la etiqueta."""
+    with _conectar() as conn:
+        cur = conn.execute(
+            f"UPDATE emails SET visto_en = ? WHERE gmail_id IN ({','.join('?' * len(ids))})",
+            [int(time.time()) if visto else None, *ids],
+        )
+        return cur.rowcount
 
 
 def estadisticas() -> dict:
