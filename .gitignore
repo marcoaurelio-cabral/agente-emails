@@ -12,3 +12,5 @@ dataset_real*.json
 COMANDOS.TXT
 remitentes_protegidos.txt
 contactos_importantes.txt
+servidor.log
+app/dist/

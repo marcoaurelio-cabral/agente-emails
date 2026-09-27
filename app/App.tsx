@@ -1,14 +1,19 @@
-// App.tsx — Agente de emails (cliente móvil, v0.1)
+// App.tsx — Agente de emails (cliente móvil, v0.2)
 //
-// Habla con el backend FastAPI (api.py). La URL sale de app/.env:
-//   EXPO_PUBLIC_API_URL=http://192.168.1.XX:8000
-// Tras cambiar el .env, reinicia `npx expo start`.
+// La URL del backend sale de app/.env:
+//   EXPO_PUBLIC_API_URL=http://localhost:8000      (web en el PC)
+//   EXPO_PUBLIC_API_URL=http://192.168.1.XX:8000   (móvil en la misma WiFi)
+// Tras cambiar el .env:  npx expo start --web -c
 
+import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
+  Easing,
   FlatList,
+  Platform,
   Pressable,
   RefreshControl,
   SafeAreaView,
@@ -17,24 +22,45 @@ import {
   View,
 } from "react-native";
 
-const API = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+const API_ENV = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+// Compilada y servida por el propio backend (el acceso directo), la API está en
+// la misma dirección que la app: rutas relativas. En desarrollo (Expo, puerto
+// 8081) se usa la URL del .env.
+const MISMO_ORIGEN =
+  Platform.OS === "web" && (globalThis as any).location?.port !== "8081";
+const API = MISMO_ORIGEN ? "" : API_ENV;
+const NATIVO = Platform.OS !== "web"; // el driver nativo de Animated no existe en web
 
+// ── Tokens de diseño ──────────────────────────────────────────────────────
 const C = {
-  papel: "#F4F5F1",
-  tinta: "#1C2B45",
-  tintaSuave: "#5A677C",
-  linea: "#DCDFE3",
-  vencida: "#C23A2B",
-  pronto: "#C98200",
-  luego: "#66768C",
+  fondo: "#EEF1F8",
+  tarjeta: "#FFFFFF",
+  tinta: "#131F3A",
+  tintaSuave: "#56627A",
+  linea: "#DDE2EE",
   blanco: "#FFFFFF",
+  vencida: "#E5484D",
+  pronto: "#F59E0B",
+  luego: "#3E63DD",
+  hecha: "#12A150",
+  primario: "#2F5BEA",
 };
+const CATEGORIA: Record<string, { color: string; nombre: string }> = {
+  beca: { color: "#7C3AED", nombre: "Beca" },
+  evento: { color: "#0891B2", nombre: "Evento" },
+  viaje: { color: "#059669", nombre: "Viaje" },
+  personal: { color: "#EA580C", nombre: "Personal" },
+  dinero: { color: "#CA8A04", nombre: "Dinero" },
+  empleo_afin: { color: "#DB2777", nombre: "Empleo" },
+};
+const categoria = (c?: string | null) => CATEGORIA[c ?? ""] ?? { color: C.luego, nombre: "Aviso" };
 
+// ── Tipos ─────────────────────────────────────────────────────────────────
 type Tarea = {
   ids: string[];
   accion: string | null;
   asunto: string;
-  resumen: string | null;
+  categoria: string | null;
   fecha_limite: string | null;
   repeticiones: number;
 };
@@ -43,13 +69,15 @@ type Importante = {
   ids: string[];
   asunto: string;
   resumen: string | null;
+  categoria: string | null;
   fecha_epoch: number;
   repeticiones: number;
 };
-type Descartado = { gmail_id: string; asunto: string; remitente: string; motivo: string | null };
+type Descartado = { gmail_id: string; asunto: string; remitente: string };
 type Pestana = "tareas" | "importantes" | "descartados";
+type Salida = (direccion: 1 | -1, despues: () => void) => void;
 
-// ── API ──────────────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────────────
 async function api<T>(ruta: string, cuerpo?: object): Promise<T> {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 10000);
@@ -67,18 +95,18 @@ async function api<T>(ruta: string, cuerpo?: object): Promise<T> {
   }
 }
 
-// ── Fechas ───────────────────────────────────────────────────────────────
+// ── Fechas ────────────────────────────────────────────────────────────────
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
 function plazo(fecha: string | null) {
-  if (!fecha) return { dia: "—", mes: "sin plazo", color: C.luego };
+  if (!fecha) return { dia: "·", mes: "sin plazo", color: C.luego, dias: Infinity };
   const f = new Date(fecha + "T00:00:00");
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
   const dias = Math.round((f.getTime() - hoy.getTime()) / 86400000);
   const color = dias < 0 ? C.vencida : dias <= 7 ? C.pronto : C.luego;
-  const mes = dias < 0 ? "vencida" : dias === 0 ? "hoy" : MESES[f.getMonth()];
-  return { dia: String(f.getDate()), mes, color };
+  const mes = dias < 0 ? "vencida" : dias === 0 ? "hoy" : dias === 1 ? "mañana" : MESES[f.getMonth()];
+  return { dia: String(f.getDate()), mes, color, dias };
 }
 
 const fechaCorta = (epoch: number) => {
@@ -86,7 +114,86 @@ const fechaCorta = (epoch: number) => {
   return `${f.getDate()} ${MESES[f.getMonth()]}`;
 };
 
-// ── App ──────────────────────────────────────────────────────────────────
+// ── Tarjeta animada ───────────────────────────────────────────────────────
+// Entra escalonada al aparecer y sale deslizándose cuando actúas sobre ella.
+function Tarjeta({ indice, children }: { indice: number; children: (salir: Salida) => ReactNode }) {
+  const entrada = useRef(new Animated.Value(0)).current;
+  const x = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(entrada, {
+      toValue: 1,
+      duration: 340,
+      delay: Math.min(indice, 8) * 55,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: NATIVO,
+    }).start();
+  }, [entrada, indice]);
+
+  const salir: Salida = (direccion, despues) =>
+    Animated.timing(x, {
+      toValue: direccion * 480,
+      duration: 260,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: NATIVO,
+    }).start(() => despues());
+
+  const estilo = {
+    opacity: Animated.multiply(entrada, x.interpolate({ inputRange: [-480, 0, 480], outputRange: [0, 1, 0] })),
+    transform: [
+      { translateY: entrada.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) },
+      { translateX: x },
+    ],
+  };
+  return <Animated.View style={[s.tarjeta, estilo]}>{children(salir)}</Animated.View>;
+}
+
+// ── Botón de revisar ──────────────────────────────────────────────────────
+// Pastilla flotante. Al revisar, un anillo discontinuo gira alrededor del
+// sobre y el texto muestra el progreso real del servidor.
+function BotonRevisar({ progreso, onPress }: { progreso: string | null; onPress: () => void }) {
+  const giro = useRef(new Animated.Value(0)).current;
+  const pulsado = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (!progreso) {
+      giro.stopAnimation();
+      giro.setValue(0);
+      return;
+    }
+    const bucle = Animated.loop(
+      Animated.timing(giro, { toValue: 1, duration: 1400, easing: Easing.linear, useNativeDriver: NATIVO })
+    );
+    bucle.start();
+    return () => bucle.stop();
+  }, [progreso, giro]);
+
+  const presionar = (a: number) =>
+    Animated.spring(pulsado, { toValue: a, useNativeDriver: NATIVO, speed: 40, bounciness: 8 }).start();
+  const rotacion = giro.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] });
+
+  return (
+    <Animated.View style={[s.fabZona, { transform: [{ scale: pulsado }] }]}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={() => presionar(0.95)}
+        onPressOut={() => presionar(1)}
+        disabled={!!progreso}
+        accessibilityRole="button"
+        accessibilityLabel={progreso ? `Revisando: ${progreso}` : "Revisar bandeja"}
+        style={[s.fab, progreso ? s.fabOcupado : null]}
+      >
+        <View style={s.fabIcono}>
+          {progreso ? <Animated.View style={[s.fabAnillo, { transform: [{ rotate: rotacion }] }]} /> : null}
+          <Ionicons name={progreso ? "mail-open-outline" : "mail-unread-outline"} size={20} color={C.blanco} />
+        </View>
+        <Text style={s.fabTexto} numberOfLines={1}>{progreso ?? "Revisar bandeja"}</Text>
+      </Pressable>
+    </Animated.View>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────
 export default function App() {
   const [pestana, setPestana] = useState<Pestana>("tareas");
   const [tareas, setTareas] = useState<Tarea[]>([]);
@@ -99,8 +206,8 @@ export default function App() {
   const temporizador = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const cargar = useCallback(async () => {
-    if (!API) {
-      setError("Falta EXPO_PUBLIC_API_URL en app/.env (por ejemplo http://192.168.1.20:8000).");
+    if (!API && !MISMO_ORIGEN) {
+      setError("Falta EXPO_PUBLIC_API_URL en app/.env (por ejemplo http://localhost:8000).");
       setCargando(false);
       return;
     }
@@ -115,10 +222,7 @@ export default function App() {
       setDescartados(d.ruido);
       setError(null);
     } catch {
-      setError(
-        `No se puede conectar con ${API}. Comprueba que el servidor está arrancado ` +
-          "(uvicorn api:app --host 0.0.0.0) y que el móvil está en la misma WiFi que el PC."
-      );
+      setError(`No se puede conectar con ${API || "el servidor"}. Si usas el acceso directo, ciérralo y vuelve a abrirlo; si estás desarrollando, arranca uvicorn.`);
     } finally {
       setCargando(false);
     }
@@ -135,48 +239,53 @@ export default function App() {
   };
 
   // ── Acciones ──
-  const completar = async (t: Tarea) => {
-    setTareas((ts) => ts.filter((x) => x !== t)); // respuesta inmediata
-    try {
-      await api("/tareas/completar", { ids: t.ids });
-      avisar("Tarea marcada como hecha.", async () => {
-        await api("/tareas/reabrir", { ids: t.ids });
-        setAviso(null);
+  const completar = (t: Tarea, salir: Salida) =>
+    salir(1, async () => {
+      setTareas((ts) => ts.filter((x) => x !== t));
+      try {
+        await api("/tareas/completar", { ids: t.ids });
+        avisar("Tarea marcada como hecha.", async () => {
+          await api("/tareas/reabrir", { ids: t.ids });
+          setAviso(null);
+          cargar();
+        });
+      } catch {
+        avisar("No se ha podido marcar como hecha.");
         cargar();
-      });
-    } catch {
-      avisar("No se ha podido marcar como hecha. Inténtalo de nuevo.");
-      cargar();
-    }
-  };
+      }
+    });
 
-  const corregir = async (ids: string[], importante: boolean) => {
-    try {
-      for (const id of ids) await api(`/emails/${id}/corregir`, { importante });
-      avisar(importante ? "Movido a importantes." : "Movido a descartados.", async () => {
-        for (const id of ids) await api(`/emails/${id}/corregir`, { importante: !importante });
-        setAviso(null);
+  const enterado = (i: Importante, salir: Salida) =>
+    salir(1, async () => {
+      setImportantes((xs) => xs.filter((x) => x !== i));
+      try {
+        await api("/emails/visto", { ids: i.ids });
+        avisar("Marcado como leído.", async () => {
+          await api("/emails/no-visto", { ids: i.ids });
+          setAviso(null);
+          cargar();
+        });
+      } catch {
+        avisar("No se ha podido marcar como leído.");
         cargar();
-      });
-      cargar();
-    } catch {
-      avisar("No se ha podido guardar la corrección.");
-    }
-  };
+      }
+    });
 
-  const enterado = async (i: Importante) => {
-    setImportantes((xs) => xs.filter((x) => x !== i)); // respuesta inmediata
-    try {
-      await api("/emails/visto", { ids: i.ids });
-      avisar("Marcado como leído.", async () => {
-        await api("/emails/no-visto", { ids: i.ids });
-        setAviso(null);
+  const corregir = async (ids: string[], importante: boolean, salir?: Salida) => {
+    const hacer = async () => {
+      try {
+        for (const id of ids) await api(`/emails/${id}/corregir`, { importante });
+        avisar(importante ? "Movido a importantes." : "Movido a descartados.", async () => {
+          for (const id of ids) await api(`/emails/${id}/corregir`, { importante: !importante });
+          setAviso(null);
+          cargar();
+        });
         cargar();
-      });
-    } catch {
-      avisar("No se ha podido marcar como leído.");
-      cargar();
-    }
+      } catch {
+        avisar("No se ha podido guardar la corrección.");
+      }
+    };
+    salir ? salir(-1, hacer) : hacer();
   };
 
   const revisar = async () => {
@@ -192,7 +301,7 @@ export default function App() {
         const e = await api<{ en_curso: boolean; progreso: string; error: string | null; resultado: any }>(
           "/revisar/estado"
         );
-        setRevision(e.progreso || "Revisando…");
+        setRevision(e.progreso ? e.progreso.charAt(0).toUpperCase() + e.progreso.slice(1) : "Revisando…");
         if (!e.en_curso) {
           clearInterval(sondeo);
           setRevision(null);
@@ -208,109 +317,149 @@ export default function App() {
     }, 2000);
   };
 
+  // ── Resumen de cabecera ──
+  const vencidas = tareas.filter((t) => plazo(t.fecha_limite).dias < 0).length;
+  const resumen =
+    tareas.length === 0 && importantes.length === 0
+      ? "Estás al día."
+      : `${tareas.length} ${tareas.length === 1 ? "tarea pendiente" : "tareas pendientes"}` +
+        (vencidas ? `, ${vencidas} ${vencidas === 1 ? "vencida" : "vencidas"}` : "") +
+        ` y ${importantes.length} ${importantes.length === 1 ? "aviso" : "avisos"} por leer.`;
+
   // ── Filas ──
-  const filaTarea = ({ item }: { item: Tarea }) => {
+  const filaTarea = ({ item, index }: { item: Tarea; index: number }) => {
     const p = plazo(item.fecha_limite);
     return (
-      <View style={s.fila}>
-        <View style={[s.plazo, { borderColor: p.color }]}>
-          <Text style={[s.plazoDia, { color: p.color }]}>{p.dia}</Text>
-          <Text style={[s.plazoMes, { color: p.color }]}>{p.mes}</Text>
-        </View>
-        <View style={s.cuerpo}>
-          <Text style={s.titulo}>{item.accion || item.asunto}</Text>
-          <Text style={s.detalle} numberOfLines={2}>
-            {item.asunto}
-            {item.repeticiones > 1 ? `  (${item.repeticiones} emails)` : ""}
-          </Text>
-        </View>
-        <Pressable style={s.boton} onPress={() => completar(item)} accessibilityRole="button">
-          <Text style={s.botonTexto}>Hecha</Text>
-        </Pressable>
-      </View>
+      <Tarjeta indice={index}>
+        {(salir) => (
+          <View style={s.filaTarea}>
+            <View style={[s.pestanaFecha, { backgroundColor: p.color }]}>
+              <Text style={s.fechaDia}>{p.dia}</Text>
+              <Text style={s.fechaMes}>{p.mes}</Text>
+            </View>
+            <View style={s.cuerpo}>
+              <Text style={s.titulo}>{item.accion || item.asunto}</Text>
+              <Text style={s.detalle} numberOfLines={2}>{item.asunto}</Text>
+              {item.repeticiones > 1 ? <Text style={s.meta}>{item.repeticiones} emails sobre esto</Text> : null}
+            </View>
+            <Pressable style={s.botonHecha} onPress={() => completar(item, salir)} accessibilityRole="button"
+              accessibilityLabel={`Marcar como hecha: ${item.accion || item.asunto}`}>
+              <Ionicons name="checkmark" size={18} color={C.blanco} />
+              <Text style={s.botonHechaTexto}>Hecha</Text>
+            </Pressable>
+          </View>
+        )}
+      </Tarjeta>
     );
   };
 
-  const filaImportante = ({ item }: { item: Importante }) => (
-    <View style={s.fila}>
-      <View style={s.cuerpo}>
-        <Text style={s.fecha}>{fechaCorta(item.fecha_epoch)}</Text>
-        <Text style={s.titulo}>{item.asunto}</Text>
-        {item.resumen ? <Text style={s.detalle}>{item.resumen}</Text> : null}
-        {item.repeticiones > 1 ? <Text style={s.detalle}>{item.repeticiones} emails sobre esto</Text> : null}
-        <View style={s.acciones}>
-          <Pressable style={s.botonSecundario} onPress={() => enterado(item)} accessibilityRole="button">
-            <Text style={s.botonSecundarioTexto}>Me he enterado</Text>
-          </Pressable>
-          <Pressable onPress={() => corregir(item.ids, false)} accessibilityRole="button">
-            <Text style={[s.enlace, { marginTop: 0 }]}>No me importa</Text>
-          </Pressable>
-        </View>
-      </View>
-    </View>
-  );
-
-  const filaDescartado = ({ item }: { item: Descartado }) => (
-    <View style={s.fila}>
-      <View style={s.cuerpo}>
-        <Text style={s.tituloSuave}>{item.asunto}</Text>
-        <Text style={s.detalle} numberOfLines={1}>{item.remitente}</Text>
-        <Pressable onPress={() => corregir([item.gmail_id], true)} accessibilityRole="button">
-          <Text style={s.enlace}>Sí me importa</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-
-  const vacio: Record<Pestana, string> = {
-    tareas: "No tienes nada pendiente. Revisa la bandeja para buscar novedades.",
-    importantes: "Estás al día: no queda nada importante por leer de los últimos 7 días.",
-    descartados: "Nada descartado en los últimos 7 días.",
+  const filaImportante = ({ item, index }: { item: Importante; index: number }) => {
+    const cat = categoria(item.categoria);
+    return (
+      <Tarjeta indice={index}>
+        {(salir) => (
+          <View style={[s.filaImportante, { borderTopColor: cat.color }]}>
+            <View style={s.cabeceraTarjeta}>
+              <View style={[s.etiqueta, { backgroundColor: cat.color + "1A" }]}>
+                <View style={[s.punto, { backgroundColor: cat.color }]} />
+                <Text style={[s.etiquetaTexto, { color: cat.color }]}>{cat.nombre}</Text>
+              </View>
+              <Text style={s.fechaCorta}>{fechaCorta(item.fecha_epoch)}</Text>
+            </View>
+            <Text style={s.titulo}>{item.asunto}</Text>
+            {item.resumen ? <Text style={s.resumen}>{item.resumen}</Text> : null}
+            {item.repeticiones > 1 ? <Text style={s.meta}>{item.repeticiones} emails sobre esto</Text> : null}
+            <View style={s.acciones}>
+              <Pressable style={s.botonEnterado} onPress={() => enterado(item, salir)} accessibilityRole="button">
+                <Ionicons name="eye-outline" size={16} color={C.blanco} />
+                <Text style={s.botonEnteradoTexto}>Me he enterado</Text>
+              </Pressable>
+              <Pressable onPress={() => corregir(item.ids, false, salir)} accessibilityRole="button">
+                <Text style={s.enlace}>No me importa</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
+      </Tarjeta>
+    );
   };
 
+  const filaDescartado = ({ item }: { item: Descartado }) => (
+    <View style={s.filaDescartado}>
+      <View style={s.cuerpo}>
+        <Text style={s.tituloDescartado} numberOfLines={2}>{item.asunto}</Text>
+        <Text style={s.detalle} numberOfLines={1}>{item.remitente}</Text>
+      </View>
+      <Pressable onPress={() => corregir([item.gmail_id], true)} accessibilityRole="button">
+        <Text style={s.enlace}>Sí me importa</Text>
+      </Pressable>
+    </View>
+  );
+
+  const vacio = (icono: keyof typeof Ionicons.glyphMap, texto: string) => (
+    <View style={s.vacio}>
+      <Ionicons name={icono} size={40} color={C.luego} />
+      <Text style={s.vacioTexto}>{texto}</Text>
+    </View>
+  );
+
+  const refresco = <RefreshControl refreshing={false} onRefresh={cargar} />;
   const lista =
     pestana === "tareas" ? (
       <FlatList data={tareas} renderItem={filaTarea} keyExtractor={(t: Tarea) => t.ids.join()}
-        ListEmptyComponent={<Text style={s.vacio}>{vacio.tareas}</Text>}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={cargar} />} />
+        contentContainerStyle={s.contenido} refreshControl={refresco}
+        ListEmptyComponent={vacio("checkmark-done-circle-outline", "No tienes nada pendiente. Revisa la bandeja para buscar novedades.")} />
     ) : pestana === "importantes" ? (
       <FlatList data={importantes} renderItem={filaImportante} keyExtractor={(i: Importante) => i.gmail_id}
-        ListEmptyComponent={<Text style={s.vacio}>{vacio.importantes}</Text>}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={cargar} />} />
+        contentContainerStyle={s.contenido} refreshControl={refresco}
+        ListEmptyComponent={vacio("sparkles-outline", "Estás al día: no queda nada importante por leer de los últimos 7 días.")} />
     ) : (
       <FlatList data={descartados} renderItem={filaDescartado} keyExtractor={(d: Descartado) => d.gmail_id}
-        ListEmptyComponent={<Text style={s.vacio}>{vacio.descartados}</Text>}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={cargar} />} />
+        contentContainerStyle={s.contenido} refreshControl={refresco}
+        ListEmptyComponent={vacio("file-tray-outline", "Nada descartado en los últimos 7 días.")} />
     );
+
+  const pestanas: [Pestana, string, number | null][] = [
+    ["tareas", "Tareas", tareas.length],
+    ["importantes", "Importantes", importantes.length],
+    ["descartados", "Descartados", null],
+  ];
 
   return (
     <SafeAreaView style={s.pantalla}>
       <StatusBar style="dark" />
       <View style={s.cabecera}>
         <Text style={s.marca}>Tu correo</Text>
-        <Pressable style={[s.boton, revision ? s.botonOcupado : null]} onPress={revisar}
-          disabled={!!revision} accessibilityRole="button">
-          <Text style={s.botonTexto}>{revision ? "Revisando…" : "Revisar bandeja"}</Text>
-        </Pressable>
-      </View>
-      {revision ? <Text style={s.progreso}>{revision}</Text> : null}
-
-      <View style={s.pestanas}>
-        {([
-          ["tareas", `Tareas ${tareas.length}`],
-          ["importantes", "Importantes"],
-          ["descartados", "Descartados"],
-        ] as [Pestana, string][]).map(([clave, texto]) => (
-          <Pressable key={clave} onPress={() => setPestana(clave)} accessibilityRole="tab"
-            accessibilityState={{ selected: pestana === clave }}
-            style={[s.pestana, pestana === clave && s.pestanaActiva]}>
-            <Text style={[s.pestanaTexto, pestana === clave && s.pestanaTextoActiva]}>{texto}</Text>
-          </Pressable>
-        ))}
+        {!cargando && !error ? <Text style={s.resumenCabecera}>{resumen}</Text> : null}
       </View>
 
-      {cargando ? <ActivityIndicator style={{ marginTop: 40 }} color={C.tinta} />
-        : error ? <Text style={s.error}>{error}</Text> : lista}
+      <View style={s.segmentos}>
+        {pestanas.map(([clave, texto, n]) => {
+          const activa = pestana === clave;
+          return (
+            <Pressable key={clave} onPress={() => setPestana(clave)} accessibilityRole="tab"
+              accessibilityState={{ selected: activa }} style={[s.segmento, activa && s.segmentoActivo]}>
+              <Text style={[s.segmentoTexto, activa && s.segmentoTextoActivo]}>{texto}</Text>
+              {n ? (
+                <View style={[s.contador, activa && s.contadorActivo]}>
+                  <Text style={[s.contadorTexto, activa && s.contadorTextoActivo]}>{n}</Text>
+                </View>
+              ) : null}
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {cargando ? <ActivityIndicator style={{ marginTop: 48 }} color={C.primario} size="large" />
+        : error ? (
+          <View style={s.error}>
+            <Ionicons name="cloud-offline-outline" size={22} color={C.vencida} />
+            <Text style={s.errorTexto}>{error}</Text>
+            <Pressable onPress={() => { setCargando(true); cargar(); }} accessibilityRole="button">
+              <Text style={s.enlace}>Reintentar</Text>
+            </Pressable>
+          </View>
+        ) : lista}
 
       {aviso ? (
         <View style={s.aviso}>
@@ -322,48 +471,105 @@ export default function App() {
           ) : null}
         </View>
       ) : null}
+
+      {!error ? <BotonRevisar progreso={revision} onPress={revisar} /> : null}
     </SafeAreaView>
   );
 }
 
+// ── Estilos ───────────────────────────────────────────────────────────────
+const sombra = {
+  shadowColor: "#1B2B5E",
+  shadowOpacity: 0.08,
+  shadowRadius: 14,
+  shadowOffset: { width: 0, height: 6 },
+  elevation: 3,
+};
+
 const s = StyleSheet.create({
-  pantalla: { flex: 1, backgroundColor: C.papel },
-  cabecera: {
-    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-    paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8,
+  pantalla: { flex: 1, backgroundColor: C.fondo },
+  cabecera: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 6 },
+  marca: { fontSize: 32, fontWeight: "800", color: C.tinta, letterSpacing: -0.8 },
+  resumenCabecera: { fontSize: 15, color: C.tintaSuave, marginTop: 4, lineHeight: 21 },
+
+  segmentos: {
+    flexDirection: "row", marginHorizontal: 16, marginTop: 14, marginBottom: 4, padding: 4,
+    backgroundColor: "#E2E7F2", borderRadius: 12,
   },
-  marca: { fontSize: 28, fontWeight: "800", color: C.tinta, letterSpacing: -0.5 },
-  progreso: { paddingHorizontal: 20, color: C.tintaSuave, fontSize: 13 },
-  pestanas: { flexDirection: "row", paddingHorizontal: 12, marginTop: 8, borderBottomWidth: 1, borderColor: C.linea },
-  pestana: { paddingVertical: 10, paddingHorizontal: 8, marginRight: 8, borderBottomWidth: 2, borderColor: "transparent" },
-  pestanaActiva: { borderColor: C.tinta },
-  pestanaTexto: { fontSize: 15, color: C.tintaSuave, fontWeight: "500" },
-  pestanaTextoActiva: { color: C.tinta, fontWeight: "700" },
-  fila: {
-    flexDirection: "row", alignItems: "center", paddingVertical: 14, paddingHorizontal: 20,
+  segmento: {
+    flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
+    paddingVertical: 9, borderRadius: 9, gap: 6,
+  },
+  segmentoActivo: { backgroundColor: C.tarjeta, ...sombra, shadowOpacity: 0.06 },
+  segmentoTexto: { fontSize: 14, fontWeight: "600", color: C.tintaSuave },
+  segmentoTextoActivo: { color: C.tinta, fontWeight: "800" },
+  contador: { minWidth: 20, paddingHorizontal: 6, height: 20, borderRadius: 10, backgroundColor: "#CBD3E6", alignItems: "center", justifyContent: "center" },
+  contadorActivo: { backgroundColor: C.primario },
+  contadorTexto: { fontSize: 12, fontWeight: "800", color: C.tinta, fontVariant: ["tabular-nums"] },
+  contadorTextoActivo: { color: C.blanco },
+
+  contenido: { padding: 16, paddingBottom: 120, gap: 12 },
+  tarjeta: { backgroundColor: C.tarjeta, borderRadius: 16, borderWidth: 1, borderColor: C.linea, overflow: "hidden", ...sombra },
+
+  filaTarea: { flexDirection: "row", alignItems: "center", padding: 12, gap: 14 },
+  pestanaFecha: { width: 62, paddingVertical: 10, borderRadius: 12, alignItems: "center" },
+  fechaDia: { fontSize: 26, fontWeight: "900", color: C.blanco, fontVariant: ["tabular-nums"], lineHeight: 30 },
+  fechaMes: { fontSize: 12, fontWeight: "700", color: C.blanco },
+  cuerpo: { flex: 1 },
+  titulo: { fontSize: 16, fontWeight: "800", color: C.tinta, lineHeight: 21 },
+  detalle: { fontSize: 13, color: C.tintaSuave, marginTop: 3, lineHeight: 18 },
+  meta: { fontSize: 12, color: C.luego, fontWeight: "700", marginTop: 6 },
+  botonHecha: {
+    flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: C.hecha,
+    paddingVertical: 9, paddingHorizontal: 12, borderRadius: 999,
+  },
+  botonHechaTexto: { color: C.blanco, fontWeight: "800", fontSize: 14 },
+
+  filaImportante: { padding: 16, borderTopWidth: 4 },
+  cabeceraTarjeta: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
+  etiqueta: { flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 4, paddingHorizontal: 9, borderRadius: 6 },
+  punto: { width: 7, height: 7, borderRadius: 4 },
+  etiquetaTexto: { fontSize: 12, fontWeight: "800" },
+  fechaCorta: { fontSize: 12, color: C.tintaSuave, fontWeight: "600", fontVariant: ["tabular-nums"] },
+  resumen: { fontSize: 14, color: C.tintaSuave, marginTop: 6, lineHeight: 20 },
+  acciones: { flexDirection: "row", alignItems: "center", gap: 18, marginTop: 14 },
+  botonEnterado: {
+    flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: C.tinta,
+    paddingVertical: 9, paddingHorizontal: 14, borderRadius: 999,
+  },
+  botonEnteradoTexto: { color: C.blanco, fontWeight: "800", fontSize: 13 },
+
+  filaDescartado: {
+    flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, paddingHorizontal: 4,
     borderBottomWidth: 1, borderColor: C.linea,
   },
-  plazo: { width: 58, alignItems: "center", paddingVertical: 4, borderLeftWidth: 4, marginRight: 14 },
-  plazoDia: { fontSize: 26, fontWeight: "800", fontVariant: ["tabular-nums"] },
-  plazoMes: { fontSize: 12, fontWeight: "600" },
-  cuerpo: { flex: 1 },
-  fecha: { fontSize: 12, color: C.tintaSuave, marginBottom: 2, fontVariant: ["tabular-nums"] },
-  titulo: { fontSize: 16, fontWeight: "700", color: C.tinta, lineHeight: 21 },
-  tituloSuave: { fontSize: 15, fontWeight: "500", color: C.tinta, lineHeight: 20 },
-  detalle: { fontSize: 13, color: C.tintaSuave, marginTop: 3, lineHeight: 18 },
-  enlace: { fontSize: 13, color: C.tinta, fontWeight: "700", marginTop: 8, textDecorationLine: "underline" },
-  acciones: { flexDirection: "row", alignItems: "center", gap: 18, marginTop: 10 },
-  botonSecundario: { borderWidth: 1.5, borderColor: C.tinta, borderRadius: 6, paddingVertical: 6, paddingHorizontal: 12 },
-  botonSecundarioTexto: { color: C.tinta, fontWeight: "700", fontSize: 13 },
-  boton: { backgroundColor: C.tinta, paddingVertical: 9, paddingHorizontal: 14, borderRadius: 6, marginLeft: 10 },
-  botonOcupado: { opacity: 0.6 },
-  botonTexto: { color: C.blanco, fontWeight: "700", fontSize: 14 },
-  vacio: { padding: 24, color: C.tintaSuave, fontSize: 15, lineHeight: 21 },
-  error: { margin: 20, padding: 14, color: C.vencida, fontSize: 14, lineHeight: 20, borderLeftWidth: 4, borderColor: C.vencida },
+  tituloDescartado: { fontSize: 14, fontWeight: "500", color: C.tinta, lineHeight: 19 },
+  enlace: { fontSize: 13, color: C.primario, fontWeight: "800", textDecorationLine: "underline" },
+
+  vacio: { alignItems: "center", paddingTop: 56, paddingHorizontal: 32, gap: 12 },
+  vacioTexto: { fontSize: 15, color: C.tintaSuave, textAlign: "center", lineHeight: 21 },
+  error: { margin: 16, padding: 16, borderRadius: 14, backgroundColor: "#FDECEC", gap: 10, alignItems: "flex-start" },
+  errorTexto: { color: "#9B1C1C", fontSize: 14, lineHeight: 20 },
+
   aviso: {
-    position: "absolute", left: 16, right: 16, bottom: 28, backgroundColor: C.tinta, borderRadius: 8,
+    position: "absolute", left: 16, right: 16, bottom: 96, backgroundColor: C.tinta, borderRadius: 12,
     paddingVertical: 12, paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    ...sombra,
   },
   avisoTexto: { color: C.blanco, fontSize: 14, flex: 1 },
-  avisoAccion: { color: C.blanco, fontWeight: "800", fontSize: 14, marginLeft: 16, textDecorationLine: "underline" },
+  avisoAccion: { color: "#9DB4FF", fontWeight: "800", fontSize: 14, marginLeft: 16 },
+
+  fabZona: { position: "absolute", bottom: 28, alignSelf: "center" },
+  fab: {
+    flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: C.primario,
+    paddingVertical: 12, paddingLeft: 12, paddingRight: 20, borderRadius: 999, maxWidth: 320,
+    shadowColor: C.primario, shadowOpacity: 0.35, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 6,
+  },
+  fabOcupado: { backgroundColor: C.tinta, shadowColor: C.tinta },
+  fabIcono: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(255,255,255,0.18)", alignItems: "center", justifyContent: "center" },
+  fabAnillo: {
+    position: "absolute", width: 34, height: 34, borderRadius: 17,
+    borderWidth: 2, borderColor: C.blanco, borderStyle: "dashed",
+  },
+  fabTexto: { color: C.blanco, fontWeight: "800", fontSize: 15, flexShrink: 1 },
 });

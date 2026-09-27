@@ -37,9 +37,13 @@ Antes de sacarlo a internet hay que poner un token. Está apuntado.
 
 from contextlib import asynccontextmanager
 from datetime import datetime
+from pathlib import Path
+from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import almacen
@@ -173,3 +177,21 @@ def estado_revision():
 @app.get("/estadisticas")
 def estadisticas():
     return almacen.estadisticas()
+
+
+# ── La app web (exportada con `npx expo export --platform web`) ─────────────
+# Se monta AL FINAL: las rutas de la API (/tareas, /docs...) se definen antes
+# y tienen prioridad; todo lo demás lo sirve la app. Así basta con un solo
+# proceso (este servidor) para usar la app: sin Node ni Expo.
+WEB = Path(__file__).parent / "app" / "dist"
+if WEB.exists():
+    app.mount("/", StaticFiles(directory=WEB, html=True), name="web")
+
+
+# ── La app compilada (npx expo export --platform web -> app/dist) ────────────
+# Se monta la ÚLTIMA: FastAPI prueba antes todas las rutas de la API, y solo lo
+# que no es API cae aquí. Así un único servidor sirve la app y la API en la
+# misma dirección (http://localhost:8000), sin Expo ni terminales.
+WEB = Path(__file__).parent / "app" / "dist"
+if WEB.exists():
+    app.mount("/", StaticFiles(directory=WEB, html=True), name="web")
