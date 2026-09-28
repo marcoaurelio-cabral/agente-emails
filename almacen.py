@@ -64,6 +64,8 @@ _COLUMNAS = {
     "grupo":          "TEXT",    # gmail_id del email más antiguo de su grupo
     # --- v7: "me he enterado" (estado, NO etiqueta: no afecta a los evals) ---
     "visto_en":       "INTEGER",
+    # --- v8: tareas creadas por Marco (el modelo no puede deshacerlas) ---
+    "tarea_manual":   "INTEGER",
 }
 
 # "Importante efectivo": si Marco corrigió, manda su corrección; si no, el modelo.
@@ -158,14 +160,20 @@ def actualizar_clasificacion(gmail_id: str, c) -> dict:
     """
     campos = _campos_clasificacion(c)
     campos["clasificado_en"] = int(time.time())
-    asignaciones = ", ".join(f"{k} = ?" for k in campos)
     with _conectar() as conn:
         antes = conn.execute(
-            "SELECT importante, requiere_accion FROM emails WHERE gmail_id = ?", (gmail_id,)
+            "SELECT importante, requiere_accion, tarea_manual FROM emails WHERE gmail_id = ?", (gmail_id,)
         ).fetchone()
+        manual = antes is not None and antes["tarea_manual"]
+        if manual:  # la tarea la creó Marco: el modelo no la toca
+            for k in ("requiere_accion", "accion", "fecha_limite"):
+                campos.pop(k, None)
+        asignaciones = ", ".join(f"{k} = ?" for k in campos)
         conn.execute(f"UPDATE emails SET {asignaciones} WHERE gmail_id = ?",
                      [*campos.values(), gmail_id])
-        if c.requiere_accion:
+        if manual:
+            pass
+        elif c.requiere_accion:
             conn.execute("UPDATE emails SET estado = 'pendiente' WHERE gmail_id = ? AND estado IS NULL",
                          (gmail_id,))
         else:
@@ -192,11 +200,53 @@ def marcar_completadas(ids: list[str]) -> int:
 
 
 def reabrir(ids: list[str]) -> int:
-    """Deshace un 'completar', manual o automático."""
+    """Deshace un 'completar' (manual o automático) o un 'descartar'."""
     with _conectar() as conn:
         cur = conn.execute(
             f"""UPDATE emails SET estado = 'pendiente', completada_en = NULL, cerrada_por = NULL
-                WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado = 'completada'""",
+                WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado IN ('completada', 'descartada')""",
+            ids,
+        )
+        return cur.rowcount
+
+
+def descartar(ids: list[str]) -> int:
+    """"No la voy a hacer / no aplica". Distinto de completar: no es un logro.
+    Sale de pendientes y no cuenta en el historial de completadas."""
+    with _conectar() as conn:
+        cur = conn.execute(
+            f"""UPDATE emails SET estado = 'descartada', completada_en = ?
+                WHERE gmail_id IN ({",".join("?" * len(ids))}) AND estado = 'pendiente'""",
+            [int(time.time()), *ids],
+        )
+        return cur.rowcount
+
+
+def convertir_en_tarea(ids: list[str], accion: str, fecha_limite: str | None) -> int:
+    """Marco convierte un importante en tarea. El primer id del grupo pasa a ser
+    la tarea (marcada como manual: una re-clasificación no la deshace); el resto
+    del grupo se marca como visto, para que no siga en importantes."""
+    principal, resto = ids[0], ids[1:]
+    with _conectar() as conn:
+        cur = conn.execute(
+            """UPDATE emails SET requiere_accion = 1, accion = ?, fecha_limite = ?,
+                      estado = 'pendiente', completada_en = NULL, tarea_manual = 1, visto_en = NULL
+               WHERE gmail_id = ?""",
+            (accion, fecha_limite or None, principal),
+        )
+        if resto:
+            conn.execute(f"UPDATE emails SET visto_en = ? WHERE gmail_id IN ({','.join('?' * len(resto))})",
+                         [int(time.time()), *resto])
+        return cur.rowcount
+
+
+def quitar_tarea(ids: list[str]) -> int:
+    """Deshace convertir_en_tarea: vuelve a ser un importante informativo."""
+    with _conectar() as conn:
+        cur = conn.execute(
+            f"""UPDATE emails SET requiere_accion = 0, accion = NULL, fecha_limite = NULL,
+                       estado = NULL, tarea_manual = NULL, visto_en = NULL
+                WHERE gmail_id IN ({",".join("?" * len(ids))})""",
             ids,
         )
         return cur.rowcount

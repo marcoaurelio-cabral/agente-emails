@@ -19,6 +19,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 
@@ -108,6 +109,16 @@ function plazo(fecha: string | null) {
   const mes = dias < 0 ? "vencida" : dias === 0 ? "hoy" : dias === 1 ? "mañana" : MESES[f.getMonth()];
   return { dia: String(f.getDate()), mes, color, dias };
 }
+
+// Fechas rápidas para convertir un importante en tarea.
+const OPCIONES_FECHA: [string, number | null][] = [
+  ["Sin fecha", null], ["Hoy", 0], ["Mañana", 1], ["En 3 días", 3], ["En una semana", 7],
+];
+const dentroDe = (dias: number) => {
+  const f = new Date();
+  f.setDate(f.getDate() + dias);
+  return `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, "0")}-${String(f.getDate()).padStart(2, "0")}`;
+};
 
 const fechaCorta = (epoch: number) => {
   const f = new Date(epoch * 1000);
@@ -204,6 +215,9 @@ export default function App() {
   const [revision, setRevision] = useState<string | null>(null);
   const [aviso, setAviso] = useState<{ texto: string; deshacer?: () => void } | null>(null);
   const temporizador = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [convirtiendo, setConvirtiendo] = useState<string | null>(null);
+  const [accionNueva, setAccionNueva] = useState("");
+  const [fechaNueva, setFechaNueva] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
     if (!API && !MISMO_ORIGEN) {
@@ -270,6 +284,52 @@ export default function App() {
         cargar();
       }
     });
+
+  const descartarTarea = (t: Tarea, salir: Salida) =>
+    salir(-1, async () => {
+      setTareas((ts) => ts.filter((x) => x !== t));
+      try {
+        await api("/tareas/descartar", { ids: t.ids });
+        avisar("Tarea descartada.", async () => {
+          await api("/tareas/reabrir", { ids: t.ids });
+          setAviso(null);
+          cargar();
+        });
+      } catch {
+        avisar("No se ha podido descartar.");
+        cargar();
+      }
+    });
+
+  const abrirConversion = (i: Importante) => {
+    setConvirtiendo(i.gmail_id);
+    setAccionNueva("");
+    setFechaNueva(null);
+  };
+
+  const guardarTarea = (i: Importante, salir: Salida) => {
+    const accion = accionNueva.trim();
+    if (!accion) {
+      avisar("Escribe qué tienes que hacer.");
+      return;
+    }
+    salir(1, async () => {
+      setConvirtiendo(null);
+      setImportantes((xs) => xs.filter((x) => x !== i));
+      try {
+        await api("/emails/tarea", { ids: i.ids, accion, fecha_limite: fechaNueva });
+        avisar("Añadida a tus tareas.", async () => {
+          await api("/emails/quitar-tarea", { ids: i.ids });
+          setAviso(null);
+          cargar();
+        });
+        cargar();
+      } catch {
+        avisar("No se ha podido crear la tarea.");
+        cargar();
+      }
+    });
+  };
 
   const corregir = async (ids: string[], importante: boolean, salir?: Salida) => {
     const hacer = async () => {
@@ -342,6 +402,10 @@ export default function App() {
               <Text style={s.detalle} numberOfLines={2}>{item.asunto}</Text>
               {item.repeticiones > 1 ? <Text style={s.meta}>{item.repeticiones} emails sobre esto</Text> : null}
             </View>
+            <Pressable style={s.botonIcono} onPress={() => descartarTarea(item, salir)} accessibilityRole="button"
+              accessibilityLabel={`Descartar: ${item.accion || item.asunto}`}>
+              <Ionicons name="close" size={18} color={C.tintaSuave} />
+            </Pressable>
             <Pressable style={s.botonHecha} onPress={() => completar(item, salir)} accessibilityRole="button"
               accessibilityLabel={`Marcar como hecha: ${item.accion || item.asunto}`}>
               <Ionicons name="checkmark" size={18} color={C.blanco} />
@@ -369,15 +433,50 @@ export default function App() {
             <Text style={s.titulo}>{item.asunto}</Text>
             {item.resumen ? <Text style={s.resumen}>{item.resumen}</Text> : null}
             {item.repeticiones > 1 ? <Text style={s.meta}>{item.repeticiones} emails sobre esto</Text> : null}
-            <View style={s.acciones}>
-              <Pressable style={s.botonEnterado} onPress={() => enterado(item, salir)} accessibilityRole="button">
-                <Ionicons name="eye-outline" size={16} color={C.blanco} />
-                <Text style={s.botonEnteradoTexto}>Me he enterado</Text>
-              </Pressable>
-              <Pressable onPress={() => corregir(item.ids, false, salir)} accessibilityRole="button">
-                <Text style={s.enlace}>No me importa</Text>
-              </Pressable>
-            </View>
+            {convirtiendo === item.gmail_id ? (
+              <View style={s.editor}>
+                <Text style={s.editorEtiqueta}>¿Qué tienes que hacer?</Text>
+                <TextInput style={s.entrada} value={accionNueva} onChangeText={setAccionNueva} autoFocus
+                  placeholder="Por ejemplo: rellenar el formulario de la beca" placeholderTextColor="#98A2B3"
+                  maxLength={200} onSubmitEditing={() => guardarTarea(item, salir)} />
+                <Text style={s.editorEtiqueta}>¿Para cuándo?</Text>
+                <View style={s.chips}>
+                  {OPCIONES_FECHA.map(([texto, dias]) => {
+                    const valor = dias === null ? null : dentroDe(dias);
+                    const activo = fechaNueva === valor;
+                    return (
+                      <Pressable key={texto} onPress={() => setFechaNueva(valor)} accessibilityRole="radio"
+                        accessibilityState={{ checked: activo }} style={[s.chip, activo && s.chipActivo]}>
+                        <Text style={[s.chipTexto, activo && s.chipTextoActivo]}>{texto}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+                <View style={s.acciones}>
+                  <Pressable style={s.botonEnterado} onPress={() => guardarTarea(item, salir)} accessibilityRole="button">
+                    <Ionicons name="checkmark" size={16} color={C.blanco} />
+                    <Text style={s.botonEnteradoTexto}>Guardar tarea</Text>
+                  </Pressable>
+                  <Pressable onPress={() => setConvirtiendo(null)} accessibilityRole="button">
+                    <Text style={s.enlace}>Cancelar</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : (
+              <View style={s.acciones}>
+                <Pressable style={s.botonEnterado} onPress={() => enterado(item, salir)} accessibilityRole="button">
+                  <Ionicons name="eye-outline" size={16} color={C.blanco} />
+                  <Text style={s.botonEnteradoTexto}>Me he enterado</Text>
+                </Pressable>
+                <Pressable style={s.botonContorno} onPress={() => abrirConversion(item)} accessibilityRole="button">
+                  <Ionicons name="add-circle-outline" size={16} color={C.tinta} />
+                  <Text style={s.botonContornoTexto}>Hacer tarea</Text>
+                </Pressable>
+                <Pressable onPress={() => corregir(item.ids, false, salir)} accessibilityRole="button">
+                  <Text style={s.enlace}>No me importa</Text>
+                </Pressable>
+              </View>
+            )}
           </View>
         )}
       </Tarjeta>
@@ -411,6 +510,7 @@ export default function App() {
         ListEmptyComponent={vacio("checkmark-done-circle-outline", "No tienes nada pendiente. Revisa la bandeja para buscar novedades.")} />
     ) : pestana === "importantes" ? (
       <FlatList data={importantes} renderItem={filaImportante} keyExtractor={(i: Importante) => i.gmail_id}
+        extraData={[convirtiendo, accionNueva, fechaNueva]}
         contentContainerStyle={s.contenido} refreshControl={refresco}
         ListEmptyComponent={vacio("sparkles-outline", "Estás al día: no queda nada importante por leer de los últimos 7 días.")} />
     ) : (
@@ -532,7 +632,27 @@ const s = StyleSheet.create({
   etiquetaTexto: { fontSize: 12, fontWeight: "800" },
   fechaCorta: { fontSize: 12, color: C.tintaSuave, fontWeight: "600", fontVariant: ["tabular-nums"] },
   resumen: { fontSize: 14, color: C.tintaSuave, marginTop: 6, lineHeight: 20 },
-  acciones: { flexDirection: "row", alignItems: "center", gap: 18, marginTop: 14 },
+  acciones: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 14, rowGap: 10, marginTop: 14 },
+  botonIcono: {
+    width: 38, height: 38, borderRadius: 19, borderWidth: 1, borderColor: C.linea,
+    alignItems: "center", justifyContent: "center",
+  },
+  botonContorno: {
+    flexDirection: "row", alignItems: "center", gap: 6, borderWidth: 1.5, borderColor: C.tinta,
+    paddingVertical: 8, paddingHorizontal: 12, borderRadius: 999,
+  },
+  botonContornoTexto: { color: C.tinta, fontWeight: "800", fontSize: 13 },
+  editor: { marginTop: 14, padding: 14, backgroundColor: "#F3F6FD", borderRadius: 12, gap: 8 },
+  editorEtiqueta: { fontSize: 13, fontWeight: "800", color: C.tinta },
+  entrada: {
+    backgroundColor: C.blanco, borderWidth: 1, borderColor: C.linea, borderRadius: 10,
+    paddingHorizontal: 12, paddingVertical: 10, fontSize: 15, color: C.tinta,
+  },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  chip: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: C.linea, backgroundColor: C.blanco },
+  chipActivo: { backgroundColor: C.primario, borderColor: C.primario },
+  chipTexto: { fontSize: 13, fontWeight: "700", color: C.tinta },
+  chipTextoActivo: { color: C.blanco },
   botonEnterado: {
     flexDirection: "row", alignItems: "center", gap: 6, backgroundColor: C.tinta,
     paddingVertical: 9, paddingHorizontal: 14, borderRadius: 999,

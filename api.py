@@ -10,7 +10,10 @@ Endpoints:
     GET  /salud                      ¿está vivo?
     GET  /tareas                     pendientes, agrupadas, ordenadas por plazo
     POST /tareas/completar           {ids: [...]}  -> el botón "hecho"
-    POST /tareas/reabrir             {ids: [...]}  -> deshacer
+    POST /tareas/reabrir             {ids: [...]}  -> deshacer (hecha o descartada)
+    POST /tareas/descartar           {ids: [...]}  -> "no la voy a hacer"
+    POST /emails/tarea               {ids, accion, fecha_limite?} -> importante -> tarea
+    POST /emails/quitar-tarea        {ids: [...]}  -> deshacer
     GET  /tareas/completadas?dias=30 historial
     GET  /importantes?dias=7         informativos (sin acción) que aún no has visto
     POST /emails/visto               {ids: [...]}  -> "me he enterado"
@@ -73,6 +76,12 @@ class Correccion(BaseModel):
     importante: bool
 
 
+class NuevaTarea(BaseModel):
+    ids: list[str] = Field(min_length=1)
+    accion: str = Field(min_length=1, max_length=200)
+    fecha_limite: str | None = Field(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$")
+
+
 class OpcionesRevision(BaseModel):
     consulta: str = "newer_than:7d"
     maximo: int = Field(default=150, ge=1, le=500)
@@ -120,6 +129,24 @@ def completar(body: Ids):
 @app.post("/tareas/reabrir")
 def reabrir(body: Ids):
     return {"reabiertas": almacen.reabrir(body.ids)}
+
+
+@app.post("/tareas/descartar")
+def descartar(body: Ids):
+    """"No la voy a hacer": sale de pendientes sin contar como hecha."""
+    return {"descartadas": almacen.descartar(body.ids)}
+
+
+@app.post("/emails/tarea")
+def convertir_en_tarea(body: NuevaTarea):
+    """Convierte un importante en tarea (el modelo no podrá deshacerla)."""
+    return {"convertidas": almacen.convertir_en_tarea(body.ids, body.accion.strip(), body.fecha_limite)}
+
+
+@app.post("/emails/quitar-tarea")
+def quitar_tarea(body: Ids):
+    """Deshace convertir en tarea."""
+    return {"restauradas": almacen.quitar_tarea(body.ids)}
 
 
 @app.post("/emails/visto")
