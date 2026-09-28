@@ -38,24 +38,29 @@ SEGURIDAD: sin autenticación, a propósito, para desarrollo en tu WiFi.
 Antes de sacarlo a internet hay que poner un token. Está apuntado.
 """
 
+import subprocess
+import sys
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from pathlib import Path
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import almacen
+import gmail
 import servicio
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     almacen.inicializar()  # migraciones al arrancar, como en la CLI
+    gmail.INTERACTIVO = False  # el servidor va oculto: nunca debe abrir el navegador ni bloquearse
     yield
 
 
@@ -104,7 +109,8 @@ def _ejecutar_revision(opts: OpcionesRevision):
                              progreso=lambda m: _revision.update(progreso=m))
         _revision.update(resultado=r, progreso="terminado")
     except Exception as e:  # el error se guarda, no se pierde en un hilo
-        _revision.update(error=f"{type(e).__name__}: {e}", progreso="error")
+        texto = str(e) if getattr(e, "necesita_autorizar", False) else f"{type(e).__name__}: {e}"
+        _revision.update(error=texto, progreso="error")
     finally:
         _revision.update(en_curso=False, fin=datetime.now().isoformat())
 
@@ -199,6 +205,53 @@ def revisar(background: BackgroundTasks, opts: OpcionesRevision | None = None):
 @app.get("/revisar/estado")
 def estado_revision():
     return _revision
+
+
+# ── Autorizar Gmail desde la notificación de Windows ─────────────────────────
+# La notificación "Gmail necesita autorización" abre /gmail/autorizar. El botón
+# lanza autorizar_gmail.pyw (que abre el flujo de Google). Es POST y solo acepta
+# peticiones del propio sitio: otra web abierta en tu navegador no puede
+# dispararlo por su cuenta.
+
+_PAGINA = """<!doctype html><html lang="es"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Autorizar Gmail</title>
+<style>body{{font:16px/1.5 system-ui,sans-serif;background:#EEF1F8;color:#131F3A;display:grid;
+place-items:center;min-height:100vh;margin:0}}main{{background:#fff;border-radius:16px;padding:32px;
+max-width:420px;box-shadow:0 6px 24px rgba(27,43,94,.12)}}h1{{margin:0 0 8px;font-size:24px}}
+button{{margin-top:16px;background:#2F5BEA;color:#fff;border:0;border-radius:999px;padding:12px 22px;
+font:700 16px system-ui;cursor:pointer}}p{{color:#56627A}}</style>
+<main><h1>{titulo}</h1>{cuerpo}</main></html>"""
+
+
+def _pagina(titulo: str, cuerpo: str) -> HTMLResponse:
+    return HTMLResponse(_PAGINA.format(titulo=titulo, cuerpo=cuerpo))
+
+
+@app.get("/gmail/autorizar", response_class=HTMLResponse)
+def pagina_autorizar():
+    return _pagina("Autorizar Gmail", """
+      <p>Tu permiso de acceso a Gmail ha caducado o se ha revocado, así que la revisión
+      del correo está en pausa.</p>
+      <p>Pulsa el botón: se abrirá la pantalla de Google. Elige tu cuenta, pulsa
+      <b>Avanzado</b>, <b>Ir a agente-emails (no seguro)</b> y <b>Permitir</b>.</p>
+      <form method="post" action="/gmail/autorizar"><button>Autorizar Gmail</button></form>""")
+
+
+@app.post("/gmail/autorizar", response_class=HTMLResponse)
+def lanzar_autorizacion(request: Request):
+    origen = request.headers.get("origin")
+    if origen and origen not in ("http://127.0.0.1:8000", "http://localhost:8000"):
+        raise HTTPException(status_code=403, detail="Petición de otro sitio")
+    python = Path(sys.executable)
+    pythonw = python.with_name("pythonw.exe")     # sin ventana de consola
+    subprocess.Popen(
+        [str(pythonw if pythonw.exists() else python), str(Path(__file__).parent / "autorizar_gmail.pyw")],
+        cwd=Path(__file__).parent, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0),
+    )
+    return _pagina("Abriendo Google…", """
+      <p>Sigue los pasos en la ventana de Google que se acaba de abrir. Al terminar te saldrá
+      un aviso confirmando la cuenta y ya puedes cerrar esta pestaña.</p>""")
 
 
 @app.get("/estadisticas")

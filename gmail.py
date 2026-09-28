@@ -66,6 +66,7 @@ def _ejecutar_con_reintentos(peticion, intentos: int = 6):
     los límites de cuota son parte de la vida, y un sistema serio no se cae
     por ellos, espera y reintenta.
     """
+    global _servicio
     for intento in range(intentos):
         try:
             resultado = peticion.execute()
@@ -80,6 +81,30 @@ def _ejecutar_con_reintentos(peticion, intentos: int = 6):
             print(f"  [Gmail] límite de peticiones alcanzado; esperando {espera:.0f}s "
                   f"(intento {intento + 1}/{intentos})...")
             time.sleep(espera)
+        except RefreshError:
+            # El permiso se ha perdido con el programa en marcha (p. ej. un servidor
+            # que lleva días abierto). Se descarta el cliente en caché: el siguiente
+            # intento vuelve a leer token.json, así que si ya has autorizado de nuevo
+            # funciona sin reiniciar nada.
+            _servicio = None
+            raise AutorizacionNecesaria(MENSAJE_REAUTORIZAR + " (Si ya lo has hecho, "
+                                        "vuelve a intentarlo: la conexión se restablece sola.)")
+
+
+class AutorizacionNecesaria(Exception):
+    """Gmail necesita que Marco vuelva a autorizar el acceso (permiso caducado,
+    revocado o inexistente). Los procesos desatendidos la lanzan en vez de abrir
+    el navegador; quien los llama decide cómo avisar."""
+    necesita_autorizar = True
+
+
+MENSAJE_REAUTORIZAR = ("Gmail necesita que vuelvas a autorizar el acceso. Abre «Autorizar Gmail» "
+                       "en el escritorio (o ejecuta: python autorizar_gmail.pyw).")
+
+# True = hay alguien delante (la consola): si hace falta, se abre el navegador.
+# False = proceso DESATENDIDO (la revisión de las 9:00, el servidor): nunca se abre
+# el navegador ni se queda esperando; se lanza AutorizacionNecesaria.
+INTERACTIVO = True
 
 
 def _autorizar(motivo: str) -> Credentials:
@@ -92,31 +117,34 @@ def _autorizar(motivo: str) -> Credentials:
 
 
 def _credenciales() -> Credentials:
-    """Devuelve credenciales válidas, pidiendo autorización SOLO si hace falta.
+    """Devuelve credenciales válidas.
 
-    Si el permiso ha caducado (7 días con la app en modo prueba) o se ha
-    revocado (cambio de contraseña, quitar el acceso desde tu cuenta de
-    Google, 6 meses sin uso), se detecta y se vuelve a autorizar solo: ya no
-    hay que borrar token.json a mano.
+    Si hay que autorizar de nuevo (primera vez, permiso caducado tras 7 días en
+    modo prueba, o revocado por cambio de contraseña, por quitar el acceso desde
+    tu cuenta de Google, o 6 meses sin uso):
+      - INTERACTIVO: abre el navegador y sigue.
+      - desatendido: lanza AutorizacionNecesaria SIN tocar token.json.
 
-    Refresco PREVENTIVO al arrancar: se renueva aunque el token aún parezca
-    válido. Así, si el permiso ha caducado, te enteras AQUÍ, antes de empezar,
-    y no a mitad de 150 emails. Y el token recién renovado dura una hora,
-    más que cualquier ejecución.
+    Refresco PREVENTIVO al arrancar: se renueva aunque el token parezca válido.
+    Así te enteras AQUÍ, antes de empezar, y no a mitad de 150 emails.
     """
     creds = None
     if os.path.exists(TOKEN):
         try:
             creds = Credentials.from_authorized_user_file(TOKEN, SCOPES)
         except ValueError:
-            creds = None  # token.json corrupto o incompleto: se autoriza de nuevo
+            creds = None  # token.json corrupto o incompleto
 
     if creds is None or not creds.refresh_token:
+        if not INTERACTIVO:
+            raise AutorizacionNecesaria(MENSAJE_REAUTORIZAR)
         creds = _autorizar("Primera autorización de acceso a tu Gmail.")
     else:
         try:
             creds.refresh(Request())
         except RefreshError:
+            if not INTERACTIVO:
+                raise AutorizacionNecesaria(MENSAJE_REAUTORIZAR)
             os.remove(TOKEN)
             creds = _autorizar("El permiso de acceso a Gmail ha caducado o se ha revocado. "
                                "Hay que autorizar de nuevo.")
@@ -132,23 +160,17 @@ def _obtener_servicio():
         _servicio = build("gmail", "v1", credentials=_credenciales())
     return _servicio
 
-    creds = None
-    if os.path.exists(TOKEN):
-        creds = Credentials.from_authorized_user_file(TOKEN, SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENCIALES, SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(TOKEN, "w") as f:
-            f.write(creds.to_json())
 
-    _servicio = build("gmail", "v1", credentials=creds)
-    return _servicio
-
-
-# ── Parseo del cuerpo (igual que v1) ────────────────────────────────────────
+def reautorizar() -> str:
+    """Autorización interactiva completa (la usa autorizar_gmail.pyw). Devuelve
+    la dirección autorizada, tras comprobar que el acceso funciona de verdad."""
+    global _servicio, _mi_direccion
+    creds = _autorizar("Autorizando el acceso a tu Gmail.")
+    with open(TOKEN, "w") as f:
+        f.write(creds.to_json())
+    _servicio = None
+    _mi_direccion = None
+    return mi_direccion()
 
 def _decodificar(data: str) -> str:
     return base64.urlsafe_b64decode(data).decode("utf-8", errors="replace")
