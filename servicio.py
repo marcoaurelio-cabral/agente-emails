@@ -22,6 +22,7 @@ from pathlib import Path
 
 import agrupar
 import almacen
+import calendario
 import cerebro
 import gmail
 import jev
@@ -184,6 +185,15 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
     # Agrupación y cierre de tareas: código, sin IA, sobre las claves guardadas.
     cerradas = reagrupar_y_cerrar()
 
+    # Calendario de Apple: si está configurado, se deja al día. Un fallo aquí NO
+    # estropea la revisión del correo; se informa y ya.
+    cal = None
+    if calendario.configurado():
+        try:
+            cal = calendario.sincronizar()
+        except Exception as e:
+            cal = {"error": f"{type(e).__name__}: {e}"}
+
     uso = cerebro._llm.uso
     return {
         "consulta": consulta,
@@ -197,6 +207,7 @@ def revisar(consulta: str = "newer_than:7d", maximo: int = 150,
         "tokens_llm": (uso["entrada"] + uso["salida"]) - (uso_antes["entrada"] + uso_antes["salida"]),
         "modelo": cerebro._llm.model,
         "tareas_cerradas_auto": cerradas,
+        "calendario": cal,
         "prefiltro_activo": politica.USAR_PREFILTRO and jev.disponible(),
         "politica_prefiltro": politica.describir(),
         "filtrados_por_jev": filtrados_por_jev,

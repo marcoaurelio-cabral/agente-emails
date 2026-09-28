@@ -47,12 +47,13 @@ from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import almacen
+import calendario
 import gmail
 import servicio
 
@@ -60,6 +61,7 @@ import servicio
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     almacen.inicializar()  # migraciones al arrancar, como en la CLI
+    almacen.ALTERAR = calendario.sincronizar_async   # completar/descartar/corregir -> calendario
     gmail.INTERACTIVO = False  # el servidor va oculto: nunca debe abrir el navegador ni bloquearse
     yield
 
@@ -205,6 +207,28 @@ def revisar(background: BackgroundTasks, opts: OpcionesRevision | None = None):
 @app.get("/revisar/estado")
 def estado_revision():
     return _revision
+
+
+# ── Calendario de Apple ──────────────────────────────────────────────────────
+
+@app.get("/calendario/estado")
+def calendario_estado():
+    return {"configurado": calendario.configurado(), **calendario.ESTADO}
+
+
+@app.post("/calendario/sincronizar", status_code=202)
+def calendario_sincronizar():
+    if not calendario.configurado():
+        raise HTTPException(status_code=409, detail="Calendario sin configurar (mira calendario.py)")
+    calendario.sincronizar_async()
+    return {"lanzada": True}
+
+
+@app.get("/calendario.ics")
+def calendario_ics():
+    """Todo lo que iría al calendario, como archivo .ics (para importarlo a mano)."""
+    return Response(calendario.a_feed(calendario.eventos_deseados()), media_type="text/calendar; charset=utf-8",
+                    headers={"Content-Disposition": 'attachment; filename="agente-emails.ics"'})
 
 
 # ── Autorizar Gmail desde la notificación de Windows ─────────────────────────

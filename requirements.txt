@@ -8,3 +8,5 @@ google-auth-oauthlib
 fastapi
 uvicorn[standard]
 typesafe-sdk
+caldav
+icalendar

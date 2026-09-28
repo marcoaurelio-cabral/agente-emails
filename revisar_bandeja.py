@@ -110,6 +110,10 @@ def main():
     if r["prefiltro_activo"] or r["errores_jev"]:
         print(f"Jev ({r['politica_prefiltro']}): {r['filtrados_por_jev']} de {r['nuevos']} "
               f"resueltos sin LLM · {r['uso_jev']}")
+    c = r.get("calendario")
+    if c:
+        print("Calendario: " + (f"⚠️ {c['error']}" if c.get("error") else
+              f"{c['creados']} nuevos · {c['actualizados']} actualizados · {c['borrados']} borrados"))
 
 
 if __name__ == "__main__":

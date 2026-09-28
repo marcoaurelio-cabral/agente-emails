@@ -122,7 +122,7 @@ def main():
 
     MARCA.write_text(hoy, encoding="utf-8")
     log(f"OK · {r['nuevos']} nuevos · {len(r['nuevos_importantes'])} importantes · "
-        f"{r.get('filtrados_por_jev', 0)} descartados por Jev · {r['llamadas_llm']} llamadas LLM")
+        f"{r.get('filtrados_por_jev', 0)} descartados por Jev · {r['llamadas_llm']} llamadas LLM · calendario: {r.get('calendario')}")
 
     aviso = resumen(r, pendientes)
     if aviso:

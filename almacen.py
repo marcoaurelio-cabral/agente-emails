@@ -20,6 +20,7 @@ Este módulo sigue sin saber de Gmail ni de LLMs.
 import re
 import sqlite3
 import time
+from datetime import date, timedelta
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "emails.db"
@@ -71,6 +72,29 @@ _COLUMNAS = {
 # "Importante efectivo": si Marco corrigió, manda su corrección; si no, el modelo.
 # Se usa en todas las vistas para que una corrección se refleje al instante.
 _IMPORTANTE = "COALESCE(correccion_importante, importante)"
+
+# Aviso de cambios hechos por el usuario (completar, descartar, corregir...). La
+# API lo conecta a la sincronización con el calendario; la CLI no lo usa.
+ALTERAR = None
+
+
+def _cambio():
+    if ALTERAR:
+        try:
+            ALTERAR()
+        except Exception:
+            pass          # un fallo del calendario nunca debe romper una acción del usuario
+
+
+def _avisa(funcion):
+    from functools import wraps
+
+    @wraps(funcion)
+    def envoltura(*args, **kwargs):
+        resultado = funcion(*args, **kwargs)
+        _cambio()
+        return resultado
+    return envoltura
 
 
 def _conectar() -> sqlite3.Connection:
@@ -189,6 +213,7 @@ def actualizar_clasificacion(gmail_id: str, c) -> dict:
     return cambios
 
 
+@_avisa
 def marcar_completadas(ids: list[str]) -> int:
     with _conectar() as conn:
         cur = conn.execute(
@@ -199,6 +224,7 @@ def marcar_completadas(ids: list[str]) -> int:
         return cur.rowcount
 
 
+@_avisa
 def reabrir(ids: list[str]) -> int:
     """Deshace un 'completar' (manual o automático) o un 'descartar'."""
     with _conectar() as conn:
@@ -210,6 +236,7 @@ def reabrir(ids: list[str]) -> int:
         return cur.rowcount
 
 
+@_avisa
 def descartar(ids: list[str]) -> int:
     """"No la voy a hacer / no aplica". Distinto de completar: no es un logro.
     Sale de pendientes y no cuenta en el historial de completadas."""
@@ -222,6 +249,7 @@ def descartar(ids: list[str]) -> int:
         return cur.rowcount
 
 
+@_avisa
 def convertir_en_tarea(ids: list[str], accion: str, fecha_limite: str | None) -> int:
     """Marco convierte un importante en tarea. El primer id del grupo pasa a ser
     la tarea (marcada como manual: una re-clasificación no la deshace); el resto
@@ -240,6 +268,7 @@ def convertir_en_tarea(ids: list[str], accion: str, fecha_limite: str | None) ->
         return cur.rowcount
 
 
+@_avisa
 def quitar_tarea(ids: list[str]) -> int:
     """Deshace convertir_en_tarea: vuelve a ser un importante informativo."""
     with _conectar() as conn:
@@ -298,6 +327,7 @@ def tareas_cerradas_auto(dias: int = 7) -> list[dict]:
     return [dict(f) for f in filas]
 
 
+@_avisa
 def corregir(gmail_id: str, importante: bool) -> bool:
     """Marco corrige al modelo: "esto SÍ/NO era importante".
 
@@ -500,6 +530,35 @@ def _agrupar(filas) -> list[dict]:
             destino["ids"].append(f["gmail_id"])
             destino["repeticiones"] += 1
     return grupos
+
+
+def eventos_para_calendario(dias_atras: int = 30) -> list[dict]:
+    """Viajes y eventos importantes con fecha: UNO por grupo (el email más reciente
+    que tenga fecha). `clave` identifica al grupo y es estable entre ejecuciones.
+    Se excluyen los 'completada'/'descartada' (un trámite ya resuelto) y los
+    marcados como 'visto' ("me he enterado"): si Marco ya lo vio en la app, el
+    calendario no tiene que seguir recordándoselo. Un evento FUTURO visto se
+    retira del calendario en la próxima sincronización; uno PASADO ya visto se
+    conserva igualmente como historial (lo decide sincronizar(), no esta consulta)."""
+    desde = (date.today() - timedelta(days=dias_atras)).isoformat()
+    with _conectar() as conn:
+        filas = conn.execute(
+            f"""SELECT gmail_id, asunto, resumen, categoria, tipo_entidad, entidad, fecha_entidad,
+                       COALESCE(grupo, gmail_id) AS clave
+                FROM emails
+                WHERE {_IMPORTANTE} = 1 AND tipo_entidad IN ('viaje', 'evento')
+                  AND fecha_entidad IS NOT NULL AND fecha_entidad >= ?
+                  AND (estado IS NULL OR estado NOT IN ('completada', 'descartada'))
+                  AND visto_en IS NULL
+                ORDER BY fecha_epoch DESC""",
+            (desde,),
+        ).fetchall()
+    vistos, resultado = set(), []
+    for f in filas:
+        if f["clave"] not in vistos:
+            vistos.add(f["clave"])
+            resultado.append(dict(f))
+    return resultado
 
 
 def tareas_pendientes() -> list[dict]:
